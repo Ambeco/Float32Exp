@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Float32Exp.iml" filepath="$PROJECT_DIR$/Float32Exp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/float32ExpPerf/utilPerf.iml" filepath="$PROJECT_DIR$/float32ExpPerf/utilPerf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/float32exp/util.iml" filepath="$PROJECT_DIR$/float32exp/util.iml" />
+    </modules>
+  </component>
+</project>

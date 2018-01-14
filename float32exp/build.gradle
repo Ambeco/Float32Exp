@@ -1,0 +1,43 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.3"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'jvm-component'
+    id 'java-lang'
+    id 'junit-test-suite'
+}
+
+apply plugin: "idea"
+apply plugin: "net.ltgt.apt"
+
+dependencies {
+    apt 'com.google.dagger:dagger-compiler:2.0.1'
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile  'junit:junit:4.12'
+    testCompile  'javax.inject:javax.inject:1'
+    testCompile  'org.robolectric:robolectric-annotations:3.0'
+}
+
+model {
+    testSuites {
+        test(JUnitTestSuiteSpec) {
+            jUnitVersion '4.12'
+        }
+    }
+}
+
+tasks.withType(Test) {
+    maxParallelForks = Runtime.runtime.availableProcessors()
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
