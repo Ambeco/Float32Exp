@@ -26,11 +26,14 @@ The return types are Float64ExpChainedExpression, allowing you to chain operatio
 directly reassign to a Float64Exp. This helps prevent accidental mutation.
 
 Compiler error:
+
      Float64Exp thing(Float64Exp left, Float64Exp right) {
          return left.multiply(right).add(3);
          //error: incompatible types: Float64ExpChainedExpression cannot be converted to Float64Exp
      }
+
 Correct:
+
      void thing(Float64Exp left, Float64Exp right) {
          Float64Exp result = new Float64Exp(left);
          result.multiply(right).add(3);
