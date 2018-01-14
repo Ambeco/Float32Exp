@@ -3,7 +3,7 @@ Lightweight Mutable Floating Point Type with 32bit exponent
 It works like double, but with a 32 binary significant digits, and a 32 bit base-2 exponent.
 This equates to ~9.6 decimal digits for both parts.
 Note that this is _wildly_ different than the IEEE 754 format binary128, which is 113 and 15
-bits, and also the IEEE 754 format float64Exp, which is 110 and 17 bits.
+bits, and also the IEEE 754 format Float128, which is 110 and 17 bits.
 
 This somewhat mirrors BigDecimal, except since it's mutating, return types are not directly
 assignable.
