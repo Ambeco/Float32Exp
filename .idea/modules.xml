@@ -3,8 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Float32Exp.iml" filepath="$PROJECT_DIR$/Float32Exp.iml" />
-      <module fileurl="file://$PROJECT_DIR$/float32ExpPerf/utilPerf.iml" filepath="$PROJECT_DIR$/float32ExpPerf/utilPerf.iml" />
-      <module fileurl="file://$PROJECT_DIR$/float32exp/util.iml" filepath="$PROJECT_DIR$/float32exp/util.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32ExpPerf/float32ExpPerf.iml" filepath="$PROJECT_DIR$/.idea/modules/float32ExpPerf/float32ExpPerf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32exp/float32exp.iml" filepath="$PROJECT_DIR$/.idea/modules/float32exp/float32exp.iml" />
+      <module fileurl="$PROJECT_DIR$\float32exp\util.iml" filepath="$PROJECT_DIR$\float32exp\util.iml" />
+      <module fileurl="$PROJECT_DIR$\float32ExpPerf\utilPerf.iml" filepath="$PROJECT_DIR$\float32ExpPerf\utilPerf.iml" />
     </modules>
   </component>
 </project>
