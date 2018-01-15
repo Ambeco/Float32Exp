@@ -575,21 +575,29 @@ import java.math.BigInteger;
             return 0;
         }
         long bits = Double.doubleToRawLongBits(val);
-        int mantissa_bits = (int) ((bits & 0x000fffffffffffffL) >> 21);
-        int mantissa_value = (mantissa_bits >> 1) | 0x40000000;
-        if (val >= Double.MIN_NORMAL) {
+        long mantissa_bits = bits & 0x000fffffffffffffL;
+        int mantissa_value = (int) (mantissa_bits >> 22 | 0x40000000);
+        if (val >= Double.MIN_NORMAL) { //regular positive number
             return mantissa_value;
-        } else if (val <= -Double.MIN_NORMAL) {
+        } else if (val <= -Double.MIN_NORMAL) { //regular negative number
             int mantissa = -mantissa_value;
             int zeroes = Integer.numberOfLeadingZeros(~mantissa);
             return mantissa << (zeroes - 1);
-        } else if (val > 0){
-            int zeroes = Integer.numberOfLeadingZeros(mantissa_bits);
-            return mantissa_bits << (zeroes - 1);
-        } else { // if (val < 0)
-            int mantissa = -mantissa_bits;
-            int zeroes = Integer.numberOfLeadingZeros(~mantissa);
-            return mantissa << (zeroes - 1);
+        } else if (val > 0){ //subnormal positive
+            int zeroes = Long.numberOfLeadingZeros(mantissa_bits);
+            if (zeroes < INT_MAX_BITS) {
+                return (int) (mantissa_bits << (zeroes - 1));
+            } else {
+                return (int) mantissa_bits >> (INT_MAX_BITS - zeroes);
+            }
+        } else { // subnormal negative
+            long mantissa = -mantissa_bits;
+            int zeroes = Long.numberOfLeadingZeros(~mantissa);
+            if (zeroes < INT_MAX_BITS) {
+                return (int) (mantissa << (zeroes - 1));
+            } else {
+                return (int) mantissa >> (INT_MAX_BITS - zeroes);
+            }
         }
     }
 
@@ -600,16 +608,16 @@ import java.math.BigInteger;
         long bits = Double.doubleToRawLongBits(val);
         int exponent_bits = (int) ((bits & 0x7ff0000000000000L) >> 52);
         int mantissa_bits = (int) ((bits & 0x000fffffffffffffL) >> 21);
-        if (val >= Double.MIN_NORMAL) {
+        if (val >= Double.MIN_NORMAL) { //regular positive number
             return exponent_bits - 1024 - 29;
-        } else if (val <= -Double.MIN_NORMAL) {
+        } else if (val <= -Double.MIN_NORMAL) { //regular negative number
             int mantissa = -((mantissa_bits >> 1) | 0x40000000);
             int zeroes = Integer.numberOfLeadingZeros(~mantissa);
             return exponent_bits - 1024 - 28 - zeroes;
-        } else if (val > 0){
+        } else if (val > 0){ //subnormal positive
             int zeroes = Integer.numberOfLeadingZeros(mantissa_bits);
             return -1022 - zeroes;
-        } else { // if (val < 0)
+        } else {  // subnormal negative
             int zeroes = Integer.numberOfLeadingZeros(~-mantissa_bits);
             return -1022 - zeroes + 1;
         }
