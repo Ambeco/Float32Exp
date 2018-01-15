@@ -155,17 +155,17 @@ public class Float64Exp extends Float64ExpSharedBase implements Float64ExpChaine
     public Float64ExpChainedExpression divideToIntegralValue(double val)
     {divideToIntegralValue(doubleToSignificand(val), doubleToExponent(val)); return this;}
     private void divideToIntegralValue(int otherSignificand, int otherExponent) {
-        long sig = ((long) significand) << INT_MAX_BITS;
-        sig /= otherSignificand;
+        long quotient = ((long) significand) << INT_MAX_BITS;
+        quotient /= otherSignificand;
         long exp = ((long) exponent) - otherExponent - INT_MAX_BITS;
-        if (sig == 0 || exp < -(INT_MAX_BITS*2)) {
-            significand = 0;
+        if (quotient == 0 || exp < -(INT_MAX_BITS*2)) {
+            significand = 0; // result is zero
             exponent = ZERO_EXPONENT;
         } else if (exp >= 0) {
-            setNormalized(sig, exp);
+            setNormalized(quotient, exp); // result has no fractional bits
         } else {
             long shift = 1L << -exp;
-            setNormalized(sig / shift, 0);
+            setNormalized(quotient / shift, 0);
         }
     }
     
@@ -173,17 +173,19 @@ public class Float64Exp extends Float64ExpSharedBase implements Float64ExpChaine
     public Float64ExpChainedExpression remainder(long val) {remainder(longToSignificand(val), longToExponent(val)); return this;}
     public Float64ExpChainedExpression remainder(double val) {remainder(doubleToSignificand(val), doubleToExponent(val)); return this;}
     private void remainder(int otherSignificand, int otherExponent) {
-        long sig = ((long) significand) << INT_MAX_BITS;
-        sig %= otherSignificand;
+        long origLong = ((long) significand) << INT_MAX_BITS;
         long exp = ((long) exponent) - otherExponent - INT_MAX_BITS;
-        if (sig == 0 || exp < -(INT_MAX_BITS*2)) {
-            significand = 0;
+        long lostBits = origLong % otherSignificand;
+        if (lostBits == 0 || exp < -(INT_MAX_BITS*2)) {
+            significand = 0; // result is zero
             exponent = ZERO_EXPONENT;
         } else if (exp >= 0) {
-            setNormalized(sig, exp);
+            setNormalized(lostBits, exp); // result has no fractional bits
         } else {
             long shift = 1L << -exp;
-            setNormalized(sig % shift, 0);
+            long quotient = origLong / otherSignificand; //regular division
+            quotient = quotient / shift * shift; //truncated to integer
+            setNormalized(origLong - quotient, exponent); //grab the remainder
         }
     }
 

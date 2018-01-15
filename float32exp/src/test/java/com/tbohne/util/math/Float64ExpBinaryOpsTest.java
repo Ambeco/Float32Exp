@@ -14,6 +14,16 @@ public class Float64ExpBinaryOpsTest {
 
     @Test
     public void when2097mod1039ThenResultIs19() {
+        //TODO: Why only 6 bits?
         Float64ExpTestUtils.assertApproximately( 19.0, mDecimal.set(2097).remainder(1039), 6);
+    }
+
+    //TODO:Delete. Just measuring how doubles work.
+    @Test
+    public void fmodWorksLikeIThink() {
+        Float64ExpTestUtils.assertApproximately( -2.0, (int)((-7.0) / 3.0), 30);
+        Float64ExpTestUtils.assertApproximately( -2.0, (int)(7.0 / -3.0), 30);
+        Float64ExpTestUtils.assertApproximately( -1.0, (int)((-7.0) % 3.0), 30);
+        Float64ExpTestUtils.assertApproximately( 1.0, (int)(7.0 % -3.0), 30);
     }
 }
