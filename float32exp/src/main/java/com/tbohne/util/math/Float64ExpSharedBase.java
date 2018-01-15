@@ -11,6 +11,7 @@ import java.math.BigInteger;
 /*package*/ class Float64ExpSharedBase extends Number implements IFloat64Exp {
     private static final long serialVersionUID = 1L;
     /*package*/ static final int INT_MAX_BITS = 32;
+    /*package*/ static final int LONG_MAX_BITS = 64;
     /*package*/ static final int EXPONENT_BIAS = 30;
     /*package*/ static final int ZERO_EXPONENT = Integer.MIN_VALUE;
     private static final double INV_LOG10 = 0.30102999566398114; // 1/lg(10)
@@ -74,6 +75,7 @@ import java.math.BigInteger;
     /*package*/ Float64ExpSharedBase() {significand = 0; exponent = ZERO_EXPONENT;}
 
     /*package*/ IFloat64Exp set(char[] in, int offset, int len) {
+        //TODO Parse HexString
         int end = offset + len;
         boolean negative = false;
         long sigDec = 0; //initial digits
@@ -452,6 +454,13 @@ import java.math.BigInteger;
         return sb.append(significand).append('B').append(exponent);
     }
 
+    public StringBuilder toHexString(StringBuilder sb) {
+        return sb.append("0x")
+                .append(Integer.toHexString(significand))
+                .append('P')
+                .append(Integer.toHexString(exponent));
+    }
+
     /**
      * Returns this {@code Float64Exp} as a big integer instance. A fractional
      * part is discarded.
@@ -586,17 +595,17 @@ import java.math.BigInteger;
         } else if (val > 0){ //subnormal positive
             int zeroes = Long.numberOfLeadingZeros(mantissa_bits);
             if (zeroes < INT_MAX_BITS) {
-                return (int) (mantissa_bits << (zeroes - 1));
+                return (int) (mantissa_bits >> (INT_MAX_BITS - zeroes + 1));
             } else {
-                return (int) mantissa_bits >> (INT_MAX_BITS - zeroes);
+                return (int) mantissa_bits << (zeroes - 1);
             }
         } else { // subnormal negative
             long mantissa = -mantissa_bits;
             int zeroes = Long.numberOfLeadingZeros(~mantissa);
             if (zeroes < INT_MAX_BITS) {
-                return (int) (mantissa << (zeroes - 1));
+                return (int) (mantissa >> (INT_MAX_BITS - zeroes + 1));
             } else {
-                return (int) mantissa >> (INT_MAX_BITS - zeroes);
+                return (int) mantissa << (zeroes - 1);
             }
         }
     }
@@ -607,19 +616,19 @@ import java.math.BigInteger;
         }
         long bits = Double.doubleToRawLongBits(val);
         int exponent_bits = (int) ((bits & 0x7ff0000000000000L) >> 52);
-        int mantissa_bits = (int) ((bits & 0x000fffffffffffffL) >> 21);
+        long mantissa_bits = bits & 0x000fffffffffffffL;
         if (val >= Double.MIN_NORMAL) { //regular positive number
             return exponent_bits - 1024 - 29;
         } else if (val <= -Double.MIN_NORMAL) { //regular negative number
-            int mantissa = -((mantissa_bits >> 1) | 0x40000000);
+            int mantissa = -(int) (mantissa_bits >> 22 | 0x40000000);
             int zeroes = Integer.numberOfLeadingZeros(~mantissa);
             return exponent_bits - 1024 - 28 - zeroes;
         } else if (val > 0){ //subnormal positive
-            int zeroes = Integer.numberOfLeadingZeros(mantissa_bits);
-            return -1022 - zeroes;
+            int zeroes = Long.numberOfLeadingZeros(mantissa_bits);
+            return -1041 - zeroes;
         } else {  // subnormal negative
-            int zeroes = Integer.numberOfLeadingZeros(~-mantissa_bits);
-            return -1022 - zeroes + 1;
+            int zeroes = Long.numberOfLeadingZeros(~-mantissa_bits);
+            return -1041 - zeroes;
         }
     }
 

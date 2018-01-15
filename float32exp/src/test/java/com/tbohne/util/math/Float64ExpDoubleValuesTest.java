@@ -52,12 +52,12 @@ public class Float64ExpDoubleValuesTest {
 
     @Test
     public void whenConstructedFromPositiveSubnormalThenInternalsAreCorrect() {
-        Float64ExpTestUtils.setAndAssertBits(Float64ExpTestUtils.SUBNORMAL, 0x40000000, -1025, mDecimal);
+        Float64ExpTestUtils.setAndAssertBits(Float64ExpTestUtils.SUBNORMAL, 0x40000000, -1055, mDecimal);
     }
 
     @Test
     public void whenConstructedFromNegativeSubnormalThenInternalsAreCorrect() {
-        Float64ExpTestUtils.setAndAssertBits(-Float64ExpTestUtils.SUBNORMAL, 0x80000000, -1025, mDecimal);
+        Float64ExpTestUtils.setAndAssertBits(-Float64ExpTestUtils.SUBNORMAL, 0x80000000, -1056, mDecimal);
     }
 
     @Test
