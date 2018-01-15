@@ -155,9 +155,9 @@ public class Float64Exp extends Float64ExpSharedBase implements Float64ExpChaine
     public Float64ExpChainedExpression divideToIntegralValue(double val)
     {divideToIntegralValue(doubleToSignificand(val), doubleToExponent(val)); return this;}
     private void divideToIntegralValue(int otherSignificand, int otherExponent) {
-        long quotient = ((long) significand) << INT_MAX_BITS;
-        quotient /= otherSignificand;
         long exp = ((long) exponent) - otherExponent - INT_MAX_BITS;
+        long origSig = ((long) significand) << INT_MAX_BITS;
+        long quotient = origSig / otherSignificand; //regular division
         if (quotient == 0 || exp < -(INT_MAX_BITS*2)) {
             significand = 0; // result is zero
             exponent = ZERO_EXPONENT;
@@ -165,7 +165,7 @@ public class Float64Exp extends Float64ExpSharedBase implements Float64ExpChaine
             setNormalized(quotient, exp); // result has no fractional bits
         } else {
             long shift = 1L << -exp;
-            setNormalized(quotient / shift, 0);
+            setNormalized(quotient / shift, 0); //truncated to integer at target scale
         }
     }
     
@@ -173,19 +173,18 @@ public class Float64Exp extends Float64ExpSharedBase implements Float64ExpChaine
     public Float64ExpChainedExpression remainder(long val) {remainder(longToSignificand(val), longToExponent(val)); return this;}
     public Float64ExpChainedExpression remainder(double val) {remainder(doubleToSignificand(val), doubleToExponent(val)); return this;}
     private void remainder(int otherSignificand, int otherExponent) {
-        long origLong = ((long) significand) << INT_MAX_BITS;
         long exp = ((long) exponent) - otherExponent - INT_MAX_BITS;
-        long lostBits = origLong % otherSignificand;
-        if (lostBits == 0 || exp < -(INT_MAX_BITS*2)) {
+        long origSig = ((long) significand) << INT_MAX_BITS;
+        long quotient = origSig / otherSignificand;
+        if (quotient == 0 || exp < -(INT_MAX_BITS*2)) {
+            setNormalized(quotient, exp); // result has no fractional bits
+        } else if (exp >= 0) {
             significand = 0; // result is zero
             exponent = ZERO_EXPONENT;
-        } else if (exp >= 0) {
-            setNormalized(lostBits, exp); // result has no fractional bits
         } else {
             long shift = 1L << -exp;
-            long quotient = origLong / otherSignificand; //regular division
-            quotient = quotient / shift * shift; //truncated to integer
-            setNormalized(origLong - quotient, exponent); //grab the remainder
+            long truncQuot = quotient / shift * shift * otherSignificand; //truncated to integer at same scale
+            setNormalized(origSig - truncQuot, exponent - INT_MAX_BITS);
         }
     }
 
@@ -196,8 +195,23 @@ public class Float64Exp extends Float64ExpSharedBase implements Float64ExpChaine
     public Float64ExpChainedExpression divideAndRemainder(double val, Float64Exp outRemainder)
     {divideAndRemainder(doubleToSignificand(val), doubleToExponent(val), outRemainder); return this;}
     private void divideAndRemainder(int otherSignificand, int otherExponent, Float64Exp outRemainder) {
-        //TODO: Implement divideAndRemainder
-        throw new UnsupportedOperationException("what about remainder");
+        long exp = ((long) exponent) - otherExponent - INT_MAX_BITS;
+        long origSig = ((long) significand) << INT_MAX_BITS;
+        long quotient = origSig / otherSignificand;
+        if (quotient == 0 || exp < -(INT_MAX_BITS*2)) {
+            outRemainder.set(significand, exponent);
+            significand = 0; // result is zero
+            exponent = ZERO_EXPONENT;
+        } else if (exp >= 0) {
+            setNormalized(quotient, exp); // result has no fractional bits
+            outRemainder.set(0, ZERO_EXPONENT);
+        } else {
+            long shift = 1L << -exp;
+            long intQutot = quotient / shift;
+            long truncQuot = intQutot * shift * otherSignificand; //truncated to integer at same scale
+            setNormalized(intQutot, 0);
+            outRemainder.setNormalized(origSig - truncQuot, exponent - INT_MAX_BITS);
+        }
     }
 
     //this^other can be defined as pow(2,other*log(this,2)),
