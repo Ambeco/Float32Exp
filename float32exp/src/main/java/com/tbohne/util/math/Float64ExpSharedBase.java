@@ -615,10 +615,7 @@ import java.math.BigInteger;
         }
     }
 
-    /*package*/ void assertNormalized() {
-        assertNormalized(significand, exponent);
-    }
-
+    //TODO: Remove custom Assert dependency
     private static void assertNormalized(int significand, long exponent) {
         if (significand > 0) {
             Assert.assertEqualsHex("MSB not set", significand | 0x40000000, significand);

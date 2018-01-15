@@ -23,12 +23,14 @@
       <sourceFolder url="file://$MODULE_DIR$/../../../float32ExpPerf/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../../float32ExpPerf/src/test/resources" type="java-test-resource" />
       <excludeFolder url="file://$MODULE_DIR$/../../../float32ExpPerf/.gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../float32ExpPerf/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="float32exp" scope="PROVIDED" />
-    <orderEntry type="module" module-name="float32exp" scope="TEST" />
     <orderEntry type="module" module-name="float32exp" scope="RUNTIME" />
+    <orderEntry type="module" module-name="float32exp" scope="TEST" />
+    <orderEntry type="module" module-name="float32exp" exported="" />
     <orderEntry type="module" module-name="float32exp" exported="" />
     <orderEntry type="module" module-name="float32exp" exported="" />
   </component>

@@ -190,6 +190,7 @@ public class Float64Exp extends Float64ExpSharedBase implements Float64ExpChaine
     public Float64ExpChainedExpression divideAndRemainder(double val, Float64Exp outRemainder)
     {divideAndRemainder(doubleToSignificand(val), doubleToExponent(val), outRemainder); return this;}
     private void divideAndRemainder(int otherSignificand, int otherExponent, Float64Exp outRemainder) {
+        //TODO: Implement divideAndRemainder
         throw new UnsupportedOperationException("what about remainder");
     }
 
@@ -319,6 +320,7 @@ public class Float64Exp extends Float64ExpSharedBase implements Float64ExpChaine
     public Float64ExpChainedExpression round(long val) {round(longToSignificand(val), longToExponent(val)); return this;}
     public Float64ExpChainedExpression round(double val) {round(doubleToSignificand(val), doubleToExponent(val)); return this;}
     private Float64ExpChainedExpression round(int otherSignificand, int otherExponent) {
+        //TODO: Implement round
         throw new UnsupportedOperationException();
     }
 
