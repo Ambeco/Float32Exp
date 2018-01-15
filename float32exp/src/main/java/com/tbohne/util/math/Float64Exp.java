@@ -158,13 +158,14 @@ public class Float64Exp extends Float64ExpSharedBase implements Float64ExpChaine
         long sig = ((long) significand) << INT_MAX_BITS;
         sig /= otherSignificand;
         long exp = ((long) exponent) - otherExponent - INT_MAX_BITS;
-        if (sig == 0 || exp < -INT_MAX_BITS) {
+        if (sig == 0 || exp < -(INT_MAX_BITS*2)) {
             significand = 0;
             exponent = ZERO_EXPONENT;
         } else if (exp >= 0) {
             setNormalized(sig, exp);
         } else {
-            setNormalized(sig >> -exp, 0);
+            long shift = 1L << -exp;
+            setNormalized(sig / shift, 0);
         }
     }
     
@@ -174,15 +175,15 @@ public class Float64Exp extends Float64ExpSharedBase implements Float64ExpChaine
     private void remainder(int otherSignificand, int otherExponent) {
         long sig = ((long) significand) << INT_MAX_BITS;
         sig %= otherSignificand;
-        long exp = exponent - INT_MAX_BITS;
-        if (sig == 0 || exp < -INT_MAX_BITS) {
-            // do nothing
-        } else if (exp >= 0) {
+        long exp = ((long) exponent) - otherExponent - INT_MAX_BITS;
+        if (sig == 0 || exp < -(INT_MAX_BITS*2)) {
             significand = 0;
             exponent = ZERO_EXPONENT;
+        } else if (exp >= 0) {
+            setNormalized(sig, exp);
         } else {
-            long mask = ((1L<<-exp)<<1) - 1;
-            setNormalized(sig & mask, exp);
+            long shift = 1L << -exp;
+            setNormalized(sig % shift, 0);
         }
     }
 
