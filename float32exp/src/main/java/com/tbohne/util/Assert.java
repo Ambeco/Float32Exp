@@ -104,8 +104,7 @@ public class Assert {
     static public void assertApproximately(String message, double expected, double actual, int bitsSimilarCount) {
         Assert.assertAtMost(51, bitsSimilarCount);
         Assert.assertAtLeast(1, bitsSimilarCount);
-        double bitValue = Math.pow(2, -bitsSimilarCount);
-        double ratio = 1 + bitValue;
+        double ratio = Math.pow(2, -bitsSimilarCount);
         double offset = Math.abs(expected != 0 ? expected * ratio : actual * ratio);
         double min = expected - offset;
         double max = expected + offset;
