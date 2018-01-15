@@ -39,14 +39,7 @@ Correct:
          result.multiply(right).add(3);
          return result;
      }
-
- For reasons I don't understand, the build targets are set up wrong, and Android Studio cannot build
- any part of this. It always believes all files are up-to-date, and trying to run tests says:
-     Class not found: "com.tbohne.util.math.NNNTest"Empty test suite.
- As a result, I have to do builds on the command line via something like:
-     gradlew clean assemble test
- Once built, Android Studio has no problem testing on these binaries.
-
+     
  Preliminary performance measurements:
 
     ALL MEASUREMENTS OPS/SEC (BIGGER IS BETTER)
