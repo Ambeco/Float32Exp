@@ -110,10 +110,8 @@ public class Assert {
         double max = expected + offset;
         if (max == Double.POSITIVE_INFINITY && expected > 0) {
             max = Double.MAX_VALUE;
-            min = Double.MAX_VALUE / ratio;
         } else if (min == Double.NEGATIVE_INFINITY && expected < 0) {
             min = -Double.MAX_VALUE;
-            max = -Double.MAX_VALUE / ratio;
         }
 
         if (actual < min || actual > max) {
