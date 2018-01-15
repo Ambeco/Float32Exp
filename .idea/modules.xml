@@ -3,10 +3,12 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Float32Exp.iml" filepath="$PROJECT_DIR$/Float32Exp.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32ExpPerf/float32ExpPerf.iml" filepath="$PROJECT_DIR$/.idea/modules/float32ExpPerf/float32ExpPerf.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32exp/float32exp.iml" filepath="$PROJECT_DIR$/.idea/modules/float32exp/float32exp.iml" />
-      <module fileurl="file://D:\Users\Tavis\Dropbox\Code\Github\Float32Exp\float32exp\util.iml" filepath="D:\Users\Tavis\Dropbox\Code\Github\Float32Exp\float32exp\util.iml" />
-      <module fileurl="file://D:\Users\Tavis\Dropbox\Code\Github\Float32Exp\float32ExpPerf\utilPerf.iml" filepath="D:\Users\Tavis\Dropbox\Code\Github\Float32Exp\float32ExpPerf\utilPerf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32ExpPerf/float32ExpPerf.iml" filepath="$PROJECT_DIR$/.idea/modules/float32ExpPerf/float32ExpPerf.iml" group="float32ExpPerf" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32ExpPerf/float32ExpPerf_main.iml" filepath="$PROJECT_DIR$/.idea/modules/float32ExpPerf/float32ExpPerf_main.iml" group="float32ExpPerf" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32ExpPerf/float32ExpPerf_test.iml" filepath="$PROJECT_DIR$/.idea/modules/float32ExpPerf/float32ExpPerf_test.iml" group="float32ExpPerf" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32exp/float32exp.iml" filepath="$PROJECT_DIR$/.idea/modules/float32exp/float32exp.iml" group="float32exp" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32exp/float32exp_main.iml" filepath="$PROJECT_DIR$/.idea/modules/float32exp/float32exp_main.iml" group="float32exp" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32exp/float32exp_test.iml" filepath="$PROJECT_DIR$/.idea/modules/float32exp/float32exp_test.iml" group="float32exp" />
     </modules>
   </component>
 </project>
