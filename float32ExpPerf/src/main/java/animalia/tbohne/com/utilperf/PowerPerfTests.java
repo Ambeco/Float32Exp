@@ -1,6 +1,6 @@
 package animalia.tbohne.com.utilperf;
 
-import com.tbohne.util.math.Float64Exp;
+import com.tbohne.util.math.Float32Exp;
 
 import java.math.BigDecimal;
 
@@ -44,9 +44,9 @@ public class PowerPerfTests {
     }
 
     public static long float64ExpTest(int bitOffset) {
-        Float64Exp first = new Float64Exp(0);
+        Float32Exp first = new Float32Exp(0);
         int count = 10000000;
-        Float64Exp base = new Float64Exp();
+        Float32Exp base = new Float32Exp();
         for(int i = 0; i < count; ++i) {
             first.add(base.set(BASE).pow(bitOffset));
         }

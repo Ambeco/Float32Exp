@@ -10,7 +10,7 @@ public class Float64ExpMulDivCombinitoricsTest extends Float64ExpCombinitoricsBa
     @Test
     public void whenDoingMulDivThenResultsAreCorrect() {
 
-        Float64Exp decimal = new Float64Exp(Math.PI);
+        Float32Exp decimal = new Float32Exp(Math.PI);
         double expectedValue = Math.PI * left / right;
         if (Double.isFinite(expectedValue)) {
             Float64ExpTestUtils.assertApproximately(expectedValue, decimal.muldiv(left, right), Float64ExpTestUtils.FULL_ACCURACY);

@@ -12,7 +12,7 @@ public class Float64ExpPowerCombinitoricsTest extends Float64ExpCombinitoricsBas
     @Test
     @Ignore
     public void whenDoingPowerThenResultsAreCorrect() {
-        Float64Exp decimal = new Float64Exp(left);
+        Float32Exp decimal = new Float32Exp(left);
         double expectedValue = Math.pow(left, right);
         if (!Double.isInfinite(expectedValue)) {
             Float64ExpTestUtils.assertApproximately(expectedValue, decimal.pow(right), Float64ExpTestUtils.POW_ACCURACY);

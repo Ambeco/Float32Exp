@@ -9,6 +9,6 @@ public class Float64ExpNegationCombinitorisTest extends Float64ExpUnaryCombinito
 
     @Test
     public void whenDoingNegationThenResultsAreCorrect() {
-        Float64ExpTestUtils.assertApproximately(-left, new Float64Exp(left).negate(), Float64ExpTestUtils.FULL_ACCURACY);
+        Float64ExpTestUtils.assertApproximately(-left, new Float32Exp(left).negate(), Float64ExpTestUtils.FULL_ACCURACY);
     }
 }

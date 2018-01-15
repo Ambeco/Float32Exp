@@ -10,7 +10,7 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 public class Float64ExpDoubleValuesTest {
     @Rule
     public final ExpectedException exception = ExpectedException.none();
-    Float64Exp mDecimal = new Float64Exp();
+    Float32Exp mDecimal = new Float32Exp();
 
     @Test
     public void whenConstructedFromZeroDoubleThenInternalsAreCorrect() {

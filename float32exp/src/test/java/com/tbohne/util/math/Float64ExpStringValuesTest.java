@@ -8,16 +8,16 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 
-import static com.tbohne.util.math.Float64ExpSharedBase.DEFAULT_EXPONENT_TO_STRING;
-import static com.tbohne.util.math.Float64ExpSharedBase.DEFAULT_MAX_PRECISION;
-import static com.tbohne.util.math.Float64ExpSharedBase.DEFAULT_MIN_PRECISION;
-import static com.tbohne.util.math.Float64ExpSharedBase.DEFAULT_STRING_EXPONENT_MULTIPLE;
+import static com.tbohne.util.math.Float32ExpSharedBase.DEFAULT_EXPONENT_TO_STRING;
+import static com.tbohne.util.math.Float32ExpSharedBase.DEFAULT_MAX_PRECISION;
+import static com.tbohne.util.math.Float32ExpSharedBase.DEFAULT_MIN_PRECISION;
+import static com.tbohne.util.math.Float32ExpSharedBase.DEFAULT_STRING_EXPONENT_MULTIPLE;
 
 @RunWith(BlockJUnit4ClassRunner.class)
 public class Float64ExpStringValuesTest {
     @Rule
     public final ExpectedException exception = ExpectedException.none();
-    Float64Exp mDecimal = new Float64Exp();
+    Float32Exp mDecimal = new Float32Exp();
 
     @Test
     public void whenZeroThenToStringIsExact() {

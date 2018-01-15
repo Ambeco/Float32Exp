@@ -68,7 +68,7 @@ public class Main {
                     ToStringTests::bigDecimalTest,
                     FromStringTests::bigDecimalTest,
             }),
-            new TypeToTest("Float64Exp", new TestFn[] {
+            new TypeToTest("Float32Exp", new TestFn[] {
                     AdditionPerfTests::float64ExpTest,
                     MultiplicationPerfTests::float64ExpTest,
                     PowerPerfTests::float64ExpTest,

@@ -22,20 +22,20 @@ trailing zeroes. Trailing zeroes should be rare, but theoretically can occur, du
 Virtually any menthod may throw a ArithmeticException, if the number is bigger or smaller than
 this type can support. This should be rare unless playing with exponents.
 
-The return types are Float64ExpChainedExpression, allowing you to chain operations, but not
-directly reassign to a Float64Exp. This helps prevent accidental mutation.
+The return types are Float32ExpChainedExpression, allowing you to chain operations, but not
+directly reassign to a Float32Exp. This helps prevent accidental mutation.
 
 Compiler error:
 
-     Float64Exp thing(Float64Exp left, Float64Exp right) {
+     Float32Exp thing(Float32Exp left, Float32Exp right) {
          return left.multiply(right).add(3);
-         //error: incompatible types: Float64ExpChainedExpression cannot be converted to Float64Exp
+         //error: incompatible types: Float32ExpChainedExpression cannot be converted to Float32Exp
      }
 
 Correct:
 
-     void thing(Float64Exp left, Float64Exp right) {
-         Float64Exp result = new Float64Exp(left);
+     void thing(Float32Exp left, Float32Exp right) {
+         Float32Exp result = new Float32Exp(left);
          result.multiply(right).add(3);
          return result;
      }
@@ -44,31 +44,31 @@ Correct:
 
     ALL MEASUREMENTS OPS/SEC (BIGGER IS BETTER)
     ADDITION Test:
-    EXPONENT           int     double     Double BigInteger BigDecimal Float64Exp
+    EXPONENT           int     double     Double BigInteger BigDecimal Float32Exp
     1<<32           INLINE   1153402     545553      46513     193199     198412
     1<<64           INLINE   1207729     695652      42732      32464     224466
     1<<128          INLINE   1122964     715051      38026      28903     201511
 
     MULTIPLICATION Test:
-    EXPONENT           int     double     Double BigInteger BigDecimal Float64Exp
+    EXPONENT           int     double     Double BigInteger BigDecimal Float32Exp
     1<<32          279485     564015     333333      15038        416      93414
     1<<64          281928     556637     412881      12575        157      90744
     1<<128         286368     558815     421052       9435         51      90130
 
     POWER Test:
-    EXPONENT           int     double     Double BigInteger BigDecimal Float64Exp
+    EXPONENT           int     double     Double BigInteger BigDecimal Float32Exp
     1<<32              N/A   1142857     318471         N/A      3520       3355
     1<<64              N/A   1184834     357525         N/A      2660       3298
     1<<128             N/A   1207729     365764         N/A      1824       3145
 
     TO_STRING Test:
-    EXPONENT           int     double     Double BigInteger BigDecimal Float64Exp
+    EXPONENT           int     double     Double BigInteger BigDecimal Float32Exp
     1<<32           27586         N/A     12787       5801      19284       3699
     1<<64           27948         N/A      3479       2357       2325       3478
     1<<128          27122         N/A      1172       1385       1365       3556
 
     FROM_STRING Test:
-    EXPONENT           int     double     Double BigInteger BigDecimal Float64Exp
+    EXPONENT           int     double     Double BigInteger BigDecimal Float32Exp
     1<<32              N/A        N/A     45766      44786      26025      25094
     1<<64              N/A        N/A     11901      11823      25479      26143
     1<<128             N/A        N/A     11080      11113      23764      23201

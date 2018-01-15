@@ -9,7 +9,7 @@ public class Float64ExpRemainderCombinitoricsTest extends Float64ExpCombinitoric
 
     @Test
     public void whenDoingRemainderThenResultsAreCorrect() {
-        Float64Exp decimal = new Float64Exp(left);
+        Float32Exp decimal = new Float32Exp(left);
         int expectedValue;
         try {
             expectedValue = left % right;

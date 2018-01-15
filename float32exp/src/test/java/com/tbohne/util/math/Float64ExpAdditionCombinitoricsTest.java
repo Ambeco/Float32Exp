@@ -9,6 +9,6 @@ public class Float64ExpAdditionCombinitoricsTest extends Float64ExpCombinitorics
 
     @Test
     public void whenDoingAdditionThenResultsAreCorrect() {
-        Float64ExpTestUtils.assertApproximately(left + right, new Float64Exp(left).add(right), Float64ExpTestUtils.FULL_ACCURACY);
+        Float64ExpTestUtils.assertApproximately(left + right, new Float32Exp(left).add(right), Float64ExpTestUtils.FULL_ACCURACY);
     }
 }

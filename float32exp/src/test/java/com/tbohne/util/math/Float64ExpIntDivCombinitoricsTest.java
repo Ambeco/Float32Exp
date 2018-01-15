@@ -9,7 +9,7 @@ public class Float64ExpIntDivCombinitoricsTest extends Float64ExpCombinitoricsBa
 
     @Test
     public void whenDoingIntDivisionThenResultsAreCorrect() {
-        Float64Exp decimal = new Float64Exp(left);
+        Float32Exp decimal = new Float32Exp(left);
         double expectedValue;
         try {
             expectedValue = left / right;

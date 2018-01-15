@@ -9,7 +9,7 @@ public class Float64ExpLog2CombintoricsTest extends Float64ExpUnaryCombinitorics
 
     @Test
     public void whenDoingLog2ThenResultsAreCorrect() {
-        Float64Exp decimal = new Float64Exp(left);
+        Float32Exp decimal = new Float32Exp(left);
         double expectedValue = Math.log(left) / Math.log(2);
         if (Double.isFinite(expectedValue)) {
             Float64ExpTestUtils.assertApproximately(expectedValue, decimal.log2(), Float64ExpTestUtils.FULL_ACCURACY);

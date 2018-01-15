@@ -6,9 +6,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
- * This is the shared logic of Float64Exp and ImmutableFloat64Exp.
+ * This is the shared logic of Float32Exp and ImmutableFloat32Exp.
  */
-/*package*/ class Float64ExpSharedBase extends Number implements IFloat64Exp {
+/*package*/ class Float32ExpSharedBase extends Number implements IFloat32Exp {
     private static final long serialVersionUID = 1L;
     /*package*/ static final int INT_MAX_BITS = 32;
     /*package*/ static final int LONG_MAX_BITS = 64;
@@ -72,9 +72,9 @@ import java.math.BigInteger;
     /*package*/ int significand;
     /*package*/ int exponent;
 
-    /*package*/ Float64ExpSharedBase() {significand = 0; exponent = ZERO_EXPONENT;}
+    /*package*/ Float32ExpSharedBase() {significand = 0; exponent = ZERO_EXPONENT;}
 
-    /*package*/ IFloat64Exp set(char[] in, int offset, int len) {
+    /*package*/ IFloat32Exp set(char[] in, int offset, int len) {
         //TODO Parse HexString
         int end = offset + len;
         boolean negative = false;
@@ -132,7 +132,7 @@ import java.math.BigInteger;
         return this;
     }
 
-    /*package*/ IFloat64Exp set(BigDecimal val) {
+    /*package*/ IFloat32Exp set(BigDecimal val) {
         set(val.unscaledValue());
         long pow10parts = getPowerOf10Parts(val.scale());
         long scaleSig = pow10parts >> INT_MAX_BITS;
@@ -143,7 +143,7 @@ import java.math.BigInteger;
         return this;
     }
 
-    /*package*/ IFloat64Exp set(BigInteger val) {
+    /*package*/ IFloat32Exp set(BigInteger val) {
         int bits = val.bitLength() - INT_MAX_BITS + 1;
         if (bits < 0) {
             setNormalized(val.intValue(), 0);
@@ -154,7 +154,7 @@ import java.math.BigInteger;
         return this;
     }
 
-    /*package*/ IFloat64Exp set(int significand, int exponent) {
+    /*package*/ IFloat32Exp set(int significand, int exponent) {
         if (INTERNAL_ASSERTS) {
             assertNormalized(significand, exponent);
         }
@@ -218,8 +218,8 @@ import java.math.BigInteger;
         if (object == null) {
             return false;
         }
-        if (object instanceof IFloat64Exp) {
-            IFloat64Exp other = (IFloat64Exp) object;
+        if (object instanceof IFloat32Exp) {
+            IFloat32Exp other = (IFloat32Exp) object;
             return equals(other.significand(), other.exponent());
         }
         if (object instanceof Integer) {
@@ -236,7 +236,7 @@ import java.math.BigInteger;
         }
         return false;
     }
-    public boolean equals(IFloat64Exp val) {
+    public boolean equals(IFloat32Exp val) {
         return equals(val.significand(), val.exponent());
     }
     public boolean equals(long val) {
@@ -252,7 +252,7 @@ import java.math.BigInteger;
     /*
      * Returns true if the values are within ~22 bits of each other.
      */
-    public boolean approximately(IFloat64Exp val, int bitsSimilarCount)
+    public boolean approximately(IFloat32Exp val, int bitsSimilarCount)
     {return approximately(val.significand(), val.exponent(), bitsSimilarCount);}
     public boolean approximately(long val, int bitsSimilarCount)
     {return approximately(longToSignificand(val), longToExponent(val), bitsSimilarCount);}
@@ -284,7 +284,7 @@ import java.math.BigInteger;
     }
 
     @Override
-    public int compareTo(IFloat64Exp val) {return compareTo(val.significand(), val.exponent());}
+    public int compareTo(IFloat32Exp val) {return compareTo(val.significand(), val.exponent());}
     public int compareTo(long val)
     {return compareTo(longToSignificand(val), longToExponent(val));}
     public int compareTo(double val)
@@ -299,7 +299,7 @@ import java.math.BigInteger;
         }
     }
 
-    public boolean lessThan(IFloat64Exp val)
+    public boolean lessThan(IFloat32Exp val)
     {return lessThan(val.significand(), val.exponent());}
     public boolean lessThan(long val)
     {return lessThan(longToSignificand(val), longToExponent(val));}
@@ -312,7 +312,7 @@ import java.math.BigInteger;
         return significand < otherSignificand;
     }
 
-    public boolean lessOrEquals(IFloat64Exp val)
+    public boolean lessOrEquals(IFloat32Exp val)
     {return lessOrEquals(val.significand(), val.exponent());}
     public boolean lessOrEquals(long val)
     {return lessOrEquals(longToSignificand(val), longToExponent(val));}
@@ -325,7 +325,7 @@ import java.math.BigInteger;
         return significand <= otherSignificand;
     }
 
-    public boolean greaterOrEquals(IFloat64Exp val)
+    public boolean greaterOrEquals(IFloat32Exp val)
     {return greaterOrEquals(val.significand(), val.exponent());}
     public boolean greaterOrEquals(long val)
     {return greaterOrEquals(longToSignificand(val), longToExponent(val));}
@@ -338,7 +338,7 @@ import java.math.BigInteger;
         return significand >= otherSignificand;
     }
 
-    public boolean greaterThan(IFloat64Exp val)
+    public boolean greaterThan(IFloat32Exp val)
     {return greaterThan(val.significand(), val.exponent());}
     public boolean greaterThan(long val)
     {return greaterThan(longToSignificand(val), longToExponent(val));}
@@ -402,7 +402,7 @@ import java.math.BigInteger;
             long pow10Sig = pow10Parts >> INT_MAX_BITS;
             int pow10Exp = (int) pow10Parts;
             if (INTERNAL_ASSERTS && !lessOrEquals(workingSig, workingExp)) {
-                Assert.fail("{}<={}", this, new Float64ExpSharedBase().set(significand, exponent));
+                Assert.fail("{}<={}", this, new Float32ExpSharedBase().set(significand, exponent));
             }
             //inlined division of this/pow10
             longSig = ((long) workingSig) << INT_MAX_BITS;
@@ -462,7 +462,7 @@ import java.math.BigInteger;
     }
 
     /**
-     * Returns this {@code Float64Exp} as a big integer instance. A fractional
+     * Returns this {@code Float32Exp} as a big integer instance. A fractional
      * part is discarded.
      */
     public BigInteger toBigInteger() {
@@ -474,15 +474,15 @@ import java.math.BigInteger;
     }
 
     /**
-     * Returns this {@code Float64Exp} as a big decimal instance.
+     * Returns this {@code Float32Exp} as a big decimal instance.
      */
     public BigDecimal toBigDecimal() {
         return BigDecimal.valueOf(significand).multiply(BigDecimal.TEN.pow(exponent));
     }
 
     @Override
-    public ImmutableFloat64Exp toImmutable() {
-        return new ImmutableFloat64Exp(significand, exponent);
+    public ImmutableFloat32Exp toImmutable() {
+        return new ImmutableFloat32Exp(significand, exponent);
     }
 
     @Override
@@ -578,7 +578,7 @@ import java.math.BigInteger;
 
     /*package*/ static int doubleToSignificand(double val) {
         if (Double.isInfinite(val) || Double.isNaN(val)) {
-            throw new UnsupportedOperationException("Float64Exp doesn't support INF or NAN");
+            throw new UnsupportedOperationException("Float32Exp doesn't support INF or NAN");
         }
         if (val == 0.0) {
             return 0;
@@ -643,22 +643,22 @@ import java.math.BigInteger;
         }
     }
 
-    public static void assertApproximately(IFloat64Exp expected, IFloat64Exp actual, int bitsSimilarCount) {
+    public static void assertApproximately(IFloat32Exp expected, IFloat32Exp actual, int bitsSimilarCount) {
         assertApproximately(null, expected, actual, bitsSimilarCount);
     }
 
 
-    public static void assertApproximately(String message, IFloat64Exp expected, IFloat64Exp actual, int bitsSimilarCount) {
+    public static void assertApproximately(String message, IFloat32Exp expected, IFloat32Exp actual, int bitsSimilarCount) {
         if(!actual.approximately(expected, bitsSimilarCount)) {
             Assert.fail(Assert.formatCustomized("expected approximately: ", message, expected, actual));
         }
     }
 
-    public static void assertApproximately(double expected, IFloat64Exp actual, int bitsSimilarCount) {
+    public static void assertApproximately(double expected, IFloat32Exp actual, int bitsSimilarCount) {
         assertApproximately(null, expected, actual, bitsSimilarCount);
     }
 
-    public static void assertApproximately(String message, double expected, IFloat64Exp actual, int bitsSimilarCount) {
+    public static void assertApproximately(String message, double expected, IFloat32Exp actual, int bitsSimilarCount) {
         if(!actual.approximately(expected, bitsSimilarCount)) {
             Assert.fail(Assert.formatCustomized("expected approximately: ", message, expected, actual));
         }
