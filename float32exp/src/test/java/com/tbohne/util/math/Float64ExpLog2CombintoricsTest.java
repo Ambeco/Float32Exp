@@ -10,16 +10,12 @@ public class Float64ExpLog2CombintoricsTest extends Float64ExpUnaryCombinitorics
     @Test
     public void whenDoingLog2ThenResultsAreCorrect() {
         Float64Exp decimal = new Float64Exp(left);
-        double expectedValue;
-        try {
-            expectedValue = Math.log(left)/Math.log(2);
-
-        } catch (Throwable e) {
-            expectedException.expect(e.getClass());
-            expectedException.expectMessage(e.getMessage());
+        double expectedValue = Math.log(left) / Math.log(2);
+        if (Double.isFinite(expectedValue)) {
+            Float64ExpTestUtils.assertApproximately(expectedValue, decimal.log2(), Float64ExpTestUtils.FULL_ACCURACY);
+        } else {
+            expectedException.expect(IllegalArgumentException.class);
             decimal.log2();
-            return;
         }
-        Float64ExpTestUtils.assertApproximately(expectedValue, decimal.log2(), Float64ExpTestUtils.FULL_ACCURACY);
     }
 }

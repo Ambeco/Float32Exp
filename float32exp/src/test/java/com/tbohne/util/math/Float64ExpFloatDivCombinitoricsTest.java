@@ -11,7 +11,7 @@ public class Float64ExpFloatDivCombinitoricsTest extends Float64ExpCombinitorics
     public void whenDoingFloatDivisionThenResultsAreCorrect() {
         Float64Exp decimal = new Float64Exp(left);
         double expectedValue = ((double) left) / right;
-        if (!Double.isInfinite(expectedValue)) {
+        if (Double.isFinite(expectedValue)) {
             Float64ExpTestUtils.assertApproximately(expectedValue, decimal.divide(right), Float64ExpTestUtils.FULL_ACCURACY);
         } else {
             expectedException.expect(ArithmeticException.class);

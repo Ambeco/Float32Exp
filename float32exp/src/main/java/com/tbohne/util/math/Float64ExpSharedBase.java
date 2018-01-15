@@ -124,7 +124,7 @@ import java.math.BigInteger;
         if (sig10Offset != 0) {
             long pow10parts = getPowerOf10Parts(sig10Offset);
             long scaleSig = pow10parts >> INT_MAX_BITS;
-            int scaleExp = (int) pow10parts;
+            long scaleExp = (int) pow10parts;
             setNormalized(((long) significand) * scaleSig, scaleExp + exponent);
         }
         return this;
@@ -137,7 +137,7 @@ import java.math.BigInteger;
         long scaleExp = (int) pow10parts;
         long newSig = ((long) significand) << (INT_MAX_BITS-2);
         newSig /= scaleSig;
-        setNormalized(newSig, exponent - scaleExp - EXPONENT_BIAS);
+        setNormalized(newSig, ((long) exponent) - scaleExp - EXPONENT_BIAS);
         return this;
     }
 

@@ -12,7 +12,7 @@ public class Float64ExpMulDivCombinitoricsTest extends Float64ExpCombinitoricsBa
 
         Float64Exp decimal = new Float64Exp(Math.PI);
         double expectedValue = Math.PI * left / right;
-        if (!Double.isInfinite(expectedValue)) {
+        if (Double.isFinite(expectedValue)) {
             Float64ExpTestUtils.assertApproximately(expectedValue, decimal.muldiv(left, right), Float64ExpTestUtils.FULL_ACCURACY);
         } else {
             expectedException.expect(ArithmeticException.class);

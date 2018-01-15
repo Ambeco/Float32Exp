@@ -95,9 +95,8 @@ public class Float64Exp extends Float64ExpSharedBase implements Float64ExpChaine
         }
         int diff = exponent - otherExponent;
         if (diff < INT_MAX_BITS) {
-            long l = significand;
-            l += otherSignificand >> diff;
-            setNormalized(l, exponent);
+            long l = (((long) significand) << diff) + otherSignificand;
+            setNormalized(l, ((long) exponent) - diff);
         }
     }
 
@@ -105,19 +104,23 @@ public class Float64Exp extends Float64ExpSharedBase implements Float64ExpChaine
     public Float64ExpChainedExpression subtract(long val) {subtract(longToSignificand(val), longToExponent(val)); return this;}
     public Float64ExpChainedExpression subtract(double val) {subtract(doubleToSignificand(val), doubleToExponent(val)); return this;}
     private void subtract(int otherSignificand, int otherExponent) {
-        if (exponent < otherExponent) {
-            int t = otherSignificand;
-            otherSignificand = significand;
-            significand = t;
-            t = otherExponent;
-            otherExponent = exponent;
-            exponent = t;
-        }
-        int diff = exponent - otherExponent;
-        if (diff < INT_MAX_BITS) {
-            long l = significand;
-            l -= otherSignificand >> diff;
-            setNormalized(l, exponent);
+        if (exponent >= otherExponent) {
+            int diff = exponent - otherExponent;
+            if (diff < INT_MAX_BITS) {
+                long l = (((long) significand) << diff) - otherSignificand;
+                setNormalized(l, otherExponent);
+            }
+        } else { // if (otherExponent > exponent)
+            int diff = otherExponent - exponent;
+            if (significand == 0) {
+                setNormalized(-(long)otherSignificand, otherExponent);
+            } else if (diff < INT_MAX_BITS) {
+                long l = significand - (((long) otherSignificand) << diff);
+                setNormalized(l, exponent);
+            } else {
+                significand = otherSignificand;
+                exponent = otherExponent;
+            }
         }
     }
 

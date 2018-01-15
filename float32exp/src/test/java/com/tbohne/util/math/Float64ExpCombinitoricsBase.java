@@ -2,12 +2,10 @@ package com.tbohne.util.math;
 
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.util.ArrayList;
 
-@RunWith(Parameterized.class)
 public class Float64ExpCombinitoricsBase {
 
     @Parameterized.Parameters(name = "{0} and {1}")
