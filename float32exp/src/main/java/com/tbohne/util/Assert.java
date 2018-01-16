@@ -16,7 +16,7 @@ public class Assert {
     }
 
     static public void assertGreater(String message, long expected, long actual) {
-        if (actual > expected) {
+        if (actual <= expected) {
             failNotGreater(message, Long.valueOf(expected), Long.valueOf(actual));
         }
     }
@@ -58,7 +58,7 @@ public class Assert {
     }
 
     static public void assertLess(String message, long expected, long actual) {
-        if (actual <= expected) {
+        if (actual >= expected) {
             failNotLess(message, Long.valueOf(expected), Long.valueOf(actual));
         }
     }
