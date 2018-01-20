@@ -221,28 +221,102 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
     public Float32ExpChainedExpression pow(long val) {pow(longToSignificand(val), longToExponent(val)); return this;}
     public Float32ExpChainedExpression pow(double val) {pow(doubleToSignificand(val), doubleToExponent(val)); return this;}
     private void pow(int otherSignificand, int otherExponent) {
-        if (significand == 0) { //0^X
-            //do nothing
-        } else if (otherSignificand == 0) { //X^0
+        if (otherSignificand == 0) { //X^0 = 1
             significand = 0x40000000;
             exponent = -EXPONENT_BIAS;
-        } else if (significand == 0x40000000) { // (2^N)^X
-            long exp = ((long) exponent) + otherExponent - EXPONENT_BIAS;
-            if (exp > Integer.MAX_VALUE || exp < Integer.MIN_VALUE) {
-                throw new ArithmeticException("Exponent " + exponent + " out of range");
+        } else if (significand == 0) { //0^X = 1
+            if (otherSignificand < 0) {
+                throw new ArithmeticException("0 raised to a negative value");
             }
-            exponent = (int) exp;
+            //do nothing
         } else if (significand == 0x50000000 && exponent == -27) { //10^X
             long pow10 = getPowerOf10Parts(otherSignificand << otherExponent); //check for overflows
             significand = (int) (pow10 >> INT_MAX_BITS);
             exponent = (int) pow10;
-        } else if (otherSignificand == 0x40000000 && otherExponent == -29 ) { //X^2
+        } else if (otherSignificand == 0x40000000 && otherExponent == -29 ) { //X^2 = X*X
             multiply(significand, exponent);
         } else { //N^X
+            final int origSig = significand;
+            final int origExp = exponent;
+            boolean rollback = true;
+            try {
+                boolean negateResult = false;
+                if (significand < 0) {
+                    //negative base requires integer exponent, so this throws if other isn't an integer.
+                    //if it passes, this returns true if the result will be negative.
+                    negateResult = verifyNegativeSig(otherSignificand, otherExponent);
+                    //This knowledge allows us to make this always positive, so which is a prereq of complex_pow
+                    negate();
+                }
+                complex_pow(otherSignificand, otherExponent);
+                if (negateResult) {
+                    negate();
+                }
+                rollback = false;
+            } finally {
+                if (rollback) {
+                    significand = origSig;
+                    exponent = origExp;
+                }
+            }
+        }
+    }
+
+    // this.pow(other) = this.log2().multiply(other).pow2()
+    private void complex_pow(int otherSignificand, int otherExponent) {
+        if (true) {
             log2();
             multiply(otherSignificand, otherExponent);
             pow2();
+        } else {
+            //TODO: fix inlined calculations
+            //log2()
+            long integer_bits = exponent + EXPONENT_BIAS;
+            double pre_fractional_double = significand * Math.pow(2, -31);
+            double post_fractional_double = Math.log(pre_fractional_double) / Math.log(2) + 1;
+            set(doubleToSignificand(post_fractional_double), doubleToExponent(post_fractional_double));
+            add(longToSignificand(integer_bits), longToExponent(integer_bits));
+            if (INTERNAL_ASSERTS) {
+                double max = Double.MAX_VALUE / significand;
+                double maxExp = Math.log(max) / Math.log(2);
+                if (exponent < maxExp) {
+                    assertApproximately(significand * Math.pow(2, exponent), this, 30);
+                }
+            }
+            //multiply(other)
+            significand *= otherSignificand;
+            exponent += otherExponent;
+            //pow2()
+            int integer_part;
+            if (exponent > -INT_MAX_BITS) {
+                int fractional_bits = (exponent < -INT_MAX_BITS) ? INT_MAX_BITS : -exponent;
+                int int_bits = INT_MAX_BITS - fractional_bits - 1;
+                integer_part = (significand >> fractional_bits);
+                long pre_fraction_long = (significand & ((1 << fractional_bits) - 1)) << int_bits;
+                pre_fractional_double = pre_fraction_long * Math.pow(2, -31);
+            } else {
+                integer_part = 0;
+                pre_fractional_double = significand * Math.pow(2, exponent);
+            }
+            double post_fraction_double = Math.pow(2, pre_fractional_double);
+            int exp = integer_part + doubleToExponent(post_fraction_double);
+            int sig = doubleToSignificand(post_fraction_double);
+            set(sig, exp);
         }
+    }
+    private boolean verifyNegativeSig(int otherSignificand, int otherExponent) {
+        if (otherExponent <= -INT_MAX_BITS) { //exponent definitely not integer
+            throw new IllegalArgumentException("exponent for negative base must be an integer");
+        } else if (otherExponent <= 0) { //exponent might not be integer
+            int diff = INT_MAX_BITS + otherExponent;
+            if ((otherSignificand << diff) != 0) { //exponent isn't integer
+                throw new IllegalArgumentException("exponent for negative base must be an integer");
+            }
+            if ((otherSignificand << (diff - 1)) == 0x80000000) { //exponent is odd
+                return true;
+            }
+        }
+        return false;
     }
 
     public Float32ExpChainedExpression pow2() {
@@ -252,9 +326,6 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
             throw new IllegalArgumentException(sb.toString());
         } else if (significand == 0 && exponent == ZERO_EXPONENT) {
             set(1 << (INT_MAX_BITS - 2), -EXPONENT_BIAS);
-            return this;
-        } else if (exponent >= 0) {
-            setNormalized(1, 0);
             return this;
         }
         int integer_part;
