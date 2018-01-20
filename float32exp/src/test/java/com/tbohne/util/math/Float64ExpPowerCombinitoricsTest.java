@@ -10,7 +10,6 @@ import org.junit.runners.Parameterized;
 public class Float64ExpPowerCombinitoricsTest extends Float64ExpCombinitoricsBase {
 
     @Test
-    @Ignore
     public void whenDoingPowerThenResultsAreCorrect() {
         Float32Exp decimal = new Float32Exp(left);
         double expectedValue = Math.pow(left, right);
