@@ -264,46 +264,21 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
 
     // this.pow(other) = this.log2().multiply(other).pow2()
     private void complex_pow(int otherSignificand, int otherExponent) {
-        if (true) {
-            log2();
-            multiply(otherSignificand, otherExponent);
-            pow2();
-        } else {
-            //TODO: fix inlined calculations
-            //log2()
-            long integer_bits = exponent + EXPONENT_BIAS;
-            double pre_fractional_double = significand * Math.pow(2, -31);
-            double post_fractional_double = Math.log(pre_fractional_double) / Math.log(2) + 1;
-            set(doubleToSignificand(post_fractional_double), doubleToExponent(post_fractional_double));
-            add(longToSignificand(integer_bits), longToExponent(integer_bits));
-            if (INTERNAL_ASSERTS) {
-                double max = Double.MAX_VALUE / significand;
-                double maxExp = Math.log(max) / Math.log(2);
-                if (exponent < maxExp) {
-                    assertApproximately(significand * Math.pow(2, exponent), this, 30);
-                }
-            }
-            //multiply(other)
-            significand *= otherSignificand;
-            exponent += otherExponent;
-            //pow2()
-            int integer_part;
-            if (exponent > -INT_MAX_BITS) {
-                int fractional_bits = (exponent < -INT_MAX_BITS) ? INT_MAX_BITS : -exponent;
-                int int_bits = INT_MAX_BITS - fractional_bits - 1;
-                integer_part = (significand >> fractional_bits);
-                long pre_fraction_long = (significand & ((1 << fractional_bits) - 1)) << int_bits;
-                pre_fractional_double = pre_fraction_long * Math.pow(2, -31);
-            } else {
-                integer_part = 0;
-                pre_fractional_double = significand * Math.pow(2, exponent);
-            }
-            double post_fraction_double = Math.pow(2, pre_fractional_double);
-            int exp = integer_part + doubleToExponent(post_fraction_double);
-            int sig = doubleToSignificand(post_fraction_double);
-            set(sig, exp);
-        }
+        //log2()
+        long integer_bits = exponent + EXPONENT_BIAS;
+        double pre_log_fract_double = significand * Math.pow(2, -31);
+        double post_log_fract_double = Math.log(pre_log_fract_double) / Math.log(2) + 1;
+        double log2 = post_log_fract_double + integer_bits;
+        //multiply(other)
+        double mult = log2 * otherSignificand * Math.pow(2,otherExponent);
+        //pow2()
+        long exp = (long) mult;
+        double pre_pow_fract_double = mult - exp;
+        double post_pow_fract_double = Math.pow(2, pre_pow_fract_double);
+        //assign
+        setNormalized(doubleToSignificand(post_pow_fract_double), exp + doubleToExponent(post_pow_fract_double));
     }
+
     private boolean verifyNegativeSig(int otherSignificand, int otherExponent) {
         if (otherExponent <= -INT_MAX_BITS) { //exponent definitely not integer
             throw new IllegalArgumentException("exponent for negative base must be an integer");
