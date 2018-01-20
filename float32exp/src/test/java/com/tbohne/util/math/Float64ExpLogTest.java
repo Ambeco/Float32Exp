@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 
 @RunWith(BlockJUnit4ClassRunner.class)
-public class Float64ExpPowersTest {
+public class Float64ExpLogTest {
     @Rule
     public final ExpectedException exception = ExpectedException.none();
     Float32Exp mDecimal = new Float32Exp();
