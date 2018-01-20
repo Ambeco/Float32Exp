@@ -48,19 +48,19 @@ Correct:
     1<<32       200000000    1150747     527009      43369     187181     187705 
     1<<64           INLINE   1150747     665335      39976      29852     192585 
     1<<128          INLINE   1153402     673174      34416      28674     193330 
-
+    .
     MULTIPLICATION Test:
     EXPONENT           int     double     Double BigInteger BigDecimal Float32Exp
     1<<32          267308     525210     313381      13757        398      86767 
     1<<64          266028     523423     397772      11634        145      82135 
     1<<128         264830     517464     394011       8324         47      81699 
-
+    .
     TO_STRING Test:
     EXPONENT           int     double     Double BigInteger BigDecimal Float32Exp
-    1<<32           29841         N/A     17730       5990      19376       3739 
-    1<<64           30902         N/A      3382       2327       2338       3681 
-    1<<128          31036         N/A      1134       1377       1296       3661 
-
+    1<<32           32331         N/A     19157+      7482-     22014       3146 
+    1<<64           33898         N/A      3405       2769       2724       3070 
+    1<<128          33489         N/A      1235       1529       1514       3050 
+    .
     FROM_STRING Test:
     EXPONENT           int     double     Double BigInteger BigDecimal Float32Exp
     1<<32              N/A        N/A     49079      48095      25085      24937
