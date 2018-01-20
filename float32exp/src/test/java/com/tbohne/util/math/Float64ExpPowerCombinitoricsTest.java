@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
-@Ignore
 public class Float64ExpPowerCombinitoricsTest extends Float64ExpCombinitoricsBase {
 
     @Test
