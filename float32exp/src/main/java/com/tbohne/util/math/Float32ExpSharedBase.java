@@ -21,7 +21,7 @@ import java.math.BigInteger;
         @Override
         public void addExponent(StringBuilder stringBuilder, int exponent) {
             if (exponent != 0) {
-                stringBuilder.append('e').append(exponent);
+                stringBuilder.append('E').append(exponent);
             }
         }
     }
@@ -389,34 +389,43 @@ import java.math.BigInteger;
                 workingSig = -workingSig;
             }
         }
-        long base10Exp = 0;
-        long longSig = 0;
+        long base10Exp = 0; //initialize with results for 0
+        long minSig = 0;
+        long maxSig = 0;
         long oneSig = 1;
         if (workingSig != 0) {
             //find next smallest power of 10
-            base10Exp = (long) ((exponent + EXPONENT_BIAS) * INV_LOG10);
+            base10Exp =  (long) ((((long) exponent) + EXPONENT_BIAS) * INV_LOG10);
             if (base10Exp > Integer.MAX_VALUE) {
                 return sb.append("INF");
             }
             long pow10Parts = getPowerOf10Parts((int) base10Exp);
             long pow10Sig = pow10Parts >> INT_MAX_BITS;
-            int pow10Exp = (int) pow10Parts;
-            if (INTERNAL_ASSERTS && !lessOrEquals(workingSig, workingExp)) {
-                Assert.fail("{}<={}", this, new Float32ExpSharedBase().set(significand, exponent));
-            }
-            //inlined division of this/pow10
-            longSig = ((long) workingSig) << INT_MAX_BITS;
-            longSig /= pow10Sig;
-            int longExp = workingExp - pow10Exp - EXPONENT_BIAS - 2;
-            int expDiff = EXPONENT_BIAS + longExp + 4;
-            oneSig = 0x400000000L >> expDiff; //this is 1.0 using the same longExp exponent
-            long maxSig = oneSig * 10; // This is 10.0 using this same longExp exponent
-            // bring the value down to <maxSig. Should take 0 loops most of the time.
-            while (longSig >= maxSig) {
-                maxSig *= 10;
+            long pow10Exp = (int) pow10Parts;
+            //inlined division of this/pow10, with round_half_up. should result in-ish to [1-10) with some exponent
+            //TODO: for Float32Exp(512), this ends up one bit too small, even with rounding. Why?
+            long longSig = (((long) workingSig) << (INT_MAX_BITS - 1)) + (pow10Sig / 2);
+            longSig = (longSig / pow10Sig) << 1;
+            int longExp = (int) (workingExp - pow10Exp - EXPONENT_BIAS - 2);
+            //find 1.0 and 10.0 at this same exponent
+            int expDiff = EXPONENT_BIAS + longExp + 32;
+            oneSig = 0x4000000000000000L >> expDiff; //this is 1.0 using the same longExp exponent
+            // bring the value into [1-10) if we missed up above.
+            if (longSig >= oneSig * 10) {
                 oneSig *= 10;
                 ++base10Exp;
+                if (INTERNAL_ASSERTS) {
+                    Assert.assertLess(oneSig * 10, longSig);
+                }
+            } else if (longSig < oneSig) {
+                longSig *= 10;
+                --base10Exp;
+                if (INTERNAL_ASSERTS) {
+                    Assert.assertAtLeast(oneSig, longSig);
+                }
             }
+            maxSig = longSig + 1; //longSig was crafted to have an unused bit on the right
+            minSig = longSig - 1; //giving us room for interact with "an extra bit" of rounding
         }
         //calculate display exponent and digit counts
         int digitsBeforeDecimal = (int) base10Exp % exponentMultiple + 1;
@@ -425,23 +434,33 @@ import java.math.BigInteger;
         int maxDigitsAfterDecimal = max_digits - digitsBeforeDecimal;
         //show digits before decimal
         while(digitsBeforeDecimal > 0) {
-            char digit = (char) (longSig /  oneSig);
-            long remain = longSig % oneSig;
-            sb.append((char) ('0' + digit));
-            longSig = remain * 10;
+            char minDigit = (char) (minSig /  oneSig);
+            char maxDigit = (char) (maxSig /  oneSig);
+            sb.append((char) ('0' + maxDigit));
+            if (minDigit == maxDigit) {
+                minSig = minSig % oneSig * 10;
+                maxSig = maxSig % oneSig * 10;
+            } else {
+                maxSig = 0;
+            }
             --digitsBeforeDecimal;
         }
         if (minDigitsAfterDecimal > 0 ||
-                (maxDigitsAfterDecimal > 0 && longSig != 0)) {
+                (maxDigitsAfterDecimal > 0 && maxSig != 0)) {
             sb.append('.');
         }
         //show digits after decimal
         while(minDigitsAfterDecimal > 0 ||
-                (maxDigitsAfterDecimal > 0 && longSig != 0)) {
-            long digit = longSig /  oneSig;
-            long remain = longSig % oneSig;
-            sb.append((char)('0' + digit));
-            longSig = remain * 10;
+                (maxDigitsAfterDecimal > 0 && maxSig != 0)) {
+            char minDigit = (char) (minSig /  oneSig);
+            char maxDigit = (char) (maxSig /  oneSig);
+            sb.append((char) ('0' + maxDigit));
+            if (minDigit == maxDigit) {
+                minSig = minSig % oneSig * 10;
+                maxSig = maxSig % oneSig * 10;
+            } else {
+                maxSig = 0;
+            }
             --minDigitsAfterDecimal;
             --maxDigitsAfterDecimal;
         }

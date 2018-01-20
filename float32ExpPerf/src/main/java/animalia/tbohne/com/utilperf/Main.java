@@ -14,11 +14,11 @@ public class Main {
         FROM_STRING
     };
     private static final boolean[] DO_CATEGORY = new boolean[]{
+            false,
+            false,
+            false,
             true,
-            true,
-            true,
-            true,
-            true,
+            false,
     };
     private interface TestFn {
         long run(int bitOffset);

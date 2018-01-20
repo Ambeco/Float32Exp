@@ -33,6 +33,13 @@ public class Float64ExpTestUtils {
         assertBits(expectedSignificand, expectedExponent, float64Exp);
     }
 
+    public static void setAndAssertBits(String value, int expectedSignificand, int expectedExponent, Float32Exp float64Exp) {
+        assertApproximately(Double.valueOf(value), expectedSignificand * Math.pow(2,expectedExponent), POW10_ACCURACY);
+
+        float64Exp.set(value);
+        assertBits(expectedSignificand, expectedExponent, float64Exp);
+    }
+
     public static void assertBits(int expectedSignificand, int expectedExponent, Float32Exp actualValue) {
         ImmutableFloat32Exp expected = new ImmutableFloat32Exp(expectedSignificand, expectedExponent);
         String format = "Expected value %s but found %s.\n"
