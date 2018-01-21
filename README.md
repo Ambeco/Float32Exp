@@ -1,7 +1,7 @@
 Lightweight Mutable Floating Point Type with 32bit exponent
 
 This class works like `double`, except has less preicsion, and _far_ more range.  This is useful when 
-you need to do rough calculations with mind-bogglingly huge numbers. So, for incremental games, and t
+you need to do rough calculations with mind-bogglingly huge numbers. So, for incremental games, and
 that's probably about it. Why not `BigDecimal`? Because `BigDecimal` gets _really_ slow with even in
 the range of a couple hundred bits. In the range of 1E40, this class is ~6x faster for addition, 
 ~1720x faster for multiplication, ~96x faster for arbitrary powers, and ~2x faster for `.toString`. 
