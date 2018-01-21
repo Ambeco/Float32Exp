@@ -93,7 +93,7 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
             otherExponent = exponent;
             exponent = t;
         }
-        int diff = exponent - otherExponent;
+        long diff = ((long) exponent) - otherExponent;
         if (diff < INT_MAX_BITS) {
             long l = (((long) significand) << diff) + otherSignificand;
             setNormalized(l, ((long) exponent) - diff);

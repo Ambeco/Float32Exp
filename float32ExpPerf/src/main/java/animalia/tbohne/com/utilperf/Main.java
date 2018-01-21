@@ -26,9 +26,11 @@ public class Main {
         MULTIPLICATION,
         POWER,
         TO_STRING,
-        FROM_STRING
+        FROM_STRING,
+        LCG_RNG,
     };
     private static final boolean[] DO_CATEGORY = new boolean[]{
+            true,
             true,
             true,
             true,
@@ -54,6 +56,7 @@ public class Main {
                     PowerPerfTests::intTest,
                     ToStringTests::intTest,
                     FromStringTests::intTest,
+                    LCGRNGTests::intTest,
             }),
             new TypeToTest("double", new TestFn[] {
                     AdditionPerfTests::doubleTest,
@@ -61,6 +64,7 @@ public class Main {
                     PowerPerfTests::doubleTest,
                     ToStringTests::doubleTest,
                     FromStringTests::doubleTest,
+                    LCGRNGTests::doubleTest,
             }),
             new TypeToTest("Double", new TestFn[] {
                     AdditionPerfTests::doubleClassTest,
@@ -68,6 +72,7 @@ public class Main {
                     PowerPerfTests::doubleClassTest,
                     ToStringTests::doubleClassTest,
                     FromStringTests::doubleClassTest,
+                    LCGRNGTests::doubleClassTest,
             }),
             new TypeToTest("BigInteger", new TestFn[] {
                     AdditionPerfTests::bigIntegerTest,
@@ -75,6 +80,7 @@ public class Main {
                     PowerPerfTests::bigIntegerTest,
                     ToStringTests::bigIntegerTest,
                     FromStringTests::bigIntegerTest,
+                    LCGRNGTests::bigIntegerTest,
             }),
             new TypeToTest("BigDecimal", new TestFn[] {
                     AdditionPerfTests::bigDecimalTest,
@@ -82,6 +88,7 @@ public class Main {
                     PowerPerfTests::bigDecimalTest,
                     ToStringTests::bigDecimalTest,
                     FromStringTests::bigDecimalTest,
+                    LCGRNGTests::bigDecimalTest,
             }),
             new TypeToTest("Float32Exp", new TestFn[] {
                     AdditionPerfTests::float64ExpTest,
@@ -89,6 +96,7 @@ public class Main {
                     PowerPerfTests::float64ExpTest,
                     ToStringTests::float64ExpTest,
                     FromStringTests::float64ExpTest,
+                    LCGRNGTests::float64ExpTest,
             }),
     };
 

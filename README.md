@@ -45,9 +45,9 @@ Correct:
     ALL MEASUREMENTS OPS/SEC (BIGGER IS BETTER)
     ADDITION Test:
     EXPONENT        int     double     Double BigInteger BigDecimal Float32Exp
-    1<<32        INLINE      1080M       523M        44M       169M       186M 
-    1<<64        INLINE      1053M       610M        39M        29M       197M 
-    1<<128       INLINE      1088M       660M        35M        25M       162M 
+    1<<32        INLINE      1153M       437M        40M       142M       176M 
+    1<<64        INLINE      1068M       542M        40M        30M       189M 
+    1<<128       INLINE      1139M       673M        34M+       26M       162M 
     .
     MULTIPLICATION Test:
     EXPONENT        int     double     Double BigInteger BigDecimal Float32Exp
@@ -72,4 +72,10 @@ Correct:
     1<<32           N/A        N/A        45M        44M        23M        23M 
     1<<64           N/A        N/A        11M        11M        23M        23M 
     1<<128          N/A        N/A        10M        10M        21M        21M 
+    .
+    LCG_RNG Test:
+    EXPONENT        int     double     Double BigInteger BigDecimal Float32Exp
+    1<<32           95M        33M        27M      3483k      1912k        10M 
+    1<<64           86M        34M        29M      4170k      2072k        12M 
+    1<<128          87M        35M        29M      4162k      2013k        12M 
 
