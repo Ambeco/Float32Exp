@@ -44,26 +44,32 @@ Correct:
 
     ALL MEASUREMENTS OPS/SEC (BIGGER IS BETTER)
     ADDITION Test:
-    EXPONENT           int     double     Double BigInteger BigDecimal Float32Exp
-    1<<32       200000000    1150747     527009      43369     187181     187705 
-    1<<64           INLINE   1150747     665335      39976      29852     192585 
-    1<<128          INLINE   1153402     673174      34416      28674     193330 
+    EXPONENT         int      double      Double  BigInteger  BigDecimal  Float32Exp
+    1<<32         INLINE  1134434044   492704281    41095831   173457560   175700683 
+    1<<64         INLINE  1068399823   603965030    37389367    28007490   184854159 
+    1<<128        INLINE  1111533978   639363704    33176735    23684728   188183753 
     .
     MULTIPLICATION Test:
-    EXPONENT           int     double     Double BigInteger BigDecimal Float32Exp
-    1<<32          267308     525210     313381      13757        398      86767 
-    1<<64          266028     523423     397772      11634        145      82135 
-    1<<128         264830     517464     394011       8324         47      81699 
+    EXPONENT         int      double      Double  BigInteger  BigDecimal  Float32Exp
+    1<<32      262450659   507122707   301725113    13380192      373630    80773839 
+    1<<64      252492946   512579425   381199252    11167816      136530    79678691 
+    1<<128     259689895   485770172   363510786     7897309       44818    78689863 
+    .
+    POWER Test:
+    EXPONENT         int      double      Double  BigInteger  BigDecimal  Float32Exp
+    1<<32            N/A  1097334515   276110072         N/A     2540937     4611079 
+    1<<64            N/A  1074278962   282397805         N/A     1721354     4755699 
+    1<<128           N/A  1086783222   304313954         N/A      961540     4612556 
     .
     TO_STRING Test:
-    EXPONENT           int     double     Double BigInteger BigDecimal Float32Exp
-    1<<32           32331         N/A     19157+      7482-     22014       3146 
-    1<<64           33898         N/A      3405       2769       2724       3070 
-    1<<128          33489         N/A      1235       1529       1514       3050 
+    EXPONENT         int      double      Double  BigInteger  BigDecimal  Float32Exp
+    1<<32       30634682         N/A    18610604     7025154    20925659     2956760 
+    1<<64       31820116         N/A     3386132     2437775     2455601     2797460 
+    1<<128      31128617         N/A     1155048     1391300     1354676     2857539 
     .
     FROM_STRING Test:
-    EXPONENT           int     double     Double BigInteger BigDecimal Float32Exp
-    1<<32              N/A        N/A     49079      48095      25085      24937
-    1<<64              N/A        N/A     11880      11745      24910      25031
-    1<<128             N/A        N/A     10992      11061      20889      20790
+    EXPONENT         int      double      Double  BigInteger  BigDecimal  Float32Exp
+    1<<32            N/A         N/A    47356281    47155250    27254054    26797716 
+    1<<64            N/A         N/A    11951026    11792738    27502331    27742472 
+    1<<128           N/A         N/A    10889070    10777112    25803469    25245178 
 

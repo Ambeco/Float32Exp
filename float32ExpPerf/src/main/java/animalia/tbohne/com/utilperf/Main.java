@@ -3,9 +3,24 @@ package animalia.tbohne.com.utilperf;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
+import static animalia.tbohne.com.utilperf.Config.CPU_PERF_MULTIPLIER;
+
+/**
+ * Each individual test is passed a "bit offset", that means to multiply the values by 2^offset before testing,
+ * (or 10^offset for string tests) so we can see how the various value ranges affect performance.
+ *
+ * Each individual test is hardcoded to take ~3s on my machine, to maximize statistical significance, and keep tests
+ * from taking too long.  On your machine, you can tweak Config.CPU_PERF_MULTIPLIER, but the results will normalize
+ * themselves for consistency. If a test takes less than one second, the value is followed by a +, and if a test takes
+ * more than five seconds, the value is followed by a -.
+ * Each category starts by running each test with no offset, to warm the cache and CPU, for more consistent results.
+ */
 public class Main {
+    private static final double MILLIS_PER_SEC = 1000.0;
+
     private static final int MIN_EXPONENT = 5;
     private static final int MAX_EXPONENT = 8;
+
     private enum TestFnCategory {
         ADDITION,
         MULTIPLICATION,
@@ -84,42 +99,40 @@ public class Main {
             if (!DO_CATEGORY[catIdx]) continue;;
             TestFnCategory category = TestFnCategory.values()[catIdx];
             System.out.println(category.toString() + " Test:");
-            //priming
+            //header
+            System.out.print(String.format(Locale.US,"%-8s","EXPONENT"));
             for(TypeToTest type : TYPES) {
+                //priming
                 TestFn TestFn = type.Tests[category.ordinal()];
                 TestFn.run(1);
-            }
-            //header
-            System.out.print(String.format(Locale.US,"%-11s","EXPONENT"));
-            for(TypeToTest type : TYPES) {
-                System.out.print(String.format(Locale.US,"%11s",type.typeName));
+                System.out.print(String.format(Locale.US,"%12s",type.typeName));
             }
             System.out.println();
             for(int i = MIN_EXPONENT; i < MAX_EXPONENT; ++i) {
                 //row
                 int bitOffset = 1 << i;
-                System.out.print(String.format(Locale.US,"1<<%-8d",bitOffset));
+                System.out.print(String.format(Locale.US,"1<<%-6d",bitOffset));
                 for(TypeToTest type : TYPES) {
                     //cell
                     TestFn TestFn = type.Tests[category.ordinal()];
                     long start = System.currentTimeMillis();
                     long count = TestFn.run(bitOffset);
                     long end = System.currentTimeMillis();
-                    long dur = end - start;
-                    if (count == 0) {
-                        System.out.print("        N/A");
-                    } else if (dur == 0) {
-                            System.out.print("     INLINE");
+                    double durSeconds = (end - start) / MILLIS_PER_SEC;
+                    if (count <= 0) {
+                        System.out.print("        N/A ");
+                    } else if (durSeconds <= 0.002) {
+                            System.out.print("     INLINE ");
                     } else {
-                        double perSecond = count / (double) dur;
+                        double perSecond = count / durSeconds / CPU_PERF_MULTIPLIER;
                         if (perSecond >= 10) {
-                            System.out.print(String.format(Locale.US,"%10d",(int) perSecond));
+                            System.out.print(String.format(Locale.US," %10d",(int) perSecond));
                         } else {
-                            System.out.print(String.format(Locale.US,"%10s", format.format(perSecond)));
+                            System.out.print(String.format(Locale.US," %10s", format.format(perSecond)));
                         }
-                        if (dur < 1000) {
+                        if (durSeconds < 1.0) {
                             System.out.print('+');
-                        } else if (dur > 5000) {
+                        } else if (durSeconds > 5.0) {
                             System.out.print('-');
                         } else {
                             System.out.print(' ');
