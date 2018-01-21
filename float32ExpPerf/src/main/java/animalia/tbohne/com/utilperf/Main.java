@@ -104,8 +104,8 @@ public class Main {
             for(TypeToTest type : TYPES) {
                 //priming
                 TestFn TestFn = type.Tests[category.ordinal()];
-                TestFn.run(1);
-                System.out.print(String.format(Locale.US,"%12s",type.typeName));
+                TestFn.run(MIN_EXPONENT);
+                System.out.print(String.format(Locale.US,"%11s",type.typeName));
             }
             System.out.println();
             for(int i = MIN_EXPONENT; i < MAX_EXPONENT; ++i) {
@@ -120,15 +120,19 @@ public class Main {
                     long end = System.currentTimeMillis();
                     double durSeconds = (end - start) / MILLIS_PER_SEC;
                     if (count <= 0) {
-                        System.out.print("        N/A ");
+                        System.out.print("       N/A ");
                     } else if (durSeconds <= 0.002) {
-                            System.out.print("     INLINE ");
+                            System.out.print("    INLINE ");
                     } else {
                         double perSecond = count / durSeconds / CPU_PERF_MULTIPLIER;
-                        if (perSecond >= 10) {
-                            System.out.print(String.format(Locale.US," %10d",(int) perSecond));
+                        if (perSecond < 10) {
+                            System.out.print(String.format(Locale.US," %8s ", format.format(perSecond)));
+                        } else if (perSecond < 10000) {
+                            System.out.print(String.format(Locale.US," %8d ",(int) perSecond));
+                        } else if (perSecond < 10000000) {
+                            System.out.print(String.format(Locale.US," %8dk",(int) perSecond / 1000));
                         } else {
-                            System.out.print(String.format(Locale.US," %10s", format.format(perSecond)));
+                            System.out.print(String.format(Locale.US, " %8dM", (int) perSecond / 1000000));
                         }
                         if (durSeconds < 1.0) {
                             System.out.print('+');
