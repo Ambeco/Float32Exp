@@ -102,24 +102,25 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("ALL MEASUREMENTS OPS/SEC (BIGGER IS BETTER)");
-        DecimalFormat format = new DecimalFormat(".###");
+        DecimalFormat smallFormat = new DecimalFormat(".###");
+        DecimalFormat largeFormat = new DecimalFormat("#,###");
         for(int catIdx = 0; catIdx < TestFnCategory.values().length; catIdx++) {
             if (!DO_CATEGORY[catIdx]) continue;;
             TestFnCategory category = TestFnCategory.values()[catIdx];
             System.out.println(category.toString() + " Test:");
             //header
-            System.out.print(String.format(Locale.US,"%-8s","EXPONENT"));
+            System.out.print(String.format(Locale.US,"%-7s ","EXPONENT  "));
             for(TypeToTest type : TYPES) {
                 //priming
                 TestFn TestFn = type.Tests[category.ordinal()];
                 TestFn.run(MIN_EXPONENT);
-                System.out.print(String.format(Locale.US,"%11s",type.typeName));
+                System.out.print(String.format(Locale.US,"%12s ",type.typeName));
             }
             System.out.println();
             for(int i = MIN_EXPONENT; i < MAX_EXPONENT; ++i) {
                 //row
                 int bitOffset = 1 << i;
-                System.out.print(String.format(Locale.US,"1<<%-6d",bitOffset));
+                System.out.print(String.format(Locale.US,"1<<%-8d",bitOffset));
                 for(TypeToTest type : TYPES) {
                     //cell
                     TestFn TestFn = type.Tests[category.ordinal()];
@@ -128,19 +129,15 @@ public class Main {
                     long end = System.currentTimeMillis();
                     double durSeconds = (end - start) / MILLIS_PER_SEC;
                     if (count <= 0) {
-                        System.out.print("       N/A ");
+                        System.out.print("         N/A ");
                     } else if (durSeconds <= 0.002) {
-                            System.out.print("    INLINE ");
+                            System.out.print("      INLINE ");
                     } else {
                         double perSecond = count / durSeconds / CPU_PERF_MULTIPLIER;
-                        if (perSecond < 10) {
-                            System.out.print(String.format(Locale.US," %8s ", format.format(perSecond)));
-                        } else if (perSecond < 10000) {
-                            System.out.print(String.format(Locale.US," %8d ",(int) perSecond));
-                        } else if (perSecond < 10000000) {
-                            System.out.print(String.format(Locale.US," %8dk",(int) perSecond / 1000));
+                        if (perSecond < 100) {
+                            System.out.print(String.format(Locale.US," %11s", smallFormat.format(perSecond)));
                         } else {
-                            System.out.print(String.format(Locale.US, " %8dM", (int) perSecond / 1000000));
+                            System.out.print(String.format(Locale.US," %11s", largeFormat.format(perSecond)));
                         }
                         if (durSeconds < 1.0) {
                             System.out.print('+');

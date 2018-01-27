@@ -129,13 +129,17 @@ import java.math.BigInteger;
         if (negative) {
             sigDec = -sigDec;
         }
-        setNormalized(sigDec, sig2Offset);
+        long parts1 = getNormalizedParts(sigDec, sig2Offset);
+        this.significand = (int) (parts1 >> INT_MAX_BITS);
+        this.exponent = (int) parts1;
         // if there's a base10 power, adjust for that
         if (sig10Offset != 0) {
             long pow10parts = getPowerOf10Parts(sig10Offset);
             long scaleSig = pow10parts >> INT_MAX_BITS;
             long scaleExp = (int) pow10parts;
-            setNormalized(((long) significand) * scaleSig, scaleExp + exponent);
+            long parts = getNormalizedParts(((long) significand) * scaleSig, scaleExp + exponent);
+            this.significand = (int) (parts >> INT_MAX_BITS);
+            this.exponent = (int) parts;
         }
         return this;
     }
@@ -147,17 +151,23 @@ import java.math.BigInteger;
         long scaleExp = (int) pow10parts;
         long newSig = ((long) significand) << (INT_MAX_BITS-2);
         newSig /= scaleSig;
-        setNormalized(newSig, ((long) exponent) - scaleExp - EXPONENT_BIAS);
+        long parts = getNormalizedParts(newSig, ((long) exponent) - scaleExp - EXPONENT_BIAS);
+        this.significand = (int) (parts >> INT_MAX_BITS);
+        this.exponent = (int) parts;
         return this;
     }
 
     /*package*/ IFloat32Exp set(BigInteger val) {
         int bits = val.bitLength() - INT_MAX_BITS + 1;
         if (bits < 0) {
-            setLong(val.intValue());
+            long parts = getLongParts((long) val.intValue());
+            this.significand = (int) (parts >> INT_MAX_BITS);
+            this.exponent = (int) parts;
         } else {
             val = val.shiftRight(bits);
-            setNormalized(val.intValue(), bits);
+            long parts = getNormalizedParts((long) val.intValue(), (long) bits);
+            this.significand = (int) (parts >> INT_MAX_BITS);
+            this.exponent = (int) parts;
         }
         return this;
     }
@@ -577,18 +587,6 @@ import java.math.BigInteger;
             }
         }
         return (significand << INT_MAX_BITS) | (exponent & 0xFFFFFFFFL);
-    }
-
-    /*package*/ void setNormalized(long v, long e) {
-        long parts = getNormalizedParts(v, e);
-        this.significand = (int) (parts >> INT_MAX_BITS);
-        this.exponent = (int) parts;
-    }
-
-    /*package*/ void setLong(long v) {
-        long parts = getLongParts(v);
-        this.significand = (int) (parts >> INT_MAX_BITS);
-        this.exponent = (int) parts;
     }
 
     /*package*/ static int longToSignificand(long v) {

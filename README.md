@@ -52,38 +52,38 @@ Correct:
 
     ALL MEASUREMENTS OPS/SEC (BIGGER IS BETTER)
     ADDITION Test:
-    EXPONENT        int     double     Double BigInteger BigDecimal Float32Exp
-    1<<32        INLINE      1076M       485M        41M       166M       192M 
-    1<<64        INLINE      1083M       572M        39M        28M       194M 
-    1<<128       INLINE      1085M       612M        32M        25M       186M 
+    EXPONENT            int       double       Double   BigInteger   BigDecimal   Float32Exp 
+    1<<32            INLINE  764,229,056  342,339,135   28,845,697  125,330,972  160,459,299 
+    1<<64            INLINE  869,426,577  542,690,769   28,706,900   22,962,037  141,610,164 
+    1<<128           INLINE  708,506,647  446,995,297   23,609,597   18,566,051  148,584,381 
     .
     MULTIPLICATION Test:
-    EXPONENT        int     double     Double BigInteger BigDecimal Float32Exp
-    1<<32          256M       505M       293M        13M       369k        84M 
-    1<<64          256M       501M       371M        11M       139k        83M 
-    1<<128         253M       491M       358M      7653k        41k        75M 
+    EXPONENT            int       double       Double   BigInteger   BigDecimal   Float32Exp 
+    1<<32       190,611,736  321,450,005  184,201,922    8,434,937      208,332   62,943,668 
+    1<<64       185,483,791  290,754,346  241,097,475    6,477,412      109,364   63,996,909 
+    1<<128      197,498,354  410,662,215  240,240,240    7,521,555       35,911   60,953,292 
     .
     POWER Test:
-    EXPONENT        int     double     Double BigInteger BigDecimal Float32Exp
-    1<<32           N/A      1084M       308M        N/A      2569k      7707k 
-    1<<64           N/A      1119M       301M        N/A      1558k       115M 
-    1<<128          N/A      1080M       330M        N/A       733k       112M 
+    EXPONENT            int       double       Double   BigInteger   BigDecimal   Float32Exp 
+    1<<32               N/A  680,876,236  271,352,159          N/A    1,714,875    5,456,444 
+    1<<64               N/A  858,993,459  240,500,240          N/A    1,071,958  130,954,664 
+    1<<128              N/A  904,203,641  256,016,385          N/A      511,888  130,954,664 
     .
     TO_STRING Test:
-    EXPONENT        int     double     Double BigInteger BigDecimal Float32Exp
-    1<<32           28M        N/A        15M      5314k        17M      2707k 
-    1<<64           29M        N/A      3037k      1887k      1896k      2339k 
-    1<<128          29M        N/A      1070k      1322k      1311k      2627k 
+    EXPONENT            int       double       Double   BigInteger   BigDecimal   Float32Exp 
+    1<<32        20,211,640          N/A   17,555,890+   4,215,093-  12,912,440    2,026,045 
+    1<<64        25,038,045          N/A    2,593,322    1,693,178-   1,620,338    1,878,965 
+    1<<128       19,268,810          N/A      707,513-     870,113      832,448    1,826,178 
     .
     FROM_STRING Test:
-    EXPONENT        int     double     Double BigInteger BigDecimal Float32Exp
-    1<<32           N/A        N/A        46M        41M        25M        26M 
-    1<<64           N/A        N/A        12M-       12M        26M        26M 
-    1<<128          N/A        N/A        10M-       10M        23M        23M 
-    .
+    EXPONENT            int       double       Double   BigInteger   BigDecimal   Float32Exp 
+    1<<32               N/A          N/A   32,986,025   33,205,432   18,145,791   18,215,441 
+    1<<64               N/A          N/A    8,402,892    8,123,315   19,104,885   20,336,607 
+    1<<128              N/A          N/A    7,236,789    6,764,774   14,915,367   13,653,215 
+    
     LCG_RNG Test:
-    EXPONENT        int     double     Double BigInteger BigDecimal Float32Exp
-    1<<32           92M        35M        31M      4234k      1856k        13M 
-    1<<64           95M        35M        32M      4226k      1835k        15M 
-    1<<128          92M        39M        32M      4394k      1914k        16M 
+    EXPONENT            int       double       Double   BigInteger   BigDecimal   Float32Exp 
+    1<<32        57,740,004-  23,684,114   23,931,097    3,320,159    1,417,173-  10,567,839 
+    1<<64        59,840,913   27,659,742   19,886,078    3,412,664    1,521,878   12,351,468 
+    1<<128       63,800,215   30,010,104   23,257,594    4,105,088    1,364,065   11,895,505 
 
