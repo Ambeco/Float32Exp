@@ -15,7 +15,7 @@ import java.math.BigInteger;
     /*package*/ static final int EXPONENT_BIAS = 30;
     /*package*/ static final int ZERO_EXPONENT = Integer.MIN_VALUE;
     private static final double INV_LOG10 = 0.30102999566398114; // 1/lg(10)
-    /*package*/ static final boolean INTERNAL_ASSERTS = true;
+    /*package*/ static final boolean INTERNAL_ASSERTS = false;
 
     public static class DefaultExponentToString implements  ExponentToStringInterface {
         @Override
