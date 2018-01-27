@@ -73,6 +73,14 @@ import java.math.BigInteger;
     /*package*/ int exponent;
 
     /*package*/ Float32ExpSharedBase() {significand = 0; exponent = ZERO_EXPONENT;}
+    /*package*/ Float32ExpSharedBase(int significand, int exponent) {
+        this.significand = significand;
+        this.exponent = exponent;
+    }
+    /*package*/ Float32ExpSharedBase(long parts) {
+        this.significand = (int) (parts >> INT_MAX_BITS);
+        this.exponent = (int) parts;
+    }
 
     /*package*/ IFloat32Exp set(char[] in, int offset, int len) {
         //TODO Parse HexString
@@ -146,7 +154,7 @@ import java.math.BigInteger;
     /*package*/ IFloat32Exp set(BigInteger val) {
         int bits = val.bitLength() - INT_MAX_BITS + 1;
         if (bits < 0) {
-            setNormalized(val.intValue(), 0);
+            setLong(val.intValue());
         } else {
             val = val.shiftRight(bits);
             setNormalized(val.intValue(), bits);
@@ -154,13 +162,15 @@ import java.math.BigInteger;
         return this;
     }
 
-    /*package*/ IFloat32Exp set(int significand, int exponent) {
+    /*package*/ void setImpl(long parts)
+    {setImpl((int) (parts >> INT_MAX_BITS), (int) parts);}
+
+    /*package*/ void setImpl(int significand, int exponent) {
         if (INTERNAL_ASSERTS) {
             assertNormalized(significand, exponent);
         }
         this.significand = significand;
         this.exponent = exponent;
-        return this;
     }
 
     /*package*/ static long getPowerOf10Parts(int initial_exp) {
@@ -190,13 +200,7 @@ import java.math.BigInteger;
     }
 
     public int signum() {
-        if (significand < 0) {
-            return -1;
-        } else if (significand == 0) {
-            return 0;
-        } else {
-            return 1;
-        }
+        return Integer.compare(significand, 0);
     }
 
     public boolean isZero() {
@@ -220,32 +224,34 @@ import java.math.BigInteger;
         }
         if (object instanceof IFloat32Exp) {
             IFloat32Exp other = (IFloat32Exp) object;
-            return equals(other.significand(), other.exponent());
+            return equalsImpl(other.significand(), other.exponent());
         }
         if (object instanceof Integer) {
-            return equals(longToSignificand((Integer)object), longToExponent((Integer)object));
+            return equalsImpl(getLongParts((Integer)object));
         }
         if (object instanceof Long) {
-            return equals(longToSignificand((Long)object), longToExponent((Long)object));
+            return equalsImpl(getLongParts((Long)object));
         }
         if (object instanceof Float) {
-            return equals(doubleToSignificand((Float)object), doubleToExponent((Float)object));
+            return equalsImpl(getDoubleParts((Float)object));
         }
         if (object instanceof Double) {
-            return equals(doubleToSignificand((Double)object), doubleToExponent((Double)object));
+            return equalsImpl(getDoubleParts((Double)object));
         }
         return false;
     }
     public boolean equals(IFloat32Exp val) {
-        return equals(val.significand(), val.exponent());
+        return equalsImpl(val.significand(), val.exponent());
     }
     public boolean equals(long val) {
-        return equals(longToSignificand(val), longToExponent(val));
+        return equalsImpl(getLongParts(val));
     }
     public boolean equals(double val) {
-        return equals(doubleToSignificand(val), doubleToExponent(val));
+        return equalsImpl(getDoubleParts(val));
     }
-    private boolean equals(int otherSignificand, int otherExponent) {
+    private boolean equalsImpl(long parts)
+    {return equalsImpl((int) (parts >> INT_MAX_BITS), (int) parts);}
+    private boolean equalsImpl(int otherSignificand, int otherExponent) {
         return significand==otherSignificand && exponent == otherExponent;
     }
 
@@ -253,12 +259,14 @@ import java.math.BigInteger;
      * Returns true if the values are within ~22 bits of each other.
      */
     public boolean approximately(IFloat32Exp val, int bitsSimilarCount)
-    {return approximately(val.significand(), val.exponent(), bitsSimilarCount);}
+    {return approximatelyImpl(val.significand(), val.exponent(), bitsSimilarCount);}
     public boolean approximately(long val, int bitsSimilarCount)
-    {return approximately(longToSignificand(val), longToExponent(val), bitsSimilarCount);}
+    {return approximatelyImpl(getDoubleParts(val), bitsSimilarCount);}
     public boolean approximately(double val, int bitsSimilarCount)
-    {return approximately(doubleToSignificand(val), doubleToExponent(val), bitsSimilarCount);}
-    private boolean approximately(long otherSignificand, int otherExponent, int bitsSimilarCount) {
+    {return approximatelyImpl(getDoubleParts(val), bitsSimilarCount);}
+    private boolean approximatelyImpl(long parts, int bitsSimilarCount)
+    {return approximatelyImpl((int) (parts >> INT_MAX_BITS), (int) parts, bitsSimilarCount);}
+    private boolean approximatelyImpl(long otherSignificand, int otherExponent, int bitsSimilarCount) {
         if (bitsSimilarCount < 0) {
             throw new IllegalArgumentException("bitsSimilarCount("+bitsSimilarCount+") must be at least 0");
         } else if (bitsSimilarCount > 31) {
@@ -284,12 +292,11 @@ import java.math.BigInteger;
     }
 
     @Override
-    public int compareTo(IFloat32Exp val) {return compareTo(val.significand(), val.exponent());}
-    public int compareTo(long val)
-    {return compareTo(longToSignificand(val), longToExponent(val));}
-    public int compareTo(double val)
-    {return compareTo(doubleToSignificand(val), doubleToExponent(val));}
-    private int compareTo(int otherSignificand, int otherExponent) {
+    public int compareTo(IFloat32Exp val) {return compareToImpl(val.significand(), val.exponent());}
+    public int compareTo(long val) {return compareToImpl(getDoubleParts(val));}
+    public int compareTo(double val) {return compareToImpl(getDoubleParts(val));}
+    private int compareToImpl(long parts) {return compareToImpl((int) (parts >> INT_MAX_BITS), (int) parts);}
+    private int compareToImpl(int otherSignificand, int otherExponent) {
         if (exponent != otherExponent) {
             return exponent > otherExponent ? 1 : -1;
         } else if (significand != otherSignificand) {
@@ -300,12 +307,14 @@ import java.math.BigInteger;
     }
 
     public boolean lessThan(IFloat32Exp val)
-    {return lessThan(val.significand(), val.exponent());}
+    {return lessThanImpl(val.significand(), val.exponent());}
     public boolean lessThan(long val)
-    {return lessThan(longToSignificand(val), longToExponent(val));}
+    {return lessThanImpl(getLongParts(val));}
     public boolean lessThan(double val)
-    {return lessThan(doubleToSignificand(val), doubleToExponent(val));}
-    private boolean lessThan(int otherSignificand, int otherExponent) {
+    {return lessThanImpl(getDoubleParts(val));}
+    private boolean lessThanImpl(long parts)
+    {return lessThanImpl((int) (parts >> INT_MAX_BITS), (int) parts);}
+    private boolean lessThanImpl(int otherSignificand, int otherExponent) {
         if (exponent != otherExponent) {
             return exponent < otherExponent;
         }
@@ -313,12 +322,14 @@ import java.math.BigInteger;
     }
 
     public boolean lessOrEquals(IFloat32Exp val)
-    {return lessOrEquals(val.significand(), val.exponent());}
+    {return lessOrEqualsImpl(val.significand(), val.exponent());}
     public boolean lessOrEquals(long val)
-    {return lessOrEquals(longToSignificand(val), longToExponent(val));}
+    {return lessOrEqualsImpl(getLongParts(val));}
     public boolean lessOrEquals(double val)
-    {return lessOrEquals(doubleToSignificand(val), doubleToExponent(val));}
-    private boolean lessOrEquals(int otherSignificand, int otherExponent) {
+    {return lessOrEqualsImpl(getDoubleParts(val));}
+    private boolean lessOrEqualsImpl(long parts)
+    {return lessOrEqualsImpl((int) (parts >> INT_MAX_BITS), (int) parts);}
+    private boolean lessOrEqualsImpl(int otherSignificand, int otherExponent) {
         if (exponent != otherExponent) {
             return exponent < otherExponent;
         }
@@ -326,12 +337,14 @@ import java.math.BigInteger;
     }
 
     public boolean greaterOrEquals(IFloat32Exp val)
-    {return greaterOrEquals(val.significand(), val.exponent());}
+    {return greaterOrEqualsImpl(val.significand(), val.exponent());}
     public boolean greaterOrEquals(long val)
-    {return greaterOrEquals(longToSignificand(val), longToExponent(val));}
+    {return greaterOrEqualsImpl(getLongParts(val));}
     public boolean greaterOrEquals(double val)
-    {return greaterOrEquals(doubleToSignificand(val), doubleToExponent(val));}
-    private boolean greaterOrEquals(int otherSignificand, int otherExponent) {
+    {return greaterOrEqualsImpl(getDoubleParts(val));}
+    private boolean greaterOrEqualsImpl(long parts)
+    {return greaterOrEqualsImpl((int) (parts >> INT_MAX_BITS), (int) parts);}
+    private boolean greaterOrEqualsImpl(int otherSignificand, int otherExponent) {
         if (exponent != otherExponent) {
             return exponent > otherExponent;
         }
@@ -339,12 +352,14 @@ import java.math.BigInteger;
     }
 
     public boolean greaterThan(IFloat32Exp val)
-    {return greaterThan(val.significand(), val.exponent());}
+    {return greaterThanImpl(val.significand(), val.exponent());}
     public boolean greaterThan(long val)
-    {return greaterThan(longToSignificand(val), longToExponent(val));}
+    {return greaterThanImpl(getLongParts(val));}
     public boolean greaterThan(double val)
-    {return greaterThan(doubleToSignificand(val), doubleToExponent(val));}
-    private boolean greaterThan(int otherSignificand, int otherExponent) {
+    {return greaterThanImpl(getDoubleParts(val));}
+    private boolean greaterThanImpl(long parts)
+    {return greaterThanImpl((int) (parts >> INT_MAX_BITS), (int) parts);}
+    private boolean greaterThanImpl(int otherSignificand, int otherExponent) {
         if (exponent != otherExponent) {
             return exponent > otherExponent;
         }
@@ -541,13 +556,7 @@ import java.math.BigInteger;
         return significand * Math.pow(2,exponent);
     }
 
-    private static int shiftLeftToNormalize(long v) {
-        long bitpattern = v >= 0 ? v : ~v;
-        int zeroes = Long.numberOfLeadingZeros(bitpattern);
-        return zeroes - INT_MAX_BITS - 1;
-    }
-
-    private static long getNormalizedParts(long significand, long exponent) {
+    /* package */ static long getNormalizedParts(long significand, long exponent) {
         if (significand == 0) {
             exponent = ZERO_EXPONENT;
         } else {
@@ -576,8 +585,16 @@ import java.math.BigInteger;
         this.exponent = (int) parts;
     }
 
+    /*package*/ void setLong(long v) {
+        long parts = getLongParts(v);
+        this.significand = (int) (parts >> INT_MAX_BITS);
+        this.exponent = (int) parts;
+    }
+
     /*package*/ static int longToSignificand(long v) {
-        int shiftLeft = shiftLeftToNormalize(v);
+        long bitpattern = v >= 0 ? v : ~v;
+        int zeroes = Long.numberOfLeadingZeros(bitpattern);
+        int shiftLeft = zeroes - INT_MAX_BITS - 1;
         if (shiftLeft >= 0) {
             return (int)(v << shiftLeft);
         } else {
@@ -595,60 +612,57 @@ import java.math.BigInteger;
         }
     }
 
-    /*package*/ static int doubleToSignificand(double val) {
+    /*package*/ static long getLongParts(long v) {
+        if (v == 0) {
+            return ZERO_EXPONENT & 0xFFFFFFFFL;
+        }
+        long bitpattern = v >= 0 ? v : ~v;
+        int zeroes = Long.numberOfLeadingZeros(bitpattern);
+        int exp = INT_MAX_BITS + 1 - zeroes;
+        long sig = v << (-exp + INT_MAX_BITS);
+        return sig | (exp & 0xFFFFFFFFL);
+    }
+
+    /*package*/ static long getDoubleParts(double val) {
         if (Double.isInfinite(val) || Double.isNaN(val)) {
             throw new UnsupportedOperationException("Float32Exp doesn't support INF or NAN");
         }
         if (val == 0.0) {
-            return 0;
-        }
-        long bits = Double.doubleToRawLongBits(val);
-        long mantissa_bits = bits & 0x000fffffffffffffL;
-        int mantissa_value = (int) (mantissa_bits >> 22 | 0x40000000);
-        if (val >= Double.MIN_NORMAL) { //regular positive number
-            return mantissa_value;
-        } else if (val <= -Double.MIN_NORMAL) { //regular negative number
-            int mantissa = -mantissa_value;
-            int zeroes = Integer.numberOfLeadingZeros(~mantissa);
-            return mantissa << (zeroes - 1);
-        } else if (val > 0){ //subnormal positive
-            int zeroes = Long.numberOfLeadingZeros(mantissa_bits);
-            if (zeroes < INT_MAX_BITS) {
-                return (int) (mantissa_bits >> (INT_MAX_BITS - zeroes + 1));
-            } else {
-                return (int) mantissa_bits << (zeroes - 1);
-            }
-        } else { // subnormal negative
-            long mantissa = -mantissa_bits;
-            int zeroes = Long.numberOfLeadingZeros(~mantissa);
-            if (zeroes < INT_MAX_BITS) {
-                return (int) (mantissa >> (INT_MAX_BITS - zeroes + 1));
-            } else {
-                return (int) mantissa << (zeroes - 1);
-            }
-        }
-    }
-
-    /*package*/ static int doubleToExponent(double val) {
-        if (val == 0) {
-            return ZERO_EXPONENT;
+            return ZERO_EXPONENT & 0xFFFFFFFFL;
         }
         long bits = Double.doubleToRawLongBits(val);
         int exponent_bits = (int) ((bits & 0x7ff0000000000000L) >> 52);
         long mantissa_bits = bits & 0x000fffffffffffffL;
+        int mantissa_value = (int) (mantissa_bits >> 22 | 0x40000000);
+        long sig;
+        int exp;
         if (val >= Double.MIN_NORMAL) { //regular positive number
-            return exponent_bits - 1024 - 29;
+            sig = mantissa_value;
+            exp = exponent_bits - 1024 - 29;
         } else if (val <= -Double.MIN_NORMAL) { //regular negative number
-            int mantissa = -(int) (mantissa_bits >> 22 | 0x40000000);
-            int zeroes = Integer.numberOfLeadingZeros(~mantissa);
-            return exponent_bits - 1024 - 28 - zeroes;
+            mantissa_value = -mantissa_value;
+            int zeroes = Integer.numberOfLeadingZeros(~mantissa_value);
+            sig = mantissa_value << (zeroes - 1);
+            exp = exponent_bits - 1024 - 28 - zeroes;
         } else if (val > 0){ //subnormal positive
             int zeroes = Long.numberOfLeadingZeros(mantissa_bits);
-            return -1041 - zeroes;
-        } else {  // subnormal negative
-            int zeroes = Long.numberOfLeadingZeros(~-mantissa_bits);
-            return -1041 - zeroes;
+            if (zeroes < INT_MAX_BITS + 1) {
+                sig = mantissa_bits >> (INT_MAX_BITS - zeroes + 1);
+            } else {
+                sig = mantissa_bits << (INT_MAX_BITS - zeroes - 3);
+            }
+            exp = -1041 - zeroes;
+        } else { // subnormal negative
+            long mantissa = -mantissa_bits;
+            int zeroes = Long.numberOfLeadingZeros(~mantissa);
+            if (zeroes < INT_MAX_BITS) {
+                sig = mantissa >> (INT_MAX_BITS - zeroes + 1);
+            } else {
+                sig = mantissa << (zeroes - 1);
+            }
+            exp = -1041 - zeroes;
         }
+        return (sig << INT_MAX_BITS) | (exp & 0xFFFFFFFFL);
     }
 
     //TODO: Remove custom Assert dependency

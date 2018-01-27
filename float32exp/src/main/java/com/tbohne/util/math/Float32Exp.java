@@ -42,49 +42,38 @@ import java.math.BigInteger;
  * TODO: There seems to be more methods in BigDecimal to emulate
  */
 public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChainedExpression {
-    public Float32Exp() {set(0, ZERO_EXPONENT);}
+    public Float32Exp() {super(0, ZERO_EXPONENT);}
     public Float32Exp(char[] in, int offset, int len) {set(in, offset, len);}
-    public Float32Exp(char[] in) {
-        set(in, 0, in.length);
-    }
-    public Float32Exp(String val) {
-        set(val.toCharArray(), 0, val.length());
-    }
-    public Float32Exp(double val) {
-        set(doubleToSignificand(val), doubleToExponent(val));
-    }
-    public Float32Exp(int val) {setNormalized(val, 0);}
-    public Float32Exp(long val) {setNormalized(val, 0);}
-    public Float32Exp(BigDecimal val) {
-        set(val);
-    }
-    public Float32Exp(BigInteger val) {
-        set(val);
-    }
-    public Float32Exp(IFloat32Exp val) {
-        set(val.significand(), val.exponent());
-    }
-    public Float32Exp(int significand, int exponent) {set(significand, exponent);}
+    public Float32Exp(char[] in) {set(in, 0, in.length);}
+    public Float32Exp(String val) {set(val.toCharArray(), 0, val.length());}
+    public Float32Exp(double val) {super(getDoubleParts(val));}
+    public Float32Exp(int val) {super(getLongParts(val));}
+    public Float32Exp(long val) {super(getLongParts(val));}
+    public Float32Exp(BigDecimal val) {set(val);}
+    public Float32Exp(BigInteger val) {set(val);}
+    public Float32Exp(IFloat32Exp val) {super(val.significand(), val.exponent());}
+    public Float32Exp(int significand, int exponent) {super(significand, exponent);}
 
     public static Float32Exp getPowerOf10(int exponent) {
         long pow10Parts = Float32Exp.getPowerOf10Parts(exponent);
         return new Float32Exp((int)(pow10Parts >> INT_MAX_BITS), (int)pow10Parts);
     }
 
-    public Float32ExpChainedExpression set(int val) {super.setNormalized(val, 0); return this;}
-    public Float32ExpChainedExpression set(long val) {super.setNormalized(val, 0); return this;}
+    public Float32ExpChainedExpression set(int val) {super.setLong(val); return this;}
+    public Float32ExpChainedExpression set(long val) {super.setLong(val); return this;}
     public Float32ExpChainedExpression set(char[] in) {super.set(in, 0, in.length); return this;}
     public Float32ExpChainedExpression set(String val) {super.set(val.toCharArray(), 0, val.length()); return this;}
-    public Float32ExpChainedExpression set(double val) {set(doubleToSignificand(val), doubleToExponent(val)); return this;}
+    public Float32ExpChainedExpression set(double val) {setImpl(getDoubleParts(val)); return this;}
     public Float32ExpChainedExpression set(char[] in, int offset, int len) {super.set(in,offset,len); return this;}
     public Float32ExpChainedExpression set(BigDecimal val) {super.set(val); return this;}
     public Float32ExpChainedExpression set(BigInteger val) {super.set(val); return this;}
-    public Float32ExpChainedExpression set(IFloat32Exp val) {super.set(val.significand(), val.exponent()); return this;}
+    public Float32ExpChainedExpression set(IFloat32Exp val) {setImpl(val.significand(), val.exponent()); return this;}
 
-    public Float32ExpChainedExpression add(IFloat32Exp val) {add(val.significand(), val.exponent()); return this;}
-    public Float32ExpChainedExpression add(long val) {add(longToSignificand(val), longToExponent(val)); return this;}
-    public Float32ExpChainedExpression add(double val) {add(doubleToSignificand(val), doubleToExponent(val)); return this;}
-    private void add(int otherSignificand, int otherExponent) {
+    public Float32ExpChainedExpression add(IFloat32Exp val) {return addImpl(val.significand(), val.exponent());}
+    public Float32ExpChainedExpression add(long val) {return addImpl(getLongParts(val));}
+    public Float32ExpChainedExpression add(double val) {return addImpl(getDoubleParts(val));}
+    private Float32ExpChainedExpression addImpl(long parts) {return addImpl((int)(parts >> INT_MAX_BITS), (int)parts);}
+    private Float32ExpChainedExpression addImpl(int otherSignificand, int otherExponent) {
         if (exponent < otherExponent) {
             int t = otherSignificand;
             otherSignificand = significand;
@@ -98,12 +87,14 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
             long l = (((long) significand) << diff) + otherSignificand;
             setNormalized(l, ((long) exponent) - diff);
         }
+        return this;
     }
 
-    public Float32ExpChainedExpression subtract(IFloat32Exp val) {subtract(val.significand(), val.exponent()); return this;}
-    public Float32ExpChainedExpression subtract(long val) {subtract(longToSignificand(val), longToExponent(val)); return this;}
-    public Float32ExpChainedExpression subtract(double val) {subtract(doubleToSignificand(val), doubleToExponent(val)); return this;}
-    private void subtract(int otherSignificand, int otherExponent) {
+    public Float32ExpChainedExpression subtract(IFloat32Exp val) {return subtractImpl(val.significand(), val.exponent());}
+    public Float32ExpChainedExpression subtract(long val) {return subtractImpl(getLongParts(val));}
+    public Float32ExpChainedExpression subtract(double val) {return subtractImpl(getDoubleParts(val));}
+    private Float32ExpChainedExpression subtractImpl(long parts) {return subtractImpl((int)(parts >> INT_MAX_BITS), (int)parts);}
+    private Float32ExpChainedExpression subtractImpl(int otherSignificand, int otherExponent) {
         if (exponent >= otherExponent) {
             int diff = exponent - otherExponent;
             if (diff < INT_MAX_BITS) {
@@ -122,39 +113,66 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
                 exponent = otherExponent;
             }
         }
+        return this;
     }
 
-    public Float32ExpChainedExpression multiply(IFloat32Exp val) {multiply(val.significand(), val.exponent()); return this;}
-    public Float32ExpChainedExpression multiply(long val) {multiply(longToSignificand(val), longToExponent(val)); return this;}
-    public Float32ExpChainedExpression multiply(double val) {multiply(doubleToSignificand(val), doubleToExponent(val)); return this;}
-    private void multiply(int otherSignificand, int otherExponent) {
-        setNormalized(((long)significand) * otherSignificand, ((long) exponent) + otherExponent);}
+    public Float32ExpChainedExpression multiply(IFloat32Exp val) {return multiplyImpl(val.significand(), val.exponent());}
+    public Float32ExpChainedExpression multiply(long val) {return multiplyImpl(getLongParts(val));}
+    public Float32ExpChainedExpression multiply(double val) {return multiplyImpl(getDoubleParts(val));}
+    private Float32ExpChainedExpression multiplyImpl(long parts) {return multiplyImpl((int)(parts >> INT_MAX_BITS), (int)parts);}
+    private Float32ExpChainedExpression multiplyImpl(int otherSignificand, int otherExponent) {
+        setNormalized(((long)significand) * otherSignificand, ((long) exponent) + otherExponent);
+        return this;
+    }
 
-    public Float32ExpChainedExpression divide(IFloat32Exp val) {divide(val.significand(), val.exponent()); return this;}
-    public Float32ExpChainedExpression divide(long val) {divide(longToSignificand(val), longToExponent(val)); return this;}
-    public Float32ExpChainedExpression divide(double val) {divide(doubleToSignificand(val), doubleToExponent(val)); return this;}
-    private void divide(int otherSignificand, int otherExponent) {
+    public Float32ExpChainedExpression divide(IFloat32Exp val) {return divideImpl(val.significand(), val.exponent());}
+    public Float32ExpChainedExpression divide(long val) {return divideImpl(getLongParts(val));}
+    public Float32ExpChainedExpression divide(double val) {return divideImpl(getDoubleParts(val));}
+    private Float32ExpChainedExpression divideImpl(long parts) {return divideImpl((int)(parts >> INT_MAX_BITS), (int)parts);}
+    private Float32ExpChainedExpression divideImpl(int otherSignificand, int otherExponent) {
         long sig = ((long) significand) << INT_MAX_BITS;
         setNormalized(sig / otherSignificand, ((long) exponent) - otherExponent - INT_MAX_BITS);
+        return this;
     }
 
-    public Float32ExpChainedExpression muldiv(IFloat32Exp mul, IFloat32Exp div) {muldiv(mul.significand(), mul.exponent(), div.significand(), div.exponent()); return this;}
-    public Float32ExpChainedExpression muldiv(IFloat32Exp mul, long div) {muldiv(mul.significand(), mul.exponent(), longToSignificand(div), longToExponent(div)); return this;}
-    public Float32ExpChainedExpression muldiv(IFloat32Exp mul, double div) {muldiv(mul.significand(), mul.exponent(), doubleToSignificand(div), doubleToExponent(div)); return this;}
-    public Float32ExpChainedExpression muldiv(long mul, IFloat32Exp div) {muldiv(longToSignificand(mul), longToExponent(mul), div.significand(), div.exponent()); return this;}
-    public Float32ExpChainedExpression muldiv(double mul, IFloat32Exp div) {muldiv(doubleToSignificand(mul), doubleToExponent(mul), div.significand(), div.exponent()); return this;}
-    public Float32ExpChainedExpression muldiv(long mul, long div) {muldiv(longToSignificand(mul), longToExponent(mul), longToSignificand(div), longToExponent(div)); return this;}
-    private void muldiv(int mulSignificand, int mulExponent, int divSignificand, int divExponent) {
+    public Float32ExpChainedExpression muldiv(IFloat32Exp mul, IFloat32Exp div)
+    {return muldivImpl(mul.significand(), mul.exponent(), div.significand(), div.exponent());}
+    public Float32ExpChainedExpression muldiv(IFloat32Exp mul, long div)
+    {return muldivImpl(mul.significand(), mul.exponent(), getLongParts(div));}
+    public Float32ExpChainedExpression muldiv(IFloat32Exp mul, double div)
+    {return muldivImpl(mul.significand(), mul.exponent(), getDoubleParts(div));}
+    public Float32ExpChainedExpression muldiv(long mul, IFloat32Exp div)
+    {return muldivImpl(getLongParts(mul), div.significand(), div.exponent());}
+    public Float32ExpChainedExpression muldiv(long mul, long div)
+    {return muldivImpl(getLongParts(mul), getLongParts(div));}
+    public Float32ExpChainedExpression muldiv(long mul, double div)
+    {return muldivImpl(getLongParts(mul), getDoubleParts(div));}
+    public Float32ExpChainedExpression muldiv(double mul, IFloat32Exp div)
+    {return muldivImpl(getDoubleParts(mul), div.significand(), div.exponent());}
+    public Float32ExpChainedExpression muldiv(double mul, long div)
+    {return muldivImpl(getDoubleParts(mul), getLongParts(div));}
+    public Float32ExpChainedExpression muldiv(double mul, double div)
+    {return muldivImpl(getDoubleParts(mul), getDoubleParts(div));}
+    private Float32ExpChainedExpression muldivImpl(long mulParts, long divParts)
+    {return muldivImpl((int)(mulParts >> INT_MAX_BITS), (int)mulParts, (int)(divParts >> INT_MAX_BITS), (int)divParts);}
+    private Float32ExpChainedExpression muldivImpl(int mulSignificand, int mulExponent, long divParts)
+    {return muldivImpl(mulSignificand, mulExponent, (int)(divParts >> INT_MAX_BITS), (int)divParts);}
+    private Float32ExpChainedExpression muldivImpl(long mulParts, int divSignificand, int divExponent)
+    {return muldivImpl((int)(mulParts >> INT_MAX_BITS), (int)mulParts, divSignificand, divExponent);}
+    private Float32ExpChainedExpression muldivImpl(int mulSignificand, int mulExponent, int divSignificand, int divExponent) {
         setNormalized(((long) significand) * mulSignificand / divSignificand, ((long) exponent) + mulExponent - divExponent);
+        return this;
     }
 
     public Float32ExpChainedExpression divideToIntegralValue(IFloat32Exp val)
-    {divideToIntegralValue(val.significand(), val.exponent()); return this;}
+    {return divideToIntegralValueImpl(val.significand(), val.exponent());}
     public Float32ExpChainedExpression divideToIntegralValue(long val)
-    {divideToIntegralValue(longToSignificand(val), longToExponent(val)); return this;}
+    {return divideToIntegralValueImpl(getLongParts(val));}
     public Float32ExpChainedExpression divideToIntegralValue(double val)
-    {divideToIntegralValue(doubleToSignificand(val), doubleToExponent(val)); return this;}
-    private void divideToIntegralValue(int otherSignificand, int otherExponent) {
+    {return divideToIntegralValueImpl(getDoubleParts(val));}
+    private Float32ExpChainedExpression divideToIntegralValueImpl(long parts)
+    {return divideToIntegralValueImpl((int)(parts >> INT_MAX_BITS), (int)parts);}
+    private Float32ExpChainedExpression divideToIntegralValueImpl(int otherSignificand, int otherExponent) {
         long exp = ((long) exponent) - otherExponent - INT_MAX_BITS;
         long origSig = ((long) significand) << INT_MAX_BITS;
         long quotient = origSig / otherSignificand; //regular division
@@ -165,14 +183,16 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
             setNormalized(quotient, exp); // result has no fractional bits
         } else {
             long shift = 1L << -exp;
-            setNormalized(quotient / shift, 0); //truncated to integer at target scale
+            setLong(quotient / shift); //truncated to integer at target scale
         }
+        return this;
     }
     
-    public Float32ExpChainedExpression remainder(IFloat32Exp val) {remainder(val.significand(), val.exponent()); return this;}
-    public Float32ExpChainedExpression remainder(long val) {remainder(longToSignificand(val), longToExponent(val)); return this;}
-    public Float32ExpChainedExpression remainder(double val) {remainder(doubleToSignificand(val), doubleToExponent(val)); return this;}
-    private void remainder(int otherSignificand, int otherExponent) {
+    public Float32ExpChainedExpression remainder(IFloat32Exp val) {return remainderImpl(val.significand(), val.exponent());}
+    public Float32ExpChainedExpression remainder(long val) {return remainderImpl(getLongParts(val));}
+    public Float32ExpChainedExpression remainder(double val) {return remainderImpl(getDoubleParts(val));}
+    private Float32ExpChainedExpression remainderImpl(long parts) {return remainderImpl((int)(parts >> INT_MAX_BITS), (int)parts);}
+    private Float32ExpChainedExpression remainderImpl(int otherSignificand, int otherExponent) {
         long exp = ((long) exponent) - otherExponent - INT_MAX_BITS;
         long origSig = ((long) significand) << INT_MAX_BITS;
         long quotient = origSig / otherSignificand;
@@ -186,41 +206,46 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
             long truncQuot = quotient / shift * shift * otherSignificand; //truncated to integer at same scale
             setNormalized(origSig - truncQuot, exponent - INT_MAX_BITS);
         }
+        return this;
     }
 
     public Float32ExpChainedExpression divideAndRemainder(IFloat32Exp val, Float32Exp outRemainder)
-    {divideAndRemainder(val.significand(), val.exponent(), outRemainder); return this;}
+    {return divideAndRemainderImpl(val.significand(), val.exponent(), outRemainder);}
     public Float32ExpChainedExpression divideAndRemainder(long val, Float32Exp outRemainder)
-    {divideAndRemainder(longToSignificand(val), longToExponent(val), outRemainder); return this;}
+    {return divideAndRemainderImpl(getLongParts(val), outRemainder);}
     public Float32ExpChainedExpression divideAndRemainder(double val, Float32Exp outRemainder)
-    {divideAndRemainder(doubleToSignificand(val), doubleToExponent(val), outRemainder); return this;}
-    private void divideAndRemainder(int otherSignificand, int otherExponent, Float32Exp outRemainder) {
+    {return divideAndRemainderImpl(getDoubleParts(val), outRemainder);}
+    private Float32ExpChainedExpression divideAndRemainderImpl(long parts, Float32Exp outRemainder)
+    {return divideAndRemainderImpl((int)(parts >> INT_MAX_BITS), (int)parts, outRemainder);}
+    private Float32ExpChainedExpression divideAndRemainderImpl(int otherSignificand, int otherExponent, Float32Exp outRemainder) {
         long exp = ((long) exponent) - otherExponent - INT_MAX_BITS;
         long origSig = ((long) significand) << INT_MAX_BITS;
         long quotient = origSig / otherSignificand;
         if (quotient == 0 || exp < -(INT_MAX_BITS*2)) {
-            outRemainder.set(significand, exponent);
+            outRemainder.setImpl(significand, exponent);
             significand = 0; // result is zero
             exponent = ZERO_EXPONENT;
         } else if (exp >= 0) {
             setNormalized(quotient, exp); // result has no fractional bits
-            outRemainder.set(0, ZERO_EXPONENT);
+            outRemainder.setImpl(0, ZERO_EXPONENT);
         } else {
             long shift = 1L << -exp;
             long intQutot = quotient / shift;
             long truncQuot = intQutot * shift * otherSignificand; //truncated to integer at same scale
-            setNormalized(intQutot, 0);
+            setLong(intQutot);
             outRemainder.setNormalized(origSig - truncQuot, exponent - INT_MAX_BITS);
         }
+        return this;
     }
 
     //this^other can be defined as pow(2,other*log(this,2)),
     //intermediates probably require extra precision
     //http://www.netlib.org/fdlibm/e_pow.c for edge cases and notes
-    public Float32ExpChainedExpression pow(IFloat32Exp val) {pow(val.significand(), val.exponent()); return this;}
-    public Float32ExpChainedExpression pow(long val) {pow(longToSignificand(val), longToExponent(val)); return this;}
-    public Float32ExpChainedExpression pow(double val) {pow(doubleToSignificand(val), doubleToExponent(val)); return this;}
-    private void pow(int otherSignificand, int otherExponent) {
+    public Float32ExpChainedExpression pow(IFloat32Exp val) {powImpl(val.significand(), val.exponent()); return this;}
+    public Float32ExpChainedExpression pow(long val) {powImpl(getLongParts(val)); return this;}
+    public Float32ExpChainedExpression pow(double val) {powImpl(getDoubleParts(val)); return this;}
+    private Float32ExpChainedExpression powImpl(long parts) {return powImpl((int)(parts >> INT_MAX_BITS), (int)parts);}
+    private Float32ExpChainedExpression powImpl(int otherSignificand, int otherExponent) {
         if (otherSignificand == 0) { //X^0 = 1
             significand = 0x40000000;
             exponent = -EXPONENT_BIAS;
@@ -234,7 +259,7 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
             significand = (int) (pow10 >> INT_MAX_BITS);
             exponent = (int) pow10;
         } else if (otherSignificand == 0x40000000 && otherExponent == -29 ) { //X^2 = X*X
-            multiply(significand, exponent);
+            multiplyImpl(significand, exponent);
         } else { //N^X
             final int origSig = significand;
             final int origExp = exponent;
@@ -260,6 +285,7 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
                 }
             }
         }
+        return this;
     }
 
     // this.pow(other) = this.log2().multiply(other).pow2()
@@ -276,7 +302,13 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
         double pre_pow_fract_double = mult - exp;
         double post_pow_fract_double = Math.pow(2, pre_pow_fract_double);
         //assign
-        setNormalized(doubleToSignificand(post_pow_fract_double), exp + doubleToExponent(post_pow_fract_double));
+        long bits = getDoubleParts(post_pow_fract_double);
+        long exponent = (int) bits + exp;
+        if (exponent > Integer.MAX_VALUE) {
+            throw new ArithmeticException("Exponent " + exponent + " out of range");
+        }
+        this.significand = (int) (bits >> INT_MAX_BITS);
+        this.exponent = (int) exponent;
     }
 
     private boolean verifyNegativeSig(int otherSignificand, int otherExponent) {
@@ -300,7 +332,7 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
             toString(sb).append(" out of range");
             throw new IllegalArgumentException(sb.toString());
         } else if (significand == 0 && exponent == ZERO_EXPONENT) {
-            set(1 << (INT_MAX_BITS - 2), -EXPONENT_BIAS);
+            setImpl(1 << (INT_MAX_BITS - 2), -EXPONENT_BIAS);
             return this;
         }
         int integer_part;
@@ -316,9 +348,10 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
             pre_fractional_double = significand * Math.pow(2,exponent);
         }
         double post_fraction_double = Math.pow(2, pre_fractional_double);
-        int exp = integer_part + doubleToExponent(post_fraction_double);
-        int sig = doubleToSignificand(post_fraction_double);
-        set(sig, exp);
+        //assign
+        long bits = getDoubleParts(post_fraction_double);
+        this.significand = (int) (bits >> INT_MAX_BITS);
+        this.exponent = integer_part + (int) bits;
         return this;
     }
 
@@ -326,7 +359,7 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
         if (significand <= 0) {
             throw new IllegalArgumentException("nonpositive value" + this);
         }
-        setNormalized((long)(exponent)+EXPONENT_BIAS, 0);
+        setLong((long)(exponent)+EXPONENT_BIAS);
         return this;
     }
 
@@ -339,14 +372,14 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
             return this;
         } else if (significand == 0x40000000) {// lg(power-of-2) == exponent
             long value = exponent + EXPONENT_BIAS;
-            setNormalized(value,0);
+            setLong(value);
             return this;
         }
         long integer_bits = exponent + EXPONENT_BIAS;
         double pre_fractional_double = significand * Math.pow(2,-31);
         double post_fractional_double = Math.log(pre_fractional_double)/Math.log(2) + 1;
-        set(doubleToSignificand(post_fractional_double), doubleToExponent(post_fractional_double));
-        add(longToSignificand(integer_bits),longToExponent(integer_bits));
+        setImpl(getDoubleParts(post_fractional_double));
+        addImpl(getLongParts(integer_bits));
         if (INTERNAL_ASSERTS) {
             double max = Double.MAX_VALUE / significand;
             double maxExp = Math.log(max)/Math.log(2);
@@ -382,10 +415,11 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
 
     public Float32ExpChainedExpression plus() { return this;}
 
-    public Float32ExpChainedExpression round(IFloat32Exp val) {round(val.significand(), val.exponent()); return this;}
-    public Float32ExpChainedExpression round(long val) {round(longToSignificand(val), longToExponent(val)); return this;}
-    public Float32ExpChainedExpression round(double val) {round(doubleToSignificand(val), doubleToExponent(val)); return this;}
-    private Float32ExpChainedExpression round(int otherSignificand, int otherExponent) {
+    public Float32ExpChainedExpression round(IFloat32Exp val) {return roundImpl(val.significand(), val.exponent());}
+    public Float32ExpChainedExpression round(long val) {return roundImpl(getLongParts(val));}
+    public Float32ExpChainedExpression round(double val) {return roundImpl(getDoubleParts(val));}
+    private Float32ExpChainedExpression roundImpl(long parts) {return roundImpl((int)(parts >> INT_MAX_BITS), (int)parts);}
+    private Float32ExpChainedExpression roundImpl(int otherSignificand, int otherExponent) {
         //TODO: Implement round
         throw new UnsupportedOperationException();
     }
@@ -393,25 +427,29 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
     public Float32ExpChainedExpression shiftLeft(int val) {setNormalized(significand, ((long) exponent) + val); return this;}
     public Float32ExpChainedExpression shiftRight(int val) {setNormalized(significand, ((long) exponent) - val); return this;}
 
-    public Float32ExpChainedExpression min(IFloat32Exp val) {min(val.significand(), val.exponent()); return this;}
-    public Float32ExpChainedExpression min(long val) {min(longToSignificand(val), longToExponent(val)); return this;}
-    public Float32ExpChainedExpression min(double val) {min(doubleToSignificand(val), doubleToExponent(val)); return this;}
-    private void min(int otherSignificand, int otherExponent) {
+    public Float32ExpChainedExpression min(IFloat32Exp val) {return minImpl(val.significand(), val.exponent());}
+    public Float32ExpChainedExpression min(long val) {return minImpl(getLongParts(val));}
+    public Float32ExpChainedExpression min(double val) {return minImpl(getDoubleParts(val));}
+    private Float32ExpChainedExpression minImpl(long parts) {return minImpl((int)(parts >> INT_MAX_BITS), (int)parts);}
+    private Float32ExpChainedExpression minImpl(int otherSignificand, int otherExponent) {
         if (exponent > otherExponent ||
                 (exponent == otherExponent && significand > otherSignificand)) {
             significand = otherSignificand;
             exponent = otherExponent;
         }
+        return this;
     }
 
-    public Float32ExpChainedExpression max(IFloat32Exp val) {max(val.significand(), val.exponent()); return this;}
-    public Float32ExpChainedExpression max(long val) {max(longToSignificand(val), longToExponent(val)); return this;}
-    public Float32ExpChainedExpression max(double val) {max(doubleToSignificand(val), doubleToExponent(val)); return this;}
-    private void max(int otherSignificand, int otherExponent) {
+    public Float32ExpChainedExpression max(IFloat32Exp val) {return maxImpl(val.significand(), val.exponent());}
+    public Float32ExpChainedExpression max(long val) {return maxImpl(getLongParts(val));}
+    public Float32ExpChainedExpression max(double val) {return maxImpl(getDoubleParts(val));}
+    private Float32ExpChainedExpression maxImpl(long parts) {return maxImpl((int)(parts >> INT_MAX_BITS), (int)parts);}
+    private Float32ExpChainedExpression maxImpl(int otherSignificand, int otherExponent) {
         if (exponent < otherExponent ||
                 (exponent == otherExponent && significand < otherSignificand)) {
             significand = otherSignificand;
             exponent = otherExponent;
         }
+        return this;
     }
 }

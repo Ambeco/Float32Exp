@@ -46,13 +46,13 @@ public class ImmutableFloat32Exp extends Float32ExpSharedBase {
     public ImmutableFloat32Exp(char[] in, int offset, int len) {set(in, offset, len);}
     public ImmutableFloat32Exp(char[] in) {set(in, 0,in.length);}
     public ImmutableFloat32Exp(String val) {set(val.toCharArray(), 0,val.length());}
-    public ImmutableFloat32Exp(double val) {set(doubleToSignificand(val), doubleToExponent(val));}
-    public ImmutableFloat32Exp(int val) {setNormalized(val, 0);}
-    public ImmutableFloat32Exp(long val) {setNormalized(val, 0);}
+    public ImmutableFloat32Exp(double val) {super(getDoubleParts(val));}
+    public ImmutableFloat32Exp(int val) {super(getLongParts(val));}
+    public ImmutableFloat32Exp(long val) {super(getLongParts(val));}
     public ImmutableFloat32Exp(BigDecimal val) {set(val);}
     public ImmutableFloat32Exp(BigInteger val) {set(val);}
-    public ImmutableFloat32Exp(IFloat32Exp val) {set(val.significand(), val.exponent());}
-    public ImmutableFloat32Exp(int significand, int exponent) {set(significand, exponent);}
+    public ImmutableFloat32Exp(IFloat32Exp val) {super(val.significand(), val.exponent());}
+    public ImmutableFloat32Exp(int significand, int exponent) {super(significand, exponent);}
 
     public static ImmutableFloat32Exp getPowerOf10(int exponent) {
         long pow10Parts = Float32ExpSharedBase.getPowerOf10Parts(exponent);

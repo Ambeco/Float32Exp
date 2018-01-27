@@ -22,7 +22,7 @@ public class Float64ExpTestUtils {
     public static void setAndAssertBits(long value, int expectedSignificand, int expectedExponent, Float32Exp float64Exp) {
         assertApproximately((double)value, expectedSignificand * Math.pow(2,expectedExponent), FULL_ACCURACY);
 
-        float64Exp.setNormalized(value, 0);
+        float64Exp.setLong(value);
         assertBits(expectedSignificand, expectedExponent, float64Exp);
     }
 
