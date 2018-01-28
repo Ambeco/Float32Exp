@@ -286,7 +286,7 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
         if (otherSignificand == 0) { //X^0 = 1
             significand = 0x40000000;
             exponent = -EXPONENT_BIAS;
-        } else if (significand == 0) { //0^X = 1
+        } else if (significand == 0) { //0^X = 0
             if (otherSignificand < 0) {
                 throw new ArithmeticException("0 raised to a negative value");
             }
