@@ -77,9 +77,9 @@ Performance measurements: ALL MEASUREMENTS OPS/SEC. BIGGER IS BETTER
     FROM_STRING Test:
     EXPONENT             int            long          double          Double      BigInteger      BigDecimal      Float32Exp 
     1<<32                N/A             N/A             N/A      20,380,399             N/A      11,013,767      11,904,617 
-    1<<64                N/A             N/A             N/A       4,752,529             N/A      10,245,577       8,470,971-
-    1<<128               N/A             N/A             N/A       3,734,933             N/A       7,637,151       9,340,145-
-    
+    1<<64                N/A             N/A             N/A       4,752,529             N/A      10,245,577       8,470,971 
+    1<<128               N/A             N/A             N/A       3,734,933             N/A       7,637,151       9,340,145 
+    .
     LCG_RNG Test:
     EXPONENT             int            long          double          Double      BigInteger      BigDecimal      Float32Exp 
     1<<32         63,253,630      45,014,063      25,876,948      25,028,898       3,332,912       1,902,624      10,666,560 
