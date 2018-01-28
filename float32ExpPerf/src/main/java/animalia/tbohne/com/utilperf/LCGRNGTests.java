@@ -21,12 +21,27 @@ public class LCGRNGTests {
         int IC = 29573 * offset;
         int Seed = 42 * offset;
         int res = 0;
-        int count = (int) (296032998*CPU_PERF_MULTIPLIER);
-        for(int i = 0; i < count; ++i) {
+        long count = (long) (287234733*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
             Seed = (Seed * IA + IC) % IM;
             res += Integer.MAX_VALUE * Seed / IM;
         }
-        return res!=-1?count:0;
+        return count + (res!=-1?0:1);
+    }
+
+    public static long longTest(int bitOffset) {
+        long offset = 1<<bitOffset;
+        long IM = 139968 * offset;
+        long IA = 3877 * offset;
+        long IC = 29573 * offset;
+        long Seed = 42 * offset;
+        long res = 0;
+        long count = (long) (287234733*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
+            Seed = (Seed * IA + IC) % IM;
+            res += Integer.MAX_VALUE * Seed / IM;
+        }
+        return count + (res!=-1?0:1);
     }
 
     public static long doubleTest(int bitOffset) {
@@ -36,12 +51,12 @@ public class LCGRNGTests {
         double IC = 29573 * offset;
         double Seed = 42 * offset;
         double res = 0;
-        int count = (int) (115839000*CPU_PERF_MULTIPLIER);
-        for(int i = 0; i < count; ++i) {
+        long count = (long) (114479618*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
             Seed = (Seed * IA + IC) % IM;
             res += Integer.MAX_VALUE * Seed / IM;
         }
-        return res!=-1?count:0;
+        return count + (res!=-1?0:1);
     }
 
     public static long doubleClassTest(int bitOffset) {
@@ -52,12 +67,12 @@ public class LCGRNGTests {
         Double Seed = (double) (42 * offset);
         Double Max = (double) Integer.MAX_VALUE;
         Double res = 0d;
-        int count = (int) (102472959*CPU_PERF_MULTIPLIER);
-        for(int i = 0; i < count; ++i) {
+        long count = (long) (98188366*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
             Seed = (Seed * IA + IC) % IM;
             res += Max * Seed / IM;
         }
-        return res!=-1?count:0;
+        return count + (res!=-1?0:1);
     }
 
     public static long bigIntegerTest(int bitOffset) {
@@ -68,12 +83,12 @@ public class LCGRNGTests {
         BigInteger Seed = BigInteger.valueOf(42 * offset);
         BigInteger res = BigInteger.ZERO;
         BigInteger Max = BigInteger.valueOf(Integer.MAX_VALUE);
-        int count = (int) (870147264/bitOffset*CPU_PERF_MULTIPLIER)+1;
-        for(int i = 0; i < count; ++i) {
+        long count = (long) (12921700*CPU_PERF_MULTIPLIER)+1;
+        for(long i = 0; i < count; ++i) {
             Seed = Seed.multiply(IA).add(IC).mod(IM);
             res = res.add(Max).multiply(Seed).divide(IM);
         }
-        return !res.equals(-1)?count:0;
+        return count + (!res.equals(BigInteger.ONE.negate())?0:1);
     }
 
     public static long bigDecimalTest(int bitOffset) {
@@ -84,12 +99,12 @@ public class LCGRNGTests {
         BigDecimal Seed = BigDecimal.valueOf(42 * offset);
         BigDecimal res = BigDecimal.ZERO;
         BigDecimal Max = BigDecimal.valueOf(Integer.MAX_VALUE);
-        int count = (int) (425151744/bitOffset*CPU_PERF_MULTIPLIER)+1;
-        for(int i = 0; i < count; ++i) {
+        long count = (long) (5886718*CPU_PERF_MULTIPLIER)+1;
+        for(long i = 0; i < count; ++i) {
             Seed = Seed.multiply(IA).add(IC).remainder(IM);
             res = res.add(Max).multiply(Seed).divide(IM, BigDecimal.ROUND_HALF_EVEN);
         }
-        return !res.equals(-1)?count:0;
+        return count + (!res.equals(BigDecimal.ONE.negate())?0:1);
     }
 
     public static long float64ExpTest(int bitOffset) {
@@ -100,11 +115,11 @@ public class LCGRNGTests {
         Float32Exp Seed = new Float32Exp(42 * offset);
         Float32Exp res = new Float32Exp(ImmutableFloat32Exp.ZERO);
         ImmutableFloat32Exp Max = new ImmutableFloat32Exp(Integer.MAX_VALUE);
-        int count = (int) (39957000*CPU_PERF_MULTIPLIER);
-        for(int i = 0; i < count; ++i) {
+        long count = (long) (43359568*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
             Seed.multiply(IA).add(IC).remainder(IM);
             res.add(Max).multiply(Seed).divide(IM);
         }
-        return !res.equals(-1)?count:0;
+        return count + (!res.equals(-1)?0:1);
     }
 }

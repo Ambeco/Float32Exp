@@ -10,68 +10,79 @@ import static animalia.tbohne.com.utilperf.Config.CPU_PERF_MULTIPLIER;
 public class AdditionPerfTests {
     public static long intTest(int bitOffset) {
         int offset = 1<<bitOffset;
-        int count = 100000000;
+        long count = (long) (2955665024L*CPU_PERF_MULTIPLIER);
         int first = offset;
-        for(int i = 0; i < count; ++i) {
+        for(long i = 0; i < count; ++i) {
             first += offset;
             first -= offset;
         }
-        return first!=-1?count*2:0;
+        return count*2 + (first!=-1?0:1);
+    }
+
+    public static long longTest(int bitOffset) {
+        long offset = 1<<bitOffset;
+        long count = (long) (2955665024L*CPU_PERF_MULTIPLIER);
+        long first = offset;
+        for(long i = 0; i < count; ++i) {
+            first += offset;
+            first -= offset;
+        }
+        return count*2 + (first!=-1?0:1);
     }
 
     public static long doubleTest(int bitOffset) {
         double offset = Math.pow(2.0,bitOffset);
         double first = offset;
-        int count = (int) (2147483647/2*CPU_PERF_MULTIPLIER);
-        for(int i = 0; i < count; ++i) {
+        long count = (long) (3285288598L/2*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
             first += offset;
             first -= offset;
         }
-        return first!=-1?count*2:0;
+        return count*2 + (first!=-1?0:1);
     }
 
     public static long doubleClassTest(int bitOffset) {
         Double offset = Math.pow(2.0,bitOffset);
         Double first = offset;
-        int count = (int) (1941747572/2*CPU_PERF_MULTIPLIER);
-        for(int i = 0; i < count; ++i) {
+        long count = (long) (1419825808/2*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
             first = first.doubleValue() + offset.doubleValue();
             first = first.doubleValue() - offset.doubleValue();
         }
-        return first!=-1?count*2:0;
+        return count*2 + (first!=-1?0:1);
     }
 
     public static long bigIntegerTest(int bitOffset) {
         BigInteger offset = BigInteger.ONE.shiftLeft(bitOffset);
         BigInteger first = offset;
-        int count = (int) (2195503680L/bitOffset*CPU_PERF_MULTIPLIER);
-        for(int i = 0; i < count; ++i) {
+        long count = (long) (52588469*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
             first = first.add(offset);
             first = first.subtract(offset);
         }
-        return (!first.equals(-1))?count*2:0;
+        return count*2 + (!first.equals(BigInteger.ONE.negate())?0:1);
     }
 
     public static long bigDecimalTest(int bitOffset) {
         BigDecimal offset = BigDecimal.valueOf(2).pow(bitOffset);
         BigDecimal first = offset;
-        int count = (int) (5514562752L/bitOffset*CPU_PERF_MULTIPLIER);
-        for(int i = 0; i < count; ++i) {
+        long count = (long) (269746677088L/bitOffset/bitOffset*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
             first = first.add(offset);
             first = first.subtract(offset);
         }
-        return (!first.equals(-1))?count*2:0;
+        return count*2 + (!first.equals(BigDecimal.ONE.negate())?0:1);
     }
 
     public static long float64ExpTest(int bitOffset) {
         Float32Exp offset = new Float32Exp(1);
         offset.shiftLeft(bitOffset);
         Float32Exp first = new Float32Exp(offset);
-        int count = (int) (564174894/2*CPU_PERF_MULTIPLIER);
-        for(int i = 0; i < count; ++i) {
+        long count = (long) (515766522/2*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
             first.add(offset);
             first.subtract(offset);
         }
-        return (!first.equals(-1))?count*2:0;
+        return count*2 + (!first.equals(-1)?0:1);
     }
 }

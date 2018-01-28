@@ -58,6 +58,14 @@ public class Main {
                     FromStringTests::intTest,
                     LCGRNGTests::intTest,
             }),
+            new TypeToTest("long", new TestFn[] {
+                    AdditionPerfTests::longTest,
+                    MultiplicationPerfTests::longTest,
+                    PowerPerfTests::longTest,
+                    ToStringTests::longTest,
+                    FromStringTests::longTest,
+                    LCGRNGTests::longTest,
+            }),
             new TypeToTest("double", new TestFn[] {
                     AdditionPerfTests::doubleTest,
                     MultiplicationPerfTests::doubleTest,
@@ -109,18 +117,18 @@ public class Main {
             TestFnCategory category = TestFnCategory.values()[catIdx];
             System.out.println(category.toString() + " Test:");
             //header
-            System.out.print(String.format(Locale.US,"%-7s ","EXPONENT  "));
+            System.out.print("EXPONENT ");
             for(TypeToTest type : TYPES) {
                 //priming
                 TestFn TestFn = type.Tests[category.ordinal()];
                 TestFn.run(MIN_EXPONENT);
-                System.out.print(String.format(Locale.US,"%12s ",type.typeName));
+                System.out.print(String.format(Locale.US,"%15s ",type.typeName));
             }
             System.out.println();
             for(int i = MIN_EXPONENT; i < MAX_EXPONENT; ++i) {
                 //row
                 int bitOffset = 1 << i;
-                System.out.print(String.format(Locale.US,"1<<%-8d",bitOffset));
+                System.out.print(String.format(Locale.US,"1<<%-6d",bitOffset));
                 for(TypeToTest type : TYPES) {
                     //cell
                     TestFn TestFn = type.Tests[category.ordinal()];
@@ -129,15 +137,15 @@ public class Main {
                     long end = System.currentTimeMillis();
                     double durSeconds = (end - start) / MILLIS_PER_SEC;
                     if (count <= 0) {
-                        System.out.print("         N/A ");
+                        System.out.print("            N/A ");
                     } else if (durSeconds <= 0.002) {
-                            System.out.print("      INLINE ");
+                            System.out.print("         INLINE ");
                     } else {
                         double perSecond = count / durSeconds / CPU_PERF_MULTIPLIER;
                         if (perSecond < 100) {
-                            System.out.print(String.format(Locale.US," %11s", smallFormat.format(perSecond)));
+                            System.out.print(String.format(Locale.US," %14s", smallFormat.format(perSecond)));
                         } else {
-                            System.out.print(String.format(Locale.US," %11s", largeFormat.format(perSecond)));
+                            System.out.print(String.format(Locale.US," %14s", largeFormat.format(perSecond)));
                         }
                         if (durSeconds < 1.0) {
                             System.out.print('+');

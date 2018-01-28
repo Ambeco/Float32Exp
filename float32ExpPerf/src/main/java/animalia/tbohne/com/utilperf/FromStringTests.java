@@ -11,49 +11,47 @@ public class FromStringTests {
         return 0;
     }
 
+    public static long longTest(int bitOffset) {
+        return 0;
+    }
+
     public static long doubleTest(int bitOffset) {
         return 0;
     }
 
     public static long doubleClassTest(int bitOffset) {
-        String string = "1e" + bitOffset;
+        String string = "1E" + bitOffset;
         int first = 0;
-        int count = (int) (72668214*CPU_PERF_MULTIPLIER);
-        for(int i = 0; i < count; ++i) {
+        long count = (long) (1212389168/bitOffset*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
             first += new Double(string).intValue();
         }
-        return first!=-1?count*2:0;
+        return count + (first!=-1?0:1);
     }
 
     public static long bigIntegerTest(int bitOffset) {
-        String string = "1e" + bitOffset;
-        int first = 0;
-        int count = (int) (2266469952L/bitOffset*CPU_PERF_MULTIPLIER);
-        for(int i = 0; i < count; ++i) {
-            first += new Double(string).intValue();
-        }
-        return first!=-1?count*2:0;
+        return 0;
     }
 
     public static long bigDecimalTest(int bitOffset) {
-        String string = "1e" + bitOffset;
+        String string = "1E" + bitOffset;
         int first = 0;
-        int count = (int) (4250760384L/bitOffset*CPU_PERF_MULTIPLIER);
-        for(int i = 0; i < count; ++i) {
+        long count = (long) (37017270*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
             first += new BigDecimal(string).intValue();
         }
-        return first!=-1?count*2:0;
+        return count + (first!=-1?0:1);
     }
 
     public static long float64ExpTest(int bitOffset) {
-        String string = "1e" + bitOffset;
+        String string = "1E" + bitOffset;
         Float32Exp offset = new Float32Exp(1);
         offset.shiftLeft(bitOffset);
         int first = 0;
-        int count = (int) (66887100*CPU_PERF_MULTIPLIER);
-        for(int i = 0; i < count; ++i) {
+        long count = (long) (51249375*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
             first += new BigDecimal(string).intValue();
         }
-        return first!=-1?count*2:0;
+        return count + (first!=-1?0:1);
     }
 }

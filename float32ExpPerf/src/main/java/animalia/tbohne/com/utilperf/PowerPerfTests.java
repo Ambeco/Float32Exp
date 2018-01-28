@@ -13,22 +13,26 @@ public class PowerPerfTests {
         return 0;
     }
 
+    public static long longTest(int bitOffset) {
+        return 0;
+    }
+
     public static long doubleTest(int bitOffset) {
         double first = 0;
-        int count = (int) (2147483647*CPU_PERF_MULTIPLIER);
-        for(int i = 0; i < count; ++i) {
+        long count = (long) (3409824572L*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
             first += Math.pow(BASE, bitOffset);
         }
-        return first!=-1?count:0;
+        return count + (first!=-1?0:1);
     }
 
     public static long doubleClassTest(int bitOffset) {
         Double first = 0d;
-        int count = (int) (992063492*CPU_PERF_MULTIPLIER);
-        for(int i = 0; i < count; ++i) {
+        long count = (long) (828407072*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
             first += Math.pow(BASE, bitOffset);
         }
-        return first!=-1?count:0;
+        return count + (first!=-1?0:1);
     }
 
     public static long bigIntegerTest(int bitOffset) {
@@ -37,21 +41,24 @@ public class PowerPerfTests {
 
     public static long bigDecimalTest(int bitOffset) {
         BigDecimal first = BigDecimal.ZERO;
-        int count = (int) (364431424/bitOffset*CPU_PERF_MULTIPLIER);
+        long count = (long) (265398510/bitOffset*CPU_PERF_MULTIPLIER);
         BigDecimal base = BigDecimal.valueOf(BASE);
-        for(int i = 0; i < count; ++i) {
+        for(long i = 0; i < count; ++i) {
             first = first.add(base.pow(bitOffset));
         }
-        return (!first.equals(-1))?count:0;
+        return count + (!first.equals(BigDecimal.ONE.negate())?0:1);
     }
 
     public static long float64ExpTest(int bitOffset) {
         Float32Exp first = new Float32Exp(0);
-        int count = (int) (14405013*CPU_PERF_MULTIPLIER);
+        long count = (long) (388289237*CPU_PERF_MULTIPLIER);
+        if (bitOffset == 32) { // no idea why this is slow compared to others
+            count = (int) (24575669*CPU_PERF_MULTIPLIER);
+        }
         Float32Exp base = new Float32Exp();
-        for(int i = 0; i < count; ++i) {
+        for(long i = 0; i < count; ++i) {
             first.add(base.set(BASE).pow(bitOffset));
         }
-        return (!first.equals(-1))?count:0;
+        return count + (!first.equals(-1)?0:1);
     }
 }

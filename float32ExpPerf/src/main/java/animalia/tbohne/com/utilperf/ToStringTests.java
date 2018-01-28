@@ -12,12 +12,23 @@ public class ToStringTests {
     public static long intTest(int bitOffset) {
         int offset = 1<<bitOffset;
         int first = 0;
-        int count = (int) (88809946*CPU_PERF_MULTIPLIER);
-        for(int i = 0; i < count; ++i) {
+        long count = (long) (93281170*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
             offset += 1;
             first += Integer.toString(offset).length();
         }
-        return first!=-1?count:0;
+        return count + (first!=-1?0:1);
+    }
+
+    public static long longTest(int bitOffset) {
+        long offset = 1<<bitOffset;
+        long first = 0;
+        long count = (long) (93281170*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
+            offset += 1;
+            first += Long.toString(offset).length();
+        }
+        return count + (first!=-1?0:1);
     }
 
     public static long doubleTest(int bitOffset) {
@@ -27,45 +38,45 @@ public class ToStringTests {
     public static long doubleClassTest(int bitOffset) {
         Double offset = Math.pow(2.0,bitOffset);
         int first = 0;
-        int count = (int) (9603072*CPU_PERF_MULTIPLIER);
-        for(int i = 0; i < count; ++i) {
+        long count = (long) (30729830400L/bitOffset/bitOffset*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
             offset += 1.0;
             first += Double.toString(offset).length();
         }
-        return first!=-1?count:0;
+        return count + (first!=-1?0:1);
     }
 
     public static long bigIntegerTest(int bitOffset) {
         BigInteger offset = BigInteger.ONE.shiftLeft(bitOffset);
         int first = 0;
-        int count = (int) (40529633280L/bitOffset/bitOffset*CPU_PERF_MULTIPLIER);
-        for(int i = 0; i < count; ++i) {
+        long count = (long) (335497726/bitOffset*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
             offset = offset.add(BigInteger.ONE);
             first += offset.toString().length();
         }
-        return first!=-1?count:0;
+        return count + (first!=-1?0:1);
     }
 
     public static long bigDecimalTest(int bitOffset) {
         BigDecimal offset = BigDecimal.valueOf(2).pow(bitOffset);
         int first = 0;
-        int count = (int) (27277684736L/bitOffset/bitOffset*CPU_PERF_MULTIPLIER);
-        for(int i = 0; i < count; ++i) {
+        long count = (long) (23363140600L/bitOffset/bitOffset*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
             offset = offset.add(BigDecimal.ONE);
             first += offset.toString().length();
         }
-        return first!=-1?count:0;
+        return count + (first!=-1?0:1);
     }
 
     public static long float64ExpTest(int bitOffset) {
         Float32Exp offset = new Float32Exp(1);
         offset.shiftLeft(bitOffset);
         int first = 0;
-        int count = (int) (8515469*CPU_PERF_MULTIPLIER);
-        for(int i = 0; i < count; ++i) {
+        long count = (long) (7429402*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
             offset.add(ImmutableFloat32Exp.ONE);
             first += offset.toString().length();
         }
-        return first!=-1?count:0;
+        return count + (first!=-1?0:1);
     }
 }
