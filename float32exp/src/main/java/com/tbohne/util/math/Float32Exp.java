@@ -275,6 +275,54 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
         return this;
     }
 
+    public Float32ExpChainedExpression floor(IFloat32Exp val) {return floorImpl(val.significand(), val.exponent());}
+    public Float32ExpChainedExpression floor(long val) {return floorImpl(getLongParts(val));}
+    public Float32ExpChainedExpression floor(double val) {return floorImpl(getDoubleParts(val));}
+    private Float32ExpChainedExpression floorImpl(long parts) {return floorImpl((int)(parts >> INT_MAX_BITS), (int)parts);}
+    private Float32ExpChainedExpression floorImpl(int otherSignificand, int otherExponent) {
+        if (otherSignificand == 0x80000000) { //if param is negative, then negate it.
+            otherSignificand = 0x40000000;
+            otherExponent += 1;
+        } else if (otherSignificand < 0) {
+            otherSignificand = -otherSignificand;
+        }
+        //this.subtract(new Float32Exp(this).modulo(other))
+        long exp = ((long) exponent) - otherExponent - INT_MAX_BITS;
+        long origSig = ((long) significand) << INT_MAX_BITS;
+        long quotient = origSig / otherSignificand;
+        if (quotient == 0 || exp < -(INT_MAX_BITS*2)) {
+            long parts = getNormalizedParts(quotient, exp); // result has no fractional bits
+            subtractImpl((int) (parts >> INT_MAX_BITS), (int) parts);
+        } else if (exp < 0) {
+            long shift = 1L << -exp;
+            long truncQuot = quotient / shift * shift * otherSignificand; //truncated to integer at same scale
+            long parts = getNormalizedParts(origSig - truncQuot, (long) (exponent - INT_MAX_BITS));
+            subtractImpl((int) (parts >> INT_MAX_BITS), (int) parts);
+        } //otherwise it was already a multiple. do nothing.
+        return this;
+    }
+
+    public Float32ExpChainedExpression round(IFloat32Exp val) {return roundImpl(val.significand(), val.exponent());}
+    public Float32ExpChainedExpression round(long val) {return roundImpl(getLongParts(val));}
+    public Float32ExpChainedExpression round(double val) {return roundImpl(getDoubleParts(val));}
+    private Float32ExpChainedExpression roundImpl(long parts) {return roundImpl((int)(parts >> INT_MAX_BITS), (int)parts);}
+    private Float32ExpChainedExpression roundImpl(int otherSignificand, int otherExponent) {
+        int origSig = significand;
+        int origExp = exponent;
+        boolean rollback = true;
+        try {
+            addImpl(otherSignificand, otherExponent - 1);
+            floorImpl(otherSignificand, otherExponent);
+            rollback = false;
+        } finally {
+            if (rollback) {
+                significand = origSig;
+                exponent = origExp;
+            }
+        }
+        return this;
+    }
+
     //this^other can be defined as pow(2,other*log(this,2)),
     //intermediates probably require extra precision
     //http://www.netlib.org/fdlibm/e_pow.c for edge cases and notes
@@ -455,15 +503,6 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
     }
 
     public Float32ExpChainedExpression plus() { return this;}
-
-    public Float32ExpChainedExpression round(IFloat32Exp val) {return roundImpl(val.significand(), val.exponent());}
-    public Float32ExpChainedExpression round(long val) {return roundImpl(getLongParts(val));}
-    public Float32ExpChainedExpression round(double val) {return roundImpl(getDoubleParts(val));}
-    private Float32ExpChainedExpression roundImpl(long parts) {return roundImpl((int)(parts >> INT_MAX_BITS), (int)parts);}
-    private Float32ExpChainedExpression roundImpl(int otherSignificand, int otherExponent) {
-        //TODO: Implement round
-        throw new UnsupportedOperationException();
-    }
 
     public Float32ExpChainedExpression shiftLeft(int val) {
         long parts = getNormalizedParts((long) significand, ((long) exponent) + val);
