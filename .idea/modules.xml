@@ -10,6 +10,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32expPerf.iml" filepath="$PROJECT_DIR$/.idea/modules/float32expPerf.iml" group="float32expPerf" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32expPerf/float32expPerf_main.iml" filepath="$PROJECT_DIR$/.idea/modules/float32expPerf/float32expPerf_main.iml" group="float32expPerf" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32expPerf/float32expPerf_test.iml" filepath="$PROJECT_DIR$/.idea/modules/float32expPerf/float32expPerf_test.iml" group="float32expPerf" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32expl.iml" filepath="$PROJECT_DIR$/.idea/modules/float32expl.iml" group="float32expl" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32expl/float32expl_main.iml" filepath="$PROJECT_DIR$/.idea/modules/float32expl/float32expl_main.iml" group="float32expl" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32expl/float32expl_test.iml" filepath="$PROJECT_DIR$/.idea/modules/float32expl/float32expl_test.iml" group="float32expl" />
     </modules>
   </component>
 </project>

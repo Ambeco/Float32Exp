@@ -1,8 +1,6 @@
 package animalia.tbohne.com.utilperf;
 
-import com.tbohne.util.math.Float32Exp;
-import com.tbohne.util.math.IFloat32Exp;
-import com.tbohne.util.math.ImmutableFloat32Exp;
+import com.tbohne.util.math.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -115,6 +113,22 @@ public class LCGRNGTests {
         Float32Exp Seed = new Float32Exp(42 * offset);
         Float32Exp res = new Float32Exp(ImmutableFloat32Exp.ZERO);
         ImmutableFloat32Exp Max = new ImmutableFloat32Exp(Integer.MAX_VALUE);
+        long count = (long) (43359568*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
+            Seed.multiply(IA).add(IC).remainder(IM);
+            res.add(Max).multiply(Seed).divide(IM);
+        }
+        return count + (!res.equals(-1)?0:1);
+    }
+
+    public static long float64ExpLTest(int bitOffset) {
+        int offset = 1<<bitOffset;
+        ImmutableFloat32ExpL IM = new ImmutableFloat32ExpL(139968 * offset);
+        ImmutableFloat32ExpL IA = new ImmutableFloat32ExpL(3877 * offset);
+        ImmutableFloat32ExpL IC = new ImmutableFloat32ExpL(29573 * offset);
+        Float32ExpL Seed = new Float32ExpL(42 * offset);
+        Float32ExpL res = new Float32ExpL(ImmutableFloat32ExpL.ZERO);
+        ImmutableFloat32ExpL Max = new ImmutableFloat32ExpL(Integer.MAX_VALUE);
         long count = (long) (43359568*CPU_PERF_MULTIPLIER);
         for(long i = 0; i < count; ++i) {
             Seed.multiply(IA).add(IC).remainder(IM);

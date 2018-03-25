@@ -1,6 +1,7 @@
 package animalia.tbohne.com.utilperf;
 
 import com.tbohne.util.math.Float32Exp;
+import com.tbohne.util.math.Float32ExpL;
 
 import java.math.BigDecimal;
 
@@ -45,8 +46,16 @@ public class FromStringTests {
 
     public static long float64ExpTest(int bitOffset) {
         String string = "1E" + bitOffset;
-        Float32Exp offset = new Float32Exp(1);
-        offset.shiftLeft(bitOffset);
+        int first = 0;
+        long count = (long) (51249375*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
+            first += new BigDecimal(string).intValue();
+        }
+        return count + (first!=-1?0:1);
+    }
+
+    public static long float64ExpLTest(int bitOffset) {
+        String string = "1E" + bitOffset;
         int first = 0;
         long count = (long) (51249375*CPU_PERF_MULTIPLIER);
         for(long i = 0; i < count; ++i) {

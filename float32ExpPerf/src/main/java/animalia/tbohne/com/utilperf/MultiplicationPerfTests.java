@@ -1,6 +1,7 @@
 package animalia.tbohne.com.utilperf;
 
 import com.tbohne.util.math.Float32Exp;
+import com.tbohne.util.math.Float32ExpL;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -78,6 +79,18 @@ public class MultiplicationPerfTests {
         Float32Exp offset = new Float32Exp(1);
         offset.shiftLeft(bitOffset);
         Float32Exp first = new Float32Exp(offset);
+        long count = (long) (241522919/2*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
+            first.multiply(offset);
+            first.divide(offset);
+        }
+        return count*2 + (!first.equals(-1)?0:1);
+    }
+
+    public static long float64ExpLTest(int bitOffset) {
+        Float32ExpL offset = new Float32ExpL(1);
+        offset.shiftLeft(bitOffset);
+        Float32ExpL first = new Float32ExpL(offset);
         long count = (long) (241522919/2*CPU_PERF_MULTIPLIER);
         for(long i = 0; i < count; ++i) {
             first.multiply(offset);

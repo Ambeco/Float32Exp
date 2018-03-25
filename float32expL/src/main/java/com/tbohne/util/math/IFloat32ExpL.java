@@ -4,44 +4,43 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-/**
- * @deprecated use IFLoat32ExpL instead
- */
-@Deprecated
-public interface IFloat32Exp extends Comparable<IFloat32Exp>, Serializable {
+import static com.tbohne.util.math.Float32ExpLHelpers.INT_MAX_BITS;
+
+public interface IFloat32ExpL extends Comparable<IFloat32ExpL>, Serializable {
     interface ExponentToStringInterface {
         void addExponent(StringBuilder stringBuilder, int exponent);
     }
+    long getParts();
     int significand();
     int exponent();
 
-    boolean approximately(IFloat32Exp val, int bitsSimilarCount);
+    boolean approximately(IFloat32ExpL val, int bitsSimilarCount);
     boolean approximately(long val, int bitsSimilarCount);
     boolean approximately(double val, int bitsSimilarCount);
 
-    int compareTo(IFloat32Exp val);
+    int compareTo(IFloat32ExpL val);
     int compareTo(long val);
     int compareTo(double val);
 
-    boolean lessThan(IFloat32Exp val);
+    boolean lessThan(IFloat32ExpL val);
     boolean lessThan(long val);
     boolean lessThan(double val);
 
-    boolean lessOrEquals(IFloat32Exp val);
+    boolean lessOrEquals(IFloat32ExpL val);
     boolean lessOrEquals(long val);
     boolean lessOrEquals(double val);
 
-    boolean greaterOrEquals(IFloat32Exp val);
+    boolean greaterOrEquals(IFloat32ExpL val);
     boolean greaterOrEquals(long val);
     boolean greaterOrEquals(double val);
 
-    boolean greaterThan(IFloat32Exp val);
+    boolean greaterThan(IFloat32ExpL val);
     boolean greaterThan(long val);
     boolean greaterThan(double val);
 
     BigInteger toBigInteger();
     BigDecimal toBigDecimal();
-    ImmutableFloat32Exp toImmutable();
+    ImmutableFloat32ExpL toImmutable();
     int intValue();
     long longValue();
     float floatValue();

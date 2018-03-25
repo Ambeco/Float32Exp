@@ -106,6 +106,14 @@ public class Main {
                     FromStringTests::float64ExpTest,
                     LCGRNGTests::float64ExpTest,
             }),
+            new TypeToTest("Float32ExpL", new TestFn[] {
+                    AdditionPerfTests::float64ExpLTest,
+                    MultiplicationPerfTests::float64ExpLTest,
+                    PowerPerfTests::float64ExpLTest,
+                    ToStringTests::float64ExpLTest,
+                    FromStringTests::float64ExpLTest,
+                    LCGRNGTests::float64ExpLTest,
+            }),
     };
 
     public static void main(String[] args) {

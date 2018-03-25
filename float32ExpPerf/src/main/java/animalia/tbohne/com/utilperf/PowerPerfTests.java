@@ -1,6 +1,7 @@
 package animalia.tbohne.com.utilperf;
 
 import com.tbohne.util.math.Float32Exp;
+import com.tbohne.util.math.Float32ExpL;
 
 import java.math.BigDecimal;
 
@@ -56,6 +57,19 @@ public class PowerPerfTests {
             count = (int) (24575669*CPU_PERF_MULTIPLIER);
         }
         Float32Exp base = new Float32Exp();
+        for(long i = 0; i < count; ++i) {
+            first.add(base.set(BASE).pow(bitOffset));
+        }
+        return count + (!first.equals(-1)?0:1);
+    }
+
+    public static long float64ExpLTest(int bitOffset) {
+        Float32ExpL first = new Float32ExpL(0);
+        long count = (long) (388289237*CPU_PERF_MULTIPLIER);
+        if (bitOffset == 32) { // no idea why this is slow compared to others
+            count = (int) (24575669*CPU_PERF_MULTIPLIER);
+        }
+        Float32ExpL base = new Float32ExpL();
         for(long i = 0; i < count; ++i) {
             first.add(base.set(BASE).pow(bitOffset));
         }

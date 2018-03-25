@@ -4,6 +4,8 @@
     <bytecodeTargetLevel>
       <module name="float32exp-float32exp_main" target="1.8" />
       <module name="float32exp-float32exp_test" target="1.8" />
+      <module name="float32expl_main" target="1.8" />
+      <module name="float32expl_test" target="1.8" />
       <module name="float32expPerf_main" target="1.8" />
       <module name="float32expPerf_test" target="1.8" />
     </bytecodeTargetLevel>

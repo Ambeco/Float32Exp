@@ -5,6 +5,9 @@ import java.math.BigInteger;
 
 /**
  * A mutable fixed-precision signed decimal.
+ *
+ * @deprecated use IFLoat32ExpL instead
+ *
  * It works like double, but with a 32 binary significant digits, and a 32 bit base-2 exponent.
  * This equates to ~9.6 decimal digits for both parts.
  * Note that this is _wildly_ different than the IEEE 754 format, which is 110 and 17 bits. This
@@ -16,6 +19,7 @@ import java.math.BigInteger;
  * Also, it doesn't accept a MathContext, everything is fixed. Some functionality that's tied to
  * the BigDecimal internals are elided, like scale() and precision().
  */
+@Deprecated
 public class ImmutableFloat32Exp extends Float32ExpSharedBase {
     public static final ImmutableFloat32Exp NEGATIVE_ONE = new ImmutableFloat32Exp(-1);
     public static final ImmutableFloat32Exp ZERO = new ImmutableFloat32Exp(0);

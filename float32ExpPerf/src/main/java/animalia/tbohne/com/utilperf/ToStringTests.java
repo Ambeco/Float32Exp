@@ -1,7 +1,9 @@
 package animalia.tbohne.com.utilperf;
 
 import com.tbohne.util.math.Float32Exp;
+import com.tbohne.util.math.Float32ExpL;
 import com.tbohne.util.math.ImmutableFloat32Exp;
+import com.tbohne.util.math.ImmutableFloat32ExpL;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -75,6 +77,18 @@ public class ToStringTests {
         long count = (long) (7429402*CPU_PERF_MULTIPLIER);
         for(long i = 0; i < count; ++i) {
             offset.add(ImmutableFloat32Exp.ONE);
+            first += offset.toString().length();
+        }
+        return count + (first!=-1?0:1);
+    }
+
+    public static long float64ExpLTest(int bitOffset) {
+        Float32ExpL offset = new Float32ExpL(1);
+        offset.shiftLeft(bitOffset);
+        int first = 0;
+        long count = (long) (7429402*CPU_PERF_MULTIPLIER);
+        for(long i = 0; i < count; ++i) {
+            offset.add(ImmutableFloat32ExpL.ONE);
             first += offset.toString().length();
         }
         return count + (first!=-1?0:1);

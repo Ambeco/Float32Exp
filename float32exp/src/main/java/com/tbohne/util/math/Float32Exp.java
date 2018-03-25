@@ -5,6 +5,8 @@ import java.math.BigInteger;
 
 /**
  * A mutable fixed-precision signed decimal.
+ *
+ * @deprecated use FLoat32ExpL instead
  * It works like double, but with a 32 binary significant digits, and a 32 bit base-2 exponent.
  * This equates to ~9.6 decimal digits for both parts.
  * Note that this is _wildly_ different than the IEEE 754 format binary128, which is 113 and 15
@@ -41,6 +43,7 @@ import java.math.BigInteger;
  *
  * TODO: There seems to be more methods in BigDecimal to emulate
  */
+@Deprecated
 public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChainedExpression {
     public Float32Exp() {super(0, ZERO_EXPONENT);}
     public Float32Exp(char[] in, int offset, int len) {set(in, offset, len);}
