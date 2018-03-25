@@ -11,7 +11,6 @@ import java.math.BigInteger;
  */
 public class Float32ExpLHelpers {
     public static final int INT_MAX_BITS = 32;
-    private static final int LONG_MAX_BITS = 64;
     private static final int EXPONENT_BIAS = 30;
     private static final int ZERO_EXPONENT = Integer.MIN_VALUE;
     private static final double INV_LOG10 = 0.30102999566398114; // 1/lg(10)
@@ -34,7 +33,6 @@ public class Float32ExpLHelpers {
     }
     public static final DefaultExponentToString DEFAULT_EXPONENT_TO_STRING = new DefaultExponentToString();
 
-    public static final int DEFAULT_STRING_BASE = 10;
     public static final int DEFAULT_MIN_PRECISION = 1;
     public static final int DEFAULT_MAX_PRECISION = 12;
     public static final int DEFAULT_STRING_EXPONENT_MULTIPLE = 1;
@@ -124,18 +122,18 @@ public class Float32ExpLHelpers {
             sigDec = -sigDec;
         }
         long parts1 = getNormalizedParts(sigDec, sig2Offset);
-        int significand = (int) (parts1 >> INT_MAX_BITS);
-        int exponent = (int) parts1;
+        long significand = parts1 >> INT_MAX_BITS;
+        long exponent = (int) parts1;
         // if there's a base10 power, adjust for that
         if (sig10Offset != 0) {
             long pow10parts = getPowerOf10Parts(sig10Offset);
             long scaleSig = pow10parts >> INT_MAX_BITS;
             long scaleExp = (int) pow10parts;
-            long parts = getNormalizedParts(((long) significand) * scaleSig, scaleExp + exponent);
-            significand = (int) (parts >> INT_MAX_BITS);
+            long parts = getNormalizedParts(significand * scaleSig, scaleExp + exponent);
+            significand = parts >> INT_MAX_BITS;
             exponent = (int) parts;
         }
-        return (((long) significand) << INT_MAX_BITS) | (exponent & 0xFFFFFFFFL);
+        return assembleParts(significand, exponent);
     }
 
     public static long cast(BigDecimal val) {
@@ -165,6 +163,9 @@ public class Float32ExpLHelpers {
         initial_exp = negative ? -initial_exp : initial_exp;
         long significand = 0x40000000; //initialize to 1.0
         long exponent = -EXPONENT_BIAS;
+        if (initial_exp > (1<<(pow10s.length/2))) {
+            throw new ArithmeticException("Power 10 Exponent " + initial_exp + " out of range");
+        }
         for(int i = 0; i < INT_MAX_BITS; i++) {
             int mask = 1<<i;
             if ((initial_exp & mask) == mask) {
@@ -177,7 +178,7 @@ public class Float32ExpLHelpers {
             }
         }
         if (!negative) {
-            return (significand << INT_MAX_BITS) | (exponent & 0xFFFFFFFFL);
+            return assembleParts(significand, exponent);
         } else {//for a negative power of ten, invert the the result (1/x)
             long guess_sig = 0x4000000000000000L / significand;
             long guess_exp = -EXPONENT_BIAS - INT_MAX_BITS - exponent;
@@ -187,25 +188,22 @@ public class Float32ExpLHelpers {
     }
 
     public static long add(long value, long other) {
-        int significand = (int) (value >> INT_MAX_BITS);
-        int exponent = (int)value;
-        int otherSignificand = (int) (other >> INT_MAX_BITS);
-        int otherExponent = (int) other;
+        long exponent = (int) value;
+        long otherExponent = (int) other;
         if (exponent < otherExponent) {
-            int ti = otherSignificand; //swap significands
-            otherSignificand = significand;
-            significand = ti;
-            ti = otherExponent; //swap exponents
+            long ti = otherExponent; //swap exponents
             otherExponent = exponent;
             exponent = ti;
             long tl = other; //swap inputs
             other = value;
             value = tl;
         }
-        long diff = ((long) exponent) - otherExponent;
+        long significand = value >> INT_MAX_BITS;
+        long otherSignificand = other >> INT_MAX_BITS;
+        long diff = exponent - otherExponent;
         if (diff < INT_MAX_BITS) {
-            long l = (((long) significand) << diff) + otherSignificand;
-            return getNormalizedParts(l, ((long) exponent) - diff);
+            long l = (significand << diff) + otherSignificand;
+            return getNormalizedParts(l, exponent - diff);
         } else {
             return value;
         }
@@ -213,11 +211,11 @@ public class Float32ExpLHelpers {
 
     public static long subtract(long value, long other) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
+        long exponent = (int)value;
         long otherSignificand = other >> INT_MAX_BITS;
-        int otherExponent = (int) other;
+        long otherExponent = (int) other;
         if (exponent >= otherExponent) {
-            int diff = exponent - otherExponent;
+            long diff = exponent - otherExponent;
             if (diff < INT_MAX_BITS) {
                 long l = (significand << diff) - otherSignificand;
                 return getNormalizedParts(l, (long) otherExponent);
@@ -225,13 +223,12 @@ public class Float32ExpLHelpers {
                 return value;
             }
         } else { // if (otherExponent > exponent)
-            int diff = otherExponent - exponent;
+            long diff = otherExponent - exponent;
             if (significand == 0) {
-                long v = -otherSignificand;
-                return getNormalizedParts(v, (long) otherExponent);
+                return getNormalizedParts(-otherSignificand, otherExponent);
             } else if (diff < INT_MAX_BITS) {
                 long l = significand - (otherSignificand << diff);
-                return getNormalizedParts(l, (long) exponent);
+                return getNormalizedParts(l, exponent);
             } else {
                 return other;
             }
@@ -240,37 +237,37 @@ public class Float32ExpLHelpers {
 
     public static long multiply(long value, long other) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
+        long exponent = (int)value;
         long otherSignificand = other >> INT_MAX_BITS;
-        int otherExponent = (int) other;
-        return getNormalizedParts(significand * otherSignificand, ((long) exponent) + otherExponent);
+        long otherExponent = (int) other;
+        return getNormalizedParts(significand * otherSignificand, exponent + otherExponent);
     }
 
     public static long divide(long value, long other) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
+        long exponent = (int)value;
         long otherSignificand = other >> INT_MAX_BITS;
-        int otherExponent = (int) other;
+        long otherExponent = (int) other;
         long sig = significand << INT_MAX_BITS;
-        return getNormalizedParts(sig / otherSignificand, ((long) exponent) - otherExponent - INT_MAX_BITS);
+        return getNormalizedParts(sig / otherSignificand, exponent - otherExponent - INT_MAX_BITS);
     }
 
     public static long muldiv(long value, long mul, long div) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
+        long exponent = (int)value;
         long mulSignificand = mul >> INT_MAX_BITS;
-        int mulExponent = (int) mul;
+        long mulExponent = (int) mul;
         long divSignificand = div >> INT_MAX_BITS;
-        int divExponent = (int) div;
-        return getNormalizedParts(significand * mulSignificand / divSignificand, ((long) exponent) + mulExponent - divExponent);
+        long divExponent = (int) div;
+        return getNormalizedParts(significand * mulSignificand / divSignificand, exponent + mulExponent - divExponent);
     }
 
     public static long divideToIntegralValue(long value, long other) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
+        long exponent = (int)value;
         long otherSignificand = other >> INT_MAX_BITS;
-        int otherExponent = (int) other;
-        long exp = ((long) exponent) - otherExponent - INT_MAX_BITS;
+        long otherExponent = (int) other;
+        long exp = exponent - otherExponent - INT_MAX_BITS;
         long origSig = significand << INT_MAX_BITS;
         long quotient = origSig / otherSignificand; //regular division
         if (quotient == 0 || exp < -(INT_MAX_BITS*2)) {
@@ -285,10 +282,10 @@ public class Float32ExpLHelpers {
 
     public static long remainder(long value, long other) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
+        long exponent = (int)value;
         long otherSignificand = other >> INT_MAX_BITS;
-        int otherExponent = (int) other;
-        long exp = ((long) exponent) - otherExponent - INT_MAX_BITS;
+        long otherExponent = (int) other;
+        long exp = exponent - otherExponent - INT_MAX_BITS;
         long origSig = significand << INT_MAX_BITS;
         long quotient = origSig / otherSignificand;
         if (quotient == 0 || exp < -(INT_MAX_BITS*2)) {
@@ -298,7 +295,7 @@ public class Float32ExpLHelpers {
         } else {
             long shift = 1L << -exp;
             long truncQuot = quotient / shift * shift * otherSignificand; //truncated to integer at same scale
-            return getNormalizedParts(origSig - truncQuot, (long) (exponent - INT_MAX_BITS));
+            return getNormalizedParts(origSig - truncQuot, exponent - INT_MAX_BITS);
         }
     }
 
@@ -307,10 +304,10 @@ public class Float32ExpLHelpers {
     }
     public static long divideAndRemainder(long value, long other, RemainderSettable outRemainder) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
+        long exponent = (int)value;
         long otherSignificand = other >> INT_MAX_BITS;
-        int otherExponent = (int) other;
-        long exp = ((long) exponent) - otherExponent - INT_MAX_BITS;
+        long otherExponent = (int) other;
+        long exp = exponent - otherExponent - INT_MAX_BITS;
         long origSig = significand << INT_MAX_BITS;
         long quotient = origSig / otherSignificand;
         if (quotient == 0 || exp < -(INT_MAX_BITS*2)) {
@@ -324,7 +321,7 @@ public class Float32ExpLHelpers {
             long intQutot = quotient / shift;
             long truncQuot = intQutot * shift * otherSignificand; //truncated to integer at same scale
             long parts = getLongParts(intQutot);
-            long outParts = getNormalizedParts(origSig - truncQuot, (long) (exponent - INT_MAX_BITS));
+            long outParts = getNormalizedParts(origSig - truncQuot, exponent - INT_MAX_BITS);
             outRemainder.setRemainder(outParts);
             return parts;
         }
@@ -332,7 +329,7 @@ public class Float32ExpLHelpers {
 
     public static long floor(long value) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
+        long exponent = (int)value;
         if (exponent < (-EXPONENT_BIAS - 1)) {
             return significand >= 0 ? ZERO_PATTERN : NEG_ONE_PATTERN;
         } else if (exponent < 0) {
@@ -340,7 +337,7 @@ public class Float32ExpLHelpers {
             if (significand == 0) {
                 exponent = ZERO_EXPONENT;
             }
-            return (significand << INT_MAX_BITS) | (exponent & 0xFFFFFFFFL);
+            return assembleParts(significand, exponent);
         } else {
             return value;
         }
@@ -348,9 +345,9 @@ public class Float32ExpLHelpers {
 
     public static long floor(long value, long other) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
+        long exponent = (int)value;
         long otherSignificand = other >> INT_MAX_BITS;
-        int otherExponent = (int) other;
+        long otherExponent = (int) other;
         if (otherSignificand == 0x80000000) { //if param is negative, then negate it.
             otherSignificand = 0x40000000;
             otherExponent += 1;
@@ -358,7 +355,7 @@ public class Float32ExpLHelpers {
             otherSignificand = -otherSignificand;
         }
         //this.subtract(new Float32ExpL(this).modulo(other))
-        long exp = ((long) exponent) - otherExponent - INT_MAX_BITS;
+        long exp = exponent - otherExponent - INT_MAX_BITS;
         long origSig = significand << INT_MAX_BITS;
         long quotient = origSig / otherSignificand;
         if (quotient == 0 || exp < -(INT_MAX_BITS*2)) {
@@ -367,7 +364,7 @@ public class Float32ExpLHelpers {
         } else if (exp < 0) {
             long shift = 1L << -exp;
             long truncQuot = quotient / shift * shift * otherSignificand; //truncated to integer at same scale
-            long parts = getNormalizedParts(origSig - truncQuot, (long) (exponent - INT_MAX_BITS));
+            long parts = getNormalizedParts(origSig - truncQuot, exponent - INT_MAX_BITS);
             return subtract(value, parts);
         } else {
             return value; //otherwise it was already a multiple. do nothing.
@@ -376,7 +373,7 @@ public class Float32ExpLHelpers {
 
     public static long round(long value) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
+        long exponent = (int)value;
         if (exponent < (-EXPONENT_BIAS - 1)) { //entirely fractional bits. Round to zero
             return ZERO_PATTERN;
         } else if (exponent < 0) { // some fractional bits. Add 0.5, then floor it
@@ -389,15 +386,18 @@ public class Float32ExpLHelpers {
                 significand = 0x80000000;
                 exponent = -EXPONENT_BIAS - 1;
             }
-            return (significand << INT_MAX_BITS) | (exponent & 0xFFFFFFFFL);
+            return assembleParts(significand, exponent);
         } //else no fractional bits
         return value;
     }
 
     public static long round(long value, long other) {
         long halfSignificand = other >> INT_MAX_BITS;
-        int halfExponent = (int) other - 1;
-        long half = (halfSignificand << INT_MAX_BITS) | (halfExponent & 0xFFFFFFFFL);
+        if (halfSignificand == 0) {
+            throw new ArithmeticException("/ by zero");
+        }
+        long halfExponent = (int) other - 1;
+        long half = assembleParts(halfSignificand, halfExponent);
         value = add(value, half);
         return floor(value, other);
     }
@@ -414,7 +414,11 @@ public class Float32ExpLHelpers {
             }
             return value; //do nothing
         } else if (value == TEN_PATTERN) { //10^X
-            return getPowerOf10Parts(otherSignificand << otherExponent); //TODO:check for overflows
+            long pow10exp = ((long) otherSignificand) << otherExponent;
+            if (pow10exp > (1<<(pow10s.length/2))) {
+                throw new ArithmeticException("Power 10 Exponent " + pow10exp + " out of range");
+            }
+            return getPowerOf10Parts((int) pow10exp);
         } else if (other == TWO_PATTERN) { //X^2 = X*X
             return multiply(value, value);
         } else { //N^X
@@ -436,10 +440,10 @@ public class Float32ExpLHelpers {
 
     // this.pow(other) = this.log2().multiply(other).pow2()
     public static long complex_pow(long value, long other) {
-        int significand = (int) (value >> INT_MAX_BITS);
-        int exponent = (int)value;
+        long significand = value >> INT_MAX_BITS;
+        long exponent = (int)value;
         long otherSignificand = other >> INT_MAX_BITS;
-        int otherExponent = (int) other;
+        long otherExponent = (int) other;
         //log2()
         long integer_bits = exponent + EXPONENT_BIAS;
         double pre_log_fract_double = significand * Math.pow(2, -31);
@@ -453,27 +457,29 @@ public class Float32ExpLHelpers {
         double post_pow_fract_double = Math.pow(2, pre_pow_fract_double);
         //assign
         long bits = getDoubleParts(post_pow_fract_double);
-        significand = (int) (bits >> INT_MAX_BITS);
-        long expL = (int) bits + exp;
-        if (expL > Integer.MAX_VALUE) {
-            throw new ArithmeticException("Exponent " + expL + " out of range");
+        significand = bits >> INT_MAX_BITS;
+        exponent = (int) bits + exp;
+        if (exponent > Integer.MAX_VALUE) {
+            throw new ArithmeticException("Exponent " + exponent + " out of range");
         }
-        return (((long) significand) << INT_MAX_BITS) | (expL & 0xFFFFFFFFL);
+        return assembleParts(significand, exponent);
     }
 
     private static boolean verifyNegativeSig(int otherSignificand, int otherExponent) {
         if (otherExponent <= -INT_MAX_BITS) { //exponent definitely not integer
             throw new IllegalArgumentException("exponent for negative base must be an integer");
         } else if (otherExponent <= 0) { //exponent might not be integer
-            int diff = INT_MAX_BITS + otherExponent;
+            long diff = INT_MAX_BITS + otherExponent;
             if ((otherSignificand << diff) != 0) { //exponent isn't integer
                 throw new IllegalArgumentException("exponent for negative base must be an integer");
             }
             if ((otherSignificand << (diff - 1)) == 0x80000000) { //exponent is odd
                 return true;
             }
+            return false;
+        } else /* exponent definitely integer */ {
+            return false;
         }
-        return false;
     }
 
     public static long pow2(long value) {
@@ -486,12 +492,12 @@ public class Float32ExpLHelpers {
         } else if (significand == 0 && exponent == ZERO_EXPONENT) {
             significand = 1 << (INT_MAX_BITS - 2);
             exponent = -EXPONENT_BIAS;
-            return (significand << INT_MAX_BITS) | (exponent & 0xFFFFFFFFL);
+            return assembleParts(significand, exponent);
         }
         int integer_part;
         double pre_fractional_double;
         if (exponent > -INT_MAX_BITS) {
-            int fractional_bits = (exponent < -INT_MAX_BITS) ? INT_MAX_BITS : -exponent;
+            int fractional_bits = -exponent;
             int int_bits = INT_MAX_BITS - fractional_bits - 1;
             integer_part = (int) (significand >> fractional_bits);
             long pre_fraction_long = (significand & ((1 << fractional_bits) - 1)) << int_bits;
@@ -504,24 +510,25 @@ public class Float32ExpLHelpers {
         //assign
         long bits = getDoubleParts(post_fraction_double);
         significand = (int) (bits >> INT_MAX_BITS);
+        //TODO: Check for overflows
         exponent = integer_part + (int) bits;
-        return (significand << INT_MAX_BITS) | (exponent & 0xFFFFFFFFL);
+        return assembleParts(significand, exponent);
     }
 
     public static long log2i(long value) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
+        long exponent = (int)value;
         if (significand <= 0) {
             StringBuilder builder = new StringBuilder("nonpositive value ");
             toString(value, builder);
             throw new IllegalArgumentException(builder.toString());
         }
-        return getLongParts((long)(exponent) + EXPONENT_BIAS);
+        return getLongParts(exponent + EXPONENT_BIAS);
     }
 
     public static long log2(long value) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
+        long exponent = (int)value;
         if (significand <= 0) {
             StringBuilder builder = new StringBuilder("nonpositive value ");
             toString(value, builder);
@@ -551,19 +558,19 @@ public class Float32ExpLHelpers {
 
     public static long abs(long value) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
+        long exponent = (int)value;
         if (significand == 0x80000000) {
             significand = 0x40000000;
             exponent += 1;
         } else if (significand < 0) {
             significand = -significand;
         }
-        return (significand << INT_MAX_BITS) | (exponent & 0xFFFFFFFFL);
+        return assembleParts(significand, exponent);
     }
 
     public static long negate(long value) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
+        long exponent = (int)value;
         if (significand == 0x40000000) {
             significand = 0x80000000;
             exponent -=1;
@@ -573,26 +580,26 @@ public class Float32ExpLHelpers {
         } else{
             significand = -significand;
         }
-        return (significand << INT_MAX_BITS) | (exponent & 0xFFFFFFFFL);
+        return assembleParts(significand, exponent);
     }
 
     public static long shiftLeft(long value, int bits) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
-        return getNormalizedParts(significand, ((long) exponent) + bits);
+        long exponent = (int)value;
+        return getNormalizedParts(significand, exponent + bits);
     }
 
     public static long shiftRight(long value, int bits) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
-        return getNormalizedParts(significand, ((long) exponent) - bits);
+        long exponent = (int)value;
+        return getNormalizedParts(significand, exponent - bits);
     }
 
     public static long min(long value, long other) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
+        long exponent = (int)value;
         long otherSignificand = other >> INT_MAX_BITS;
-        int otherExponent = (int) other;
+        long otherExponent = (int) other;
         if (exponent > otherExponent ||
                 (exponent == otherExponent && significand > otherSignificand)) {
             return other;
@@ -602,9 +609,9 @@ public class Float32ExpLHelpers {
 
     public static long max(long value, long other) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
+        long exponent = (int)value;
         long otherSignificand = other >> INT_MAX_BITS;
-        int otherExponent = (int) other;
+        long otherExponent = (int) other;
         if (exponent < otherExponent ||
                 (exponent == otherExponent && significand < otherSignificand)) {
             return other;
@@ -653,9 +660,9 @@ public class Float32ExpLHelpers {
             throw new IllegalArgumentException("bitsSimilarCount("+bitsSimilarCount+") must be at most 31");
         }
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
+        long exponent = (int)value;
         long otherSignificand = other >> INT_MAX_BITS;
-        int otherExponent = (int) other;
+        long otherExponent = (int) other;
         long max = otherSignificand + (1L << (INT_MAX_BITS - bitsSimilarCount));
         long min = otherSignificand - (1L << (INT_MAX_BITS - bitsSimilarCount));
         if (exponent > otherExponent) {
@@ -675,9 +682,9 @@ public class Float32ExpLHelpers {
 
     public static int compareTo(long value, long other) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
+        long exponent = (int)value;
         long otherSignificand = other >> INT_MAX_BITS;
-        int otherExponent = (int) other;
+        long otherExponent = (int) other;
         if (exponent != otherExponent) {
             return exponent > otherExponent ? 1 : -1;
         } else if (significand != otherSignificand) {
@@ -689,9 +696,9 @@ public class Float32ExpLHelpers {
 
     public static boolean lessThan(long value, long other) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
+        long exponent = (int)value;
         long otherSignificand = other >> INT_MAX_BITS;
-        int otherExponent = (int) other;
+        long otherExponent = (int) other;
         if (exponent != otherExponent) {
             return exponent < otherExponent;
         }
@@ -711,9 +718,9 @@ public class Float32ExpLHelpers {
 
     public static boolean greaterOrEquals(long value, long other) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
+        long exponent = (int)value;
         long otherSignificand = other >> INT_MAX_BITS;
-        int otherExponent = (int) other;
+        long otherExponent = (int) other;
         if (exponent != otherExponent) {
             return exponent > otherExponent;
         }
@@ -722,9 +729,9 @@ public class Float32ExpLHelpers {
 
     public static boolean greaterThan(long value, long other) {
         long significand = value >> INT_MAX_BITS;
-        int exponent = (int)value;
+        long exponent = (int)value;
         long otherSignificand = other >> INT_MAX_BITS;
-        int otherExponent = (int) other;
+        long otherExponent = (int) other;
         if (exponent != otherExponent) {
             return exponent > otherExponent;
         }
@@ -914,51 +921,33 @@ public class Float32ExpLHelpers {
 
     public static long getNormalizedParts(long significand, long exponent) {
         if (significand == 0) {
-            exponent = ZERO_EXPONENT;
+            return ZERO_PATTERN;
+        }
+        long bitpattern = significand >= 0 ? significand : ~significand;
+        int zeroes = Long.numberOfLeadingZeros(bitpattern);
+        int shiftLeft = zeroes - INT_MAX_BITS - 1;
+        if (shiftLeft > 0) {
+            significand = (int)(significand << shiftLeft);
         } else {
-            long bitpattern = significand >= 0 ? significand : ~significand;
-            int zeroes = Long.numberOfLeadingZeros(bitpattern);
-            int shiftLeft = zeroes - INT_MAX_BITS - 1;
-            if (shiftLeft > 0) {
-                significand = (int)(significand << shiftLeft);
-            } else {
-                significand = (int) (significand >> -shiftLeft);
-            }
-            exponent += INT_MAX_BITS + 1 - zeroes;
-            if (INTERNAL_ASSERTS) {
-                assertNormalized((int) significand, exponent);
-            }
-            if (exponent > Integer.MAX_VALUE || exponent < Integer.MIN_VALUE) {
-                throw new ArithmeticException("Exponent " + exponent + " out of range");
-            }
+            significand = (int) (significand >> -shiftLeft);
+        }
+        exponent += INT_MAX_BITS + 1 - zeroes;
+        return assembleParts(significand, exponent);
+    }
+
+    public static long assembleParts(long significand, long exponent) {
+        if (exponent > Integer.MAX_VALUE || exponent < Integer.MIN_VALUE) {
+            throw new ArithmeticException("Exponent " + exponent + " out of range");
+        }
+        if (INTERNAL_ASSERTS) {
+            assertNormalized(significand, exponent);
         }
         return (significand << INT_MAX_BITS) | (exponent & 0xFFFFFFFFL);
     }
 
-    public static int longToSignificand(long v) {
-        long bitpattern = v >= 0 ? v : ~v;
-        int zeroes = Long.numberOfLeadingZeros(bitpattern);
-        int shiftLeft = zeroes - INT_MAX_BITS - 1;
-        if (shiftLeft >= 0) {
-            return (int)(v << shiftLeft);
-        } else {
-            return (int) (v >> -shiftLeft);
-        }
-    }
-
-    public static int longToExponent(long v) {
-        long bitpattern = v >= 0 ? v : ~v;
-        int zeroes = Long.numberOfLeadingZeros(bitpattern);
-        if (v != 0) {
-            return INT_MAX_BITS + 1 - zeroes;
-        } else /*if (v == 0)*/ {
-            return ZERO_EXPONENT;
-        }
-    }
-
     public static long getLongParts(long v) {
         if (v == 0) {
-            return ZERO_EXPONENT & 0xFFFFFFFFL;
+            return ZERO_PATTERN;
         }
         long bitpattern = v >= 0 ? v : ~v;
         int zeroes = Long.numberOfLeadingZeros(bitpattern);
@@ -972,7 +961,7 @@ public class Float32ExpLHelpers {
             throw new UnsupportedOperationException("Float32ExpL doesn't support INF or NAN");
         }
         if (val == 0.0) {
-            return ZERO_EXPONENT & 0xFFFFFFFFL;
+            return ZERO_PATTERN;
         }
         long bits = Double.doubleToRawLongBits(val);
         int exponent_bits = (int) ((bits & 0x7ff0000000000000L) >> 52);
@@ -1006,17 +995,21 @@ public class Float32ExpLHelpers {
             }
             exp = -1041 - zeroes;
         }
-        return (sig << INT_MAX_BITS) | (exp & 0xFFFFFFFFL);
+        return assembleParts(sig, exp);
     }
 
     //TODO: Remove custom Assert dependency
-    private static void assertNormalized(int significand, long exponent) {
-        if (significand > 0) {
+    private static void assertNormalized(long significand, long exponent) {
+        if (significand > Integer.MAX_VALUE || significand < Integer.MIN_VALUE) {
+            Assert.fail("significand " + significand + " is out of range");
+        } else  if (exponent > Integer.MAX_VALUE || exponent < Integer.MIN_VALUE) {
+            Assert.fail("exponent " + exponent + " is out of range");
+        } else if (significand > 0) {
             Assert.assertEqualsHex("MSB not set", significand | 0x40000000, significand);
         } else if (significand < 0) {
             Assert.assertEqualsHex("MSB not unset", significand & ~0x40000000, significand);
         } else {
-            Assert.assertEqualsHex("zero has has wrong exponent", ZERO_EXPONENT, exponent);
+            Assert.assertEqualsHex("zero has has wrong exponent", ZERO_EXPONENT, (int) exponent);
         }
     }
 
