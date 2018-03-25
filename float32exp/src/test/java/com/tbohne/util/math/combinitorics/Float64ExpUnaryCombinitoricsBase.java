@@ -11,7 +11,7 @@ public class Float64ExpUnaryCombinitoricsBase {
 
     @Parameters(name = "{0}")
     public static ArrayList<Object[]> data() {
-        ArrayList<Object[]> list = new ArrayList<>(11);
+        ArrayList<Object[]> list = new ArrayList<>(13);
         for(int i=0; i<13; ++i) {
             list.add(new Object[]{6-i});
         }

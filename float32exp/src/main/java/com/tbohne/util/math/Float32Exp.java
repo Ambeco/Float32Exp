@@ -275,6 +275,24 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
         return this;
     }
 
+    public Float32ExpChainedExpression floor() {
+        if (exponent < (-EXPONENT_BIAS - 1)) {
+            if (significand >= 0) {
+                significand = 0;
+                exponent = ZERO_EXPONENT;
+            } else {
+                significand = 0x80000000; // -1
+                exponent = -EXPONENT_BIAS - 1;
+            }
+        } else if (exponent < 0) {
+            significand = significand >> -exponent << -exponent;
+            if (significand == 0) {
+                exponent = ZERO_EXPONENT;
+            }
+        }
+        return this;
+    }
+
     public Float32ExpChainedExpression floor(IFloat32Exp val) {return floorImpl(val.significand(), val.exponent());}
     public Float32ExpChainedExpression floor(long val) {return floorImpl(getLongParts(val));}
     public Float32ExpChainedExpression floor(double val) {return floorImpl(getDoubleParts(val));}
@@ -299,6 +317,22 @@ public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChaine
             long parts = getNormalizedParts(origSig - truncQuot, (long) (exponent - INT_MAX_BITS));
             subtractImpl((int) (parts >> INT_MAX_BITS), (int) parts);
         } //otherwise it was already a multiple. do nothing.
+        return this;
+    }
+
+    public Float32ExpChainedExpression round() {
+        if (exponent < (-EXPONENT_BIAS - 1)) { //entirely fractional bits. Round to zero
+            significand = 0;
+            exponent = ZERO_EXPONENT;
+        } else if (exponent < 0) { // some fractional bits. Add 0.5, then floor it
+            addImpl(0x40000000, -EXPONENT_BIAS - 1);
+            if (exponent >= -EXPONENT_BIAS) {
+                significand = significand >> -exponent << -exponent; //floor
+            } else { // [0 to -1] rounds the wrong way. Force it the right way
+                significand = 0x80000000;
+                exponent = -EXPONENT_BIAS - 1;
+            }
+        } //else no fractional bits
         return this;
     }
 

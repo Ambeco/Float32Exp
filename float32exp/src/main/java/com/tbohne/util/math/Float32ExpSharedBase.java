@@ -11,7 +11,6 @@ import java.math.BigInteger;
 /*package*/ class Float32ExpSharedBase extends Number implements IFloat32Exp {
     private static final long serialVersionUID = 1L;
     /*package*/ static final int INT_MAX_BITS = 32;
-    /*package*/ static final int LONG_MAX_BITS = 64;
     /*package*/ static final int EXPONENT_BIAS = 30;
     /*package*/ static final int ZERO_EXPONENT = Integer.MIN_VALUE;
     private static final double INV_LOG10 = 0.30102999566398114; // 1/lg(10)
