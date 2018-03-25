@@ -1,4 +1,4 @@
-package com.tbohne.util.math;
+package com.tbohne.util.math.combinitorics;
 
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;

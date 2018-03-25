@@ -1,6 +1,7 @@
-package com.tbohne.util.math;
+package com.tbohne.util.math.combinitorics;
 
-import org.junit.Ignore;
+import com.tbohne.util.math.Float32Exp;
+import com.tbohne.util.math.Float64ExpTestUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
