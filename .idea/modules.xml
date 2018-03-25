@@ -2,13 +2,14 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Float32Exp.iml" filepath="$PROJECT_DIR$/Float32Exp.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32ExpPerf/float32ExpPerf.iml" filepath="$PROJECT_DIR$/.idea/modules/float32ExpPerf/float32ExpPerf.iml" group="float32ExpPerf" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32ExpPerf/float32ExpPerf_main.iml" filepath="$PROJECT_DIR$/.idea/modules/float32ExpPerf/float32ExpPerf_main.iml" group="float32ExpPerf" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32ExpPerf/float32ExpPerf_test.iml" filepath="$PROJECT_DIR$/.idea/modules/float32ExpPerf/float32ExpPerf_test.iml" group="float32ExpPerf" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32exp/float32exp.iml" filepath="$PROJECT_DIR$/.idea/modules/float32exp/float32exp.iml" group="float32exp" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32exp/float32exp_main.iml" filepath="$PROJECT_DIR$/.idea/modules/float32exp/float32exp_main.iml" group="float32exp" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32exp/float32exp_test.iml" filepath="$PROJECT_DIR$/.idea/modules/float32exp/float32exp_test.iml" group="float32exp" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Github-float32exp.iml" filepath="$PROJECT_DIR$/.idea/modules/Github-float32exp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32exp.iml" filepath="$PROJECT_DIR$/.idea/modules/float32exp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32exp/float32exp-float32exp.iml" filepath="$PROJECT_DIR$/.idea/modules/float32exp/float32exp-float32exp.iml" group="float32exp" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32exp/float32exp-float32exp_main.iml" filepath="$PROJECT_DIR$/.idea/modules/float32exp/float32exp-float32exp_main.iml" group="float32exp" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32exp/float32exp-float32exp_test.iml" filepath="$PROJECT_DIR$/.idea/modules/float32exp/float32exp-float32exp_test.iml" group="float32exp" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32expPerf.iml" filepath="$PROJECT_DIR$/.idea/modules/float32expPerf.iml" group="float32expPerf" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32expPerf/float32expPerf_main.iml" filepath="$PROJECT_DIR$/.idea/modules/float32expPerf/float32expPerf_main.iml" group="float32expPerf" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32expPerf/float32expPerf_test.iml" filepath="$PROJECT_DIR$/.idea/modules/float32expPerf/float32expPerf_test.iml" group="float32expPerf" />
     </modules>
   </component>
 </project>

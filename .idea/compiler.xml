@@ -2,10 +2,10 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
-      <module name="float32exp_main" target="1.7" />
-      <module name="float32exp_test" target="1.7" />
-      <module name="float32ExpPerf_main" target="1.8" />
-      <module name="float32ExpPerf_test" target="1.8" />
+      <module name="float32exp-float32exp_main" target="1.8" />
+      <module name="float32exp-float32exp_test" target="1.8" />
+      <module name="float32expPerf_main" target="1.8" />
+      <module name="float32expPerf_test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

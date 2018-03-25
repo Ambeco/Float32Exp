@@ -1,1 +1,4 @@
-include ':float32exp', ':float32ExpPerf'
+rootProject.name = 'float32exp'
+include 'float32exp'
+include 'float32expPerf'
+
