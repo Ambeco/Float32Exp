@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="float32exp-float32exp.float32exp-1.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/float32exp/build/libs/float32exp-1.0-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

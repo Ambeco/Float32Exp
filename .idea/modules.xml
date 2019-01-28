@@ -3,16 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Github-float32exp.iml" filepath="$PROJECT_DIR$/.idea/modules/Github-float32exp.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32exp.iml" filepath="$PROJECT_DIR$/.idea/modules/float32exp.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32exp/float32exp-float32exp.iml" filepath="$PROJECT_DIR$/.idea/modules/float32exp/float32exp-float32exp.iml" group="float32exp" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32exp/float32exp-float32exp_main.iml" filepath="$PROJECT_DIR$/.idea/modules/float32exp/float32exp-float32exp_main.iml" group="float32exp" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32exp/float32exp-float32exp_test.iml" filepath="$PROJECT_DIR$/.idea/modules/float32exp/float32exp-float32exp_test.iml" group="float32exp" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32expPerf.iml" filepath="$PROJECT_DIR$/.idea/modules/float32expPerf.iml" group="float32expPerf" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32expPerf/float32expPerf_main.iml" filepath="$PROJECT_DIR$/.idea/modules/float32expPerf/float32expPerf_main.iml" group="float32expPerf" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32expPerf/float32expPerf_test.iml" filepath="$PROJECT_DIR$/.idea/modules/float32expPerf/float32expPerf_test.iml" group="float32expPerf" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32expl.iml" filepath="$PROJECT_DIR$/.idea/modules/float32expl.iml" group="float32expl" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32expl/float32expl_main.iml" filepath="$PROJECT_DIR$/.idea/modules/float32expl/float32expl_main.iml" group="float32expl" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32expl/float32expl_test.iml" filepath="$PROJECT_DIR$/.idea/modules/float32expl/float32expl_test.iml" group="float32expl" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32exp/float32exp-float32exp.iml" filepath="$PROJECT_DIR$/.idea/modules/float32exp/float32exp-float32exp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32expPerf/float32expPerf.iml" filepath="$PROJECT_DIR$/.idea/modules/float32expPerf/float32expPerf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/float32expl/float32expl.iml" filepath="$PROJECT_DIR$/.idea/modules/float32expl/float32expl.iml" />
     </modules>
   </component>
 </project>
