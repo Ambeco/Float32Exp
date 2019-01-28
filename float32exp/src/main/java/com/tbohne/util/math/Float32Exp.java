@@ -43,7 +43,6 @@ import java.math.BigInteger;
  *
  * TODO: There seems to be more methods in BigDecimal to emulate
  */
-@Deprecated
 public class Float32Exp extends Float32ExpSharedBase implements Float32ExpChainedExpression {
     public Float32Exp() {super(0, ZERO_EXPONENT);}
     public Float32Exp(char[] in, int offset, int len) {set(in, offset, len);}

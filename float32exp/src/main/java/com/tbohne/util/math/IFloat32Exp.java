@@ -7,7 +7,6 @@ import java.math.BigInteger;
 /**
  * @deprecated use IFLoat32ExpL instead
  */
-@Deprecated
 public interface IFloat32Exp extends Comparable<IFloat32Exp>, Serializable {
     interface ExponentToStringInterface {
         void addExponent(StringBuilder stringBuilder, int exponent);

@@ -1,26 +1,23 @@
 package com.tbohne.utilperf;
 
-import com.tbohne.util.math.Float32Exp;
-import com.tbohne.util.math.Float32ExpL;
-
 import java.math.BigDecimal;
 
 import static com.tbohne.utilperf.Config.CPU_PERF_MULTIPLIER;
 
-public class FromStringTests {
-    public static long intTest(int bitOffset) {
+class FromStringTests {
+    static long intTest(int bitOffset) {
         return 0;
     }
 
-    public static long longTest(int bitOffset) {
+    static long longTest(int bitOffset) {
         return 0;
     }
 
-    public static long doubleTest(int bitOffset) {
+    static long doubleTest(int bitOffset) {
         return 0;
     }
 
-    public static long doubleClassTest(int bitOffset) {
+    static long doubleClassTest(int bitOffset) {
         String string = "1E" + bitOffset;
         int first = 0;
         long count = (long) (1212389168/bitOffset*CPU_PERF_MULTIPLIER);
@@ -30,11 +27,11 @@ public class FromStringTests {
         return count + (first!=-1?0:1);
     }
 
-    public static long bigIntegerTest(int bitOffset) {
+    static long bigIntegerTest(int bitOffset) {
         return 0;
     }
 
-    public static long bigDecimalTest(int bitOffset) {
+    static long bigDecimalTest(int bitOffset) {
         String string = "1E" + bitOffset;
         int first = 0;
         long count = (long) (37017270*CPU_PERF_MULTIPLIER);
@@ -44,7 +41,7 @@ public class FromStringTests {
         return count + (first!=-1?0:1);
     }
 
-    public static long float64ExpTest(int bitOffset) {
+    static long float64ExpTest(int bitOffset) {
         String string = "1E" + bitOffset;
         int first = 0;
         long count = (long) (51249375*CPU_PERF_MULTIPLIER);
@@ -54,7 +51,7 @@ public class FromStringTests {
         return count + (first!=-1?0:1);
     }
 
-    public static long float64ExpLTest(int bitOffset) {
+    static long float64ExpLTest(int bitOffset) {
         String string = "1E" + bitOffset;
         int first = 0;
         long count = (long) (51249375*CPU_PERF_MULTIPLIER);

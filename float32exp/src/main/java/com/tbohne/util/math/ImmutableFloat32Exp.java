@@ -19,7 +19,6 @@ import java.math.BigInteger;
  * Also, it doesn't accept a MathContext, everything is fixed. Some functionality that's tied to
  * the BigDecimal internals are elided, like scale() and precision().
  */
-@Deprecated
 public class ImmutableFloat32Exp extends Float32ExpSharedBase {
     public static final ImmutableFloat32Exp NEGATIVE_ONE = new ImmutableFloat32Exp(-1);
     public static final ImmutableFloat32Exp ZERO = new ImmutableFloat32Exp(0);

@@ -15,7 +15,7 @@ import static com.tbohne.utilperf.Config.CPU_PERF_MULTIPLIER;
  * more than five seconds, the value is followed by a -.
  * Each category starts by running each test with no offset, to warm the cache and CPU, for more consistent results.
  */
-public class Main {
+class Main {
     private static final double MILLIS_PER_SEC = 1000.0;
 
     private static final int MIN_EXPONENT = 5;
@@ -28,7 +28,7 @@ public class Main {
         TO_STRING,
         FROM_STRING,
         LCG_RNG,
-    };
+    }
     private static final boolean[] DO_CATEGORY = new boolean[]{
             false,
             false,
@@ -41,9 +41,9 @@ public class Main {
         long run(int bitOffset);
     }
     private static class TypeToTest {
-        public final String typeName;
-        public final TestFn[] Tests;
-        public TypeToTest(String typeName, TestFn[] Tests) {
+        final String typeName;
+        final TestFn[] Tests;
+        TypeToTest(String typeName, TestFn[] Tests) {
             this.typeName = typeName;
             this.Tests = Tests;
             assert(TestFnCategory.values().length == Tests.length);
@@ -116,12 +116,12 @@ public class Main {
             }),
     };
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         System.out.println("ALL MEASUREMENTS OPS/SEC (BIGGER IS BETTER)");
         DecimalFormat smallFormat = new DecimalFormat(".###");
         DecimalFormat largeFormat = new DecimalFormat("#,###");
         for(int catIdx = 0; catIdx < TestFnCategory.values().length; catIdx++) {
-            if (!DO_CATEGORY[catIdx]) continue;;
+            if (!DO_CATEGORY[catIdx]) continue;
             TestFnCategory category = TestFnCategory.values()[catIdx];
             System.out.println(category.toString() + " Test:");
             //header
