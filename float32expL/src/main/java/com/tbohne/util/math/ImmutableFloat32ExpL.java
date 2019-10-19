@@ -48,6 +48,11 @@ public class ImmutableFloat32ExpL extends Number implements IFloat32ExpL {
     public static final ImmutableFloat32ExpL LOG_2 = new ImmutableFloat32ExpL(0.30102999566);
     public static final ImmutableFloat32ExpL LG_10 = new ImmutableFloat32ExpL(3.32192809489);
 
+    public static final ImmutableFloat32ExpL MAX_POSITIVE = new ImmutableFloat32ExpL(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    public static final ImmutableFloat32ExpL MIN_POSITIVE = new ImmutableFloat32ExpL(0x40000000, Integer.MIN_VALUE);
+    public static final ImmutableFloat32ExpL MAX_NEGATIVE = new ImmutableFloat32ExpL(Integer.MIN_VALUE, Integer.MAX_VALUE);
+    public static final ImmutableFloat32ExpL MIN_NEGATIVE = new ImmutableFloat32ExpL(0x80000000, Integer.MIN_VALUE);
+
     private final long parts;
 
     public ImmutableFloat32ExpL() {parts = Float32ExpLHelpers.ZERO_PATTERN;}

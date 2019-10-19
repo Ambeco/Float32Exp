@@ -10,13 +10,13 @@ import java.math.BigInteger;
  * This is the shared logic of Float32ExpL and ImmutableFloat32ExpL.
  */
 public class Float32ExpLHelpers {
-    public static final int INT_MAX_BITS = 32;
+    static final int INT_MAX_BITS = 32;
     private static final int EXPONENT_BIAS = 30;
     private static final int ZERO_EXPONENT = Integer.MIN_VALUE;
     private static final double INV_LOG10 = 0.30102999566398114; // 1/lg(10)
     private static final boolean INTERNAL_ASSERTS = false;
 
-    public static final long ZERO_PATTERN = (ZERO_EXPONENT & 0xFFFFFFFFL);
+    static final long ZERO_PATTERN = (ZERO_EXPONENT & 0xFFFFFFFFL);
     private static final long HALF_PATTERN = getDoubleParts(0.5);
     private static final long ONE_PATTERN = getLongParts(1);
     private static final long TWO_PATTERN = getLongParts(2);

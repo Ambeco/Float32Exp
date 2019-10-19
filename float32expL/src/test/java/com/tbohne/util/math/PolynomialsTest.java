@@ -1,0 +1,85 @@
+package com.tbohne.util.math;
+
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
+
+public class PolynomialsTest {
+    private List<Float32ExpL> createList(double...vs) {
+        List<Float32ExpL> r = new ArrayList<>(vs.length);
+        for (int i = 0; i < vs.length; i++) {
+            r.add(i, new Float32ExpL(vs[i]));
+        }
+        return r;
+    }
+    private void assertAt(List<Float32ExpL> polynomial, double expected, double x) {
+        Float32ExpL y = Polynomials.at(polynomial, new ImmutableFloat32ExpL(x));
+        assertEquals(new ImmutableFloat32ExpL(expected), y);
+    }
+
+    @Test
+    public void whenInputAllSetThenAtIsCorrect() {
+        List<Float32ExpL> in = createList(7, 5, 3);
+
+        assertAt(in, 7, 0);
+        assertAt(in, 15, 1);
+        assertAt(in, 29, 2);
+        assertAt(in, 49, 3);
+    }
+
+    @Test
+    public void whenInputAllSetThenDeriveCorrect() {
+        List<Float32ExpL> in = createList(7, 5, 3);
+
+        List<Float32ExpL> result = Polynomials.derive(in);
+
+        List<Float32ExpL> expected = createList(5, 6);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void whenInputAllSetThenIntegrateCorrect() {
+        List<Float32ExpL> in = createList(5, 6);
+
+        List<Float32ExpL> result = Polynomials.integrate(in);
+
+        List<Float32ExpL> expected = createList(0, 5, 3);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void whenDestinationShorterThenValuesThenSumIsCorrect() {
+        List<Float32ExpL> dest = createList(5, 6);
+        List<Float32ExpL> values = createList(7, 8, 9);
+
+        Polynomials.sum(dest, values);
+
+        List<Float32ExpL> expected = createList(12, 14, 9);
+        assertEquals(expected, dest);
+    }
+
+    @Test
+    public void whenDestinationEqualLengthAsValuesThenSumIsCorrect() {
+        List<Float32ExpL> dest = createList(5, 6, 10);
+        List<Float32ExpL> values = createList(7, 8, 9);
+
+        Polynomials.sum(dest, values);
+
+        List<Float32ExpL> expected = createList(12, 14, 19);
+        assertEquals(expected, dest);
+    }
+
+    @Test
+    public void whenDestinationLongerThanValuesThenSumIsCorrect() {
+        List<Float32ExpL> dest = createList(5, 6, 10);
+        List<Float32ExpL> values = createList(7, 8);
+
+        Polynomials.sum(dest, values);
+
+        List<Float32ExpL> expected = createList(12, 14, 10);
+        assertEquals(expected, dest);
+    }
+}
