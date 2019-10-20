@@ -19,7 +19,7 @@ class Main {
     private static final double MILLIS_PER_SEC = 1000.0;
 
     private static final int MIN_EXPONENT = 5;
-    private static final int MAX_EXPONENT = 8;
+    private static final int MAX_EXPONENT = 9;
 
     private enum TestFnCategory {
         ADDITION,
@@ -34,8 +34,8 @@ class Main {
             false,
             false,
             true,
-            true,
-            true,
+            false,
+            false,
     };
     private interface TestFn {
         long run(int bitOffset);
@@ -50,38 +50,38 @@ class Main {
         }
     }
     private static final TypeToTest[] TYPES = new TypeToTest[]{
-            new TypeToTest("int", new TestFn[] {
-                    AdditionPerfTests::intTest,
-                    MultiplicationPerfTests::intTest,
-                    PowerPerfTests::intTest,
-                    ToStringTests::intTest,
-                    FromStringTests::intTest,
-                    LCGRNGTests::intTest,
-            }),
-            new TypeToTest("long", new TestFn[] {
-                    AdditionPerfTests::longTest,
-                    MultiplicationPerfTests::longTest,
-                    PowerPerfTests::longTest,
-                    ToStringTests::longTest,
-                    FromStringTests::longTest,
-                    LCGRNGTests::longTest,
-            }),
-            new TypeToTest("double", new TestFn[] {
-                    AdditionPerfTests::doubleTest,
-                    MultiplicationPerfTests::doubleTest,
-                    PowerPerfTests::doubleTest,
-                    ToStringTests::doubleTest,
-                    FromStringTests::doubleTest,
-                    LCGRNGTests::doubleTest,
-            }),
-            new TypeToTest("Double", new TestFn[] {
-                    AdditionPerfTests::doubleClassTest,
-                    MultiplicationPerfTests::doubleClassTest,
-                    PowerPerfTests::doubleClassTest,
-                    ToStringTests::doubleClassTest,
-                    FromStringTests::doubleClassTest,
-                    LCGRNGTests::doubleClassTest,
-            }),
+//            new TypeToTest("int", new TestFn[] {
+//                    AdditionPerfTests::intTest,
+//                    MultiplicationPerfTests::intTest,
+//                    PowerPerfTests::intTest,
+//                    ToStringTests::intTest,
+//                    FromStringTests::intTest,
+//                    LCGRNGTests::intTest,
+//            }),
+//            new TypeToTest("long", new TestFn[] {
+//                    AdditionPerfTests::longTest,
+//                    MultiplicationPerfTests::longTest,
+//                    PowerPerfTests::longTest,
+//                    ToStringTests::longTest,
+//                    FromStringTests::longTest,
+//                    LCGRNGTests::longTest,
+//            }),
+//            new TypeToTest("double", new TestFn[] {
+//                    AdditionPerfTests::doubleTest,
+//                    MultiplicationPerfTests::doubleTest,
+//                    PowerPerfTests::doubleTest,
+//                    ToStringTests::doubleTest,
+//                    FromStringTests::doubleTest,
+//                    LCGRNGTests::doubleTest,
+//            }),
+//            new TypeToTest("Double", new TestFn[] {
+//                    AdditionPerfTests::doubleClassTest,
+//                    MultiplicationPerfTests::doubleClassTest,
+//                    PowerPerfTests::doubleClassTest,
+//                    ToStringTests::doubleClassTest,
+//                    FromStringTests::doubleClassTest,
+//                    LCGRNGTests::doubleClassTest,
+//            }),
             new TypeToTest("BigInteger", new TestFn[] {
                     AdditionPerfTests::bigIntegerTest,
                     MultiplicationPerfTests::bigIntegerTest,

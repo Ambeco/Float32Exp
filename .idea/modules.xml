@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/Github-float32exp.iml" filepath="$PROJECT_DIR$/Github-float32exp.iml" />
       <module fileurl="file://$PROJECT_DIR$/float32expPerf/float32expPerf.iml" filepath="$PROJECT_DIR$/float32expPerf/float32expPerf.iml" />
       <module fileurl="file://$PROJECT_DIR$/float32expl/float32expl.iml" filepath="$PROJECT_DIR$/float32expl/float32expl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/float32textview/float32textview.iml" filepath="$PROJECT_DIR$/float32textview/float32textview.iml" />
     </modules>
   </component>
 </project>

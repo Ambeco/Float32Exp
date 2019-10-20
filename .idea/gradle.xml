@@ -8,7 +8,17 @@
         </compositeConfiguration>
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/float32exp" />
+            <option value="$PROJECT_DIR$/float32expPerf" />
+            <option value="$PROJECT_DIR$/float32expl" />
+            <option value="$PROJECT_DIR$/float32textview" />
+          </set>
+        </option>
         <option name="resolveModulePerSourceSet" value="false" />
+        <option name="testRunner" value="PLATFORM" />
       </GradleProjectSettings>
     </option>
   </component>
