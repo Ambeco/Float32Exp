@@ -4,9 +4,10 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/float32exp/Float32Exp-float32exp.iml" filepath="$PROJECT_DIR$/float32exp/Float32Exp-float32exp.iml" />
       <module fileurl="file://$PROJECT_DIR$/Github-float32exp.iml" filepath="$PROJECT_DIR$/Github-float32exp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/float32Animator/float32Animator.iml" filepath="$PROJECT_DIR$/float32Animator/float32Animator.iml" />
       <module fileurl="file://$PROJECT_DIR$/float32expPerf/float32expPerf.iml" filepath="$PROJECT_DIR$/float32expPerf/float32expPerf.iml" />
       <module fileurl="file://$PROJECT_DIR$/float32expl/float32expl.iml" filepath="$PROJECT_DIR$/float32expl/float32expl.iml" />
-      <module fileurl="file://$PROJECT_DIR$/float32textview/float32textview.iml" filepath="$PROJECT_DIR$/float32textview/float32textview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/floatanimatorperf/floatanimatorperf.iml" filepath="$PROJECT_DIR$/floatanimatorperf/floatanimatorperf.iml" />
     </modules>
   </component>
 </project>

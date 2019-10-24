@@ -1,0 +1,13 @@
+version 'unspecified'
+
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    implementation project(path: ':float32exp')
+    implementation project(path: ':float32expl')
+}

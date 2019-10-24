@@ -1,0 +1,4 @@
+<resources>
+	<string name="app_name">FloatAnimatorPerf</string>
+	<string name="tostringthread">ToStringThread</string>
+</resources>

@@ -30,6 +30,7 @@ public class Float64ExpLIntValuesTest {
     public void whenConstructedFromPositiveLongThenInternalsAreCorrect() {
         Float64ExpLTestUtils.setAndAssertBits(1099511627776L, 0x40000000, 10, mDecimal);
         Float64ExpLTestUtils.setAndAssertBits(1649267441664L, 0x60000000, 10, mDecimal);
+        Float64ExpLTestUtils.setAndAssertBits(1571810537116L, 0x5B7DCD5B, 10, mDecimal);
     }
 
     @Test
