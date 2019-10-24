@@ -7,6 +7,7 @@ import static com.tbohne.util.math.Float32ExpLHelpers.INT_MAX_BITS;
 import static com.tbohne.util.math.Float32ExpLHelpers.cast;
 import static com.tbohne.util.math.Float32ExpLHelpers.getDoubleParts;
 import static com.tbohne.util.math.Float32ExpLHelpers.getLongParts;
+import static com.tbohne.util.math.Float32ExpLHelpers.getNormalizedParts;
 
 /**
  * A mutable fixed-precision signed decimal.
@@ -66,7 +67,7 @@ public class ImmutableFloat32ExpL extends Number implements IFloat32ExpL {
     public ImmutableFloat32ExpL(BigInteger val) {parts = cast(val);}
     public ImmutableFloat32ExpL(IFloat32ExpL val) {parts = val.getParts();}
     public ImmutableFloat32ExpL(long newParts, boolean ISolmnlySwearIKnowWhatImDoing) {parts = newParts;}
-    public ImmutableFloat32ExpL(int significand, int exponent) {parts = (((long) significand) << INT_MAX_BITS) | (exponent & 0xFFFFFFFFL);}
+    public ImmutableFloat32ExpL(int significand, int exponent) {parts = getNormalizedParts(significand, exponent);}
 
     public static ImmutableFloat32ExpL getPowerOf10(int exponent) {
         return new ImmutableFloat32ExpL(Float32ExpLHelpers.getPowerOf10Parts(exponent), true);
