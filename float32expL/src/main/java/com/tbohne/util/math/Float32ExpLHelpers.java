@@ -798,9 +798,29 @@ public class Float32ExpLHelpers {
             maxSig = longSig + 1; //longSig was crafted to have an unused bit on the right
             minSig = longSig - 1; //giving us room for interact with "an extra bit" of rounding
         }
+        return toStringImpl(sb,
+                min_digits,
+                max_digits,
+                exponentMultiple,
+                exponentToString,
+                (int) base10Exp,
+                minSig,
+                maxSig,
+                oneSig);
+    }
+
+    private static StringBuilder toStringImpl(StringBuilder sb,
+            int min_digits,
+            int max_digits,
+            int exponentMultiple,
+            ExponentToStringInterface exponentToString,
+            int base10Exp,
+            long minSig,
+            long maxSig,
+            long oneSig) {
         //calculate display exponent and digit counts
-        int digitsBeforeDecimal = (int) base10Exp % exponentMultiple + 1;
-        int displayExponent = (int) base10Exp - digitsBeforeDecimal + 1;
+        int digitsBeforeDecimal = base10Exp % exponentMultiple + 1;
+        int displayExponent = base10Exp - digitsBeforeDecimal + 1;
         int minDigitsAfterDecimal = min_digits - digitsBeforeDecimal;
         int maxDigitsAfterDecimal = max_digits - digitsBeforeDecimal;
         //show digits before decimal
@@ -952,7 +972,7 @@ public class Float32ExpLHelpers {
         long bitpattern = v >= 0 ? v : ~v;
         int zeroes = Long.numberOfLeadingZeros(bitpattern);
         int exp = INT_MAX_BITS + 1 - zeroes;
-        long sig = v << (-exp + INT_MAX_BITS);
+        long sig = (v << (-exp + INT_MAX_BITS)) & 0xFFFFFFFF00000000L;
         return sig | (exp & 0xFFFFFFFFL);
     }
 
