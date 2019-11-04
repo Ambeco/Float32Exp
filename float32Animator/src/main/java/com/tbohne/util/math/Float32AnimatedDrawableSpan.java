@@ -91,9 +91,6 @@ public class Float32AnimatedDrawableSpan extends ImageSpan {
 	@Override
 	public void draw(@NonNull Canvas canvas, CharSequence text, @IntRange(from = 0) int start, @IntRange(from = 0) int end, float x,
 			int top, int y, int bottom, @NonNull Paint paint) {
-		//int left = start<end?start:end;
-		//int right = start<end?end:start;
-		//drawable.setBounds(left, top, right, bottom);
 		drawable.setPaint(paint);
 		super.draw(canvas, text, start, end, x, top, y, bottom, paint);
 	}
