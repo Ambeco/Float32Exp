@@ -208,9 +208,9 @@ public class Float32ExpL extends Number implements Float32ExpLChainedExpression,
     public StringBuilder toString(StringBuilder sb) {return Float32ExpLHelpers.toString(parts, sb);}
     public String toEngineeringString() {return Float32ExpLHelpers.toEngineeringString(parts, new StringBuilder()).toString();}
     public StringBuilder toEngineeringString(StringBuilder sb) {return Float32ExpLHelpers.toEngineeringString(parts, sb);}
-    public StringBuilder toString(StringBuilder sb, int min_digits, int max_dgits, int exponentMultiple,
+    public StringBuilder toString(StringBuilder sb, int minDigits, int maxDigits, int exponentMultiple,
                                   ExponentToStringInterface exponentToString) {
-        return Float32ExpLHelpers.toString(parts, sb, min_digits, max_dgits, exponentMultiple, exponentToString);
+        return Float32ExpLHelpers.toString(parts, sb, minDigits, maxDigits, exponentMultiple, exponentToString);
     }
     public StringBuilder toBNotationString(StringBuilder sb) {return Float32ExpLHelpers.toBNotationString(parts, sb);}
     public StringBuilder toHexString(StringBuilder sb) {return Float32ExpLHelpers.toHexString(parts, sb);}

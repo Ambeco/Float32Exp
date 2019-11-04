@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import static com.tbohne.util.math.Float32ExpLHelpers.INT_MAX_BITS;
-
 public interface IFloat32ExpL extends Comparable<IFloat32ExpL>, Serializable {
     interface ExponentToStringInterface {
         void addExponent(StringBuilder stringBuilder, int exponent);
@@ -50,7 +48,7 @@ public interface IFloat32ExpL extends Comparable<IFloat32ExpL>, Serializable {
     StringBuilder toString(StringBuilder sb);
     String toEngineeringString();
     StringBuilder toEngineeringString(StringBuilder sb);
-    StringBuilder toString(StringBuilder sb, int min_digits, int max_digits, int exponentMultiple,
+    StringBuilder toString(StringBuilder sb, int minDigits, int maxDigits, int exponentMultiple,
                            ExponentToStringInterface exponentToString);
     StringBuilder toBNotationString(StringBuilder sb);
 }

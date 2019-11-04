@@ -3,9 +3,6 @@ package com.tbohne.util;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import static com.tbohne.util.Assert.assertAtLeast;
-import static com.tbohne.util.Assert.assertAtMost;
-
 /**
  * This is the shared logic of Decimal128 and ImmutableDecimal128.
  */
@@ -379,7 +376,7 @@ import static com.tbohne.util.Assert.assertAtMost;
         return toString(sb, ENG_MIN_PRECISION, ENG_MAX_PRECISION,
                 ENG_STRING_EXPONENT_MULTIPLE, DEFAULT_EXPONENT_TO_STRING);
     }
-    public StringBuilder toString(StringBuilder sb, int min_digits, int max_digits, int exponentMultiple,
+    public StringBuilder toString(StringBuilder sb, int minDigits, int maxDigits, int exponentMultiple,
                                         ExponentToStringInterface exponentToString) {
         int workingSig = significand;
         int workingExp = exponent;if (workingSig < 0) {
@@ -423,8 +420,8 @@ import static com.tbohne.util.Assert.assertAtMost;
         //calculate display exponent and digit counts
         int digitsBeforeDecimal = (int) base10Exp % exponentMultiple + 1;
         int displayExponent = (int) base10Exp - digitsBeforeDecimal + 1;
-        int minDigitsAfterDecimal = min_digits - digitsBeforeDecimal;
-        int maxDigitsAfterDecimal = max_digits - digitsBeforeDecimal;
+        int minDigitsAfterDecimal = minDigits - digitsBeforeDecimal;
+        int maxDigitsAfterDecimal = maxDigits - digitsBeforeDecimal;
         //show digits before decimal
         while(digitsBeforeDecimal > 0) {
             char digit = (char) (longSig /  oneSig);

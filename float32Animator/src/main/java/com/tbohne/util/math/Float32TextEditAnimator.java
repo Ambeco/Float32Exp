@@ -12,14 +12,14 @@ import java.util.List;
 
 //TODO: Figure out why this only animates about 2x/second
 //TODO: Figure out if animating a span is more performant
-public class Float32Animator {
+public class Float32TextEditAnimator {
 	final private TextView textView;
 	final private StringBuilder stringBuilder = new StringBuilder();
 	private final Float32Animation animation = new Float32Animation();
 
 	@Nullable private List<? extends IFloat32ExpL> polynomial;
 
-	public Float32Animator(TextView textView) {
+	public Float32TextEditAnimator(TextView textView) {
 		this.textView = textView;
 	}
 

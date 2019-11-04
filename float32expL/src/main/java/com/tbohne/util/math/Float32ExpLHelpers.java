@@ -746,7 +746,7 @@ public class Float32ExpLHelpers {
         return toString(value, sb, ENG_MIN_PRECISION, ENG_MAX_PRECISION,
                 ENG_STRING_EXPONENT_MULTIPLE, DEFAULT_EXPONENT_TO_STRING);
     }
-    public static StringBuilder toString(long value, StringBuilder sb, int min_digits, int max_digits, int exponentMultiple,
+    public static StringBuilder toString(long value, StringBuilder sb, int minDigits, int maxDigits, int exponentMultiple,
                                         ExponentToStringInterface exponentToString) {
         int exponent = (int) value;
         int workingSig = (int) (value >> INT_MAX_BITS);
@@ -799,8 +799,8 @@ public class Float32ExpLHelpers {
             minSig = longSig - 1; //giving us room for interact with "an extra bit" of rounding
         }
         return toStringImpl(sb,
-                min_digits,
-                max_digits,
+                minDigits,
+                maxDigits,
                 exponentMultiple,
                 exponentToString,
                 (int) base10Exp,
@@ -810,8 +810,8 @@ public class Float32ExpLHelpers {
     }
 
     private static StringBuilder toStringImpl(StringBuilder sb,
-            int min_digits,
-            int max_digits,
+            int minDigits,
+            int maxDigits,
             int exponentMultiple,
             ExponentToStringInterface exponentToString,
             int base10Exp,
@@ -821,8 +821,8 @@ public class Float32ExpLHelpers {
         //calculate display exponent and digit counts
         int digitsBeforeDecimal = base10Exp % exponentMultiple + 1;
         int displayExponent = base10Exp - digitsBeforeDecimal + 1;
-        int minDigitsAfterDecimal = min_digits - digitsBeforeDecimal;
-        int maxDigitsAfterDecimal = max_digits - digitsBeforeDecimal;
+        int minDigitsAfterDecimal = minDigits - digitsBeforeDecimal;
+        int maxDigitsAfterDecimal = maxDigits - digitsBeforeDecimal;
         //show digits before decimal
         while(digitsBeforeDecimal > 0) {
             char minDigit = (char) (minSig /  oneSig);
