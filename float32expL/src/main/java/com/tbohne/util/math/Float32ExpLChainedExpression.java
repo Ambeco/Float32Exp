@@ -126,8 +126,7 @@ public interface Float32ExpLChainedExpression extends IFloat32ExpL {
     StringBuilder toString(StringBuilder sb);
     String toEngineeringString();
     StringBuilder toEngineeringString(StringBuilder sb);
-    StringBuilder toString(StringBuilder sb, int minDigits, int maxDigits, int exponentMultiple,
-                           ExponentToStringInterface exponentToString);
+    StringBuilder toString(StringBuilder sb, StringFormatParams params);
     StringBuilder toBNotationString(StringBuilder sb);
     StringBuilder toHexString(StringBuilder sb);
 

@@ -8,6 +8,18 @@ public interface IFloat32ExpL extends Comparable<IFloat32ExpL>, Serializable {
     interface ExponentToStringInterface {
         void addExponent(StringBuilder stringBuilder, int exponent);
     }
+    class StringFormatParams {
+        public int minDigits;
+        public int maxDigits;
+        public int exponentMultiple;
+        public ExponentToStringInterface exponentToString;
+        public StringFormatParams(int minDigits, int maxDigits, int exponentMultiple, ExponentToStringInterface exponentToString) {
+            this.minDigits = minDigits;
+            this.maxDigits = maxDigits;
+            this.exponentMultiple = exponentMultiple;
+            this.exponentToString = exponentToString;
+        }
+    }
     long getParts();
     int significand();
     int exponent();
@@ -48,7 +60,6 @@ public interface IFloat32ExpL extends Comparable<IFloat32ExpL>, Serializable {
     StringBuilder toString(StringBuilder sb);
     String toEngineeringString();
     StringBuilder toEngineeringString(StringBuilder sb);
-    StringBuilder toString(StringBuilder sb, int minDigits, int maxDigits, int exponentMultiple,
-                           ExponentToStringInterface exponentToString);
+    StringBuilder toString(StringBuilder sb, StringFormatParams params);
     StringBuilder toBNotationString(StringBuilder sb);
 }
