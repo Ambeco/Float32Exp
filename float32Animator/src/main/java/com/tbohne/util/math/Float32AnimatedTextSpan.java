@@ -12,7 +12,11 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ReplacementSpan;
 import android.view.View;
 
+import com.tbohne.util.math.IFloat32ExpL.StringFormatParams;
+
 import java.util.List;
+
+import static com.tbohne.util.math.Float32ExpLHelpers.DEFAULT_STRING_PARAMS;
 
 public class Float32AnimatedTextSpan extends ReplacementSpan {
 	//This is called within the animation so needs to be _really_ fast and not allocate objects,
@@ -23,29 +27,39 @@ public class Float32AnimatedTextSpan extends ReplacementSpan {
 
 	public static SpannableString createFloat32AnimatedSpan(List<? extends IFloat32ExpL> polynomial, View view,
 			DrawableClock clock) {
-		//TODO Pass toString params as object
+		return createFloat32AnimatedSpan(polynomial, DEFAULT_STRING_PARAMS, view, clock);
+	}
+	public static SpannableString createFloat32AnimatedSpan(List<? extends IFloat32ExpL> polynomial, StringFormatParams params, View view,
+			DrawableClock clock) {
 		//TODO: Appendable instead of StringBuilder.
 		StringBuilder stringBuilder = new StringBuilder();
 		Float32ExpL displayValue = new Float32ExpL();
 		Polynomials.at(polynomial, clock.getTime(), displayValue);
-		displayValue.toString(stringBuilder);
+		displayValue.toString(stringBuilder, params);
 		SpannableString string = new SpannableString(stringBuilder);
-		string.setSpan(new Float32AnimatedTextSpan(polynomial, view, clock), 0, stringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		string.setSpan(new Float32AnimatedTextSpan(polynomial, params, view, clock), 0, stringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		return string;
 	}
 
 	public static SpannableStringBuilder appendFloat32AnimatedSpan(SpannableStringBuilder builder,
-			List<? extends IFloat32ExpL> polynomial, View view,
+			List<? extends IFloat32ExpL> polynomial,
+			View view,
 			DrawableClock clock) {
-		//TODO Pass toString params as object
+		return appendFloat32AnimatedSpan(builder, polynomial, DEFAULT_STRING_PARAMS, view, clock);
+	}
+	public static SpannableStringBuilder appendFloat32AnimatedSpan(SpannableStringBuilder builder,
+			List<? extends IFloat32ExpL> polynomial,
+			StringFormatParams params,
+			View view,
+			DrawableClock clock) {
 		//TODO: Appendable instead of StringBuilder.
 		StringBuilder stringBuilder = new StringBuilder();
 		Float32ExpL displayValue = new Float32ExpL();
 		Polynomials.at(polynomial, clock.getTime(), displayValue);
-		displayValue.toString(stringBuilder);
+		displayValue.toString(stringBuilder, params);
 		int offset = builder.length();
 		builder.append(stringBuilder);
-		builder.setSpan(new Float32AnimatedTextSpan(polynomial, view, clock), offset, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		builder.setSpan(new Float32AnimatedTextSpan(polynomial, params, view, clock), offset, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		return builder;
 	}
 	
@@ -63,6 +77,7 @@ public class Float32AnimatedTextSpan extends ReplacementSpan {
 	};
 
 	private final List<ImmutableFloat32ExpL> polynomial;
+	private final StringFormatParams params;
 	private final DrawableClock clock;
 	private final StringBuilder stringBuilder = new StringBuilder();
 	private final ValueAnimator animator = new ValueAnimator();
@@ -74,8 +89,9 @@ public class Float32AnimatedTextSpan extends ReplacementSpan {
 	private int lastHeight = 0;
 	private final Float32ExpL lastDisplay = new Float32ExpL();
 	
-	protected Float32AnimatedTextSpan(List<? extends IFloat32ExpL> polynomial, View view, DrawableClock clock) {
+	protected Float32AnimatedTextSpan(List<? extends IFloat32ExpL> polynomial, StringFormatParams params, View view, DrawableClock clock) {
 		this.polynomial = Polynomials.toImmutable(polynomial);
+		this.params = params;
 		this.clock = clock;
 		initAnimator(view);
 	}
@@ -122,7 +138,7 @@ public class Float32AnimatedTextSpan extends ReplacementSpan {
 		stringBuilder.setLength(0);
 		lastX = x;
 		lastY = y;
-		lastDisplay.toString(stringBuilder);
+		lastDisplay.toString(stringBuilder, params);
 		canvas.drawText(stringBuilder, 0, stringBuilder.length(), x, y, paint);
 	}
 }

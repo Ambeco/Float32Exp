@@ -11,10 +11,12 @@ import android.support.annotation.Nullable;
 import android.text.TextPaint;
 
 import com.tbohne.util.math.Float32AnimatedTextSpan.DrawableClock;
+import com.tbohne.util.math.IFloat32ExpL.StringFormatParams;
 
 import java.util.List;
 
 public class Float32AnimatedDrawable extends Drawable implements Animatable {
+	private final StringFormatParams params;
 	private final DrawableClock clock;
 	private final TextPaint lastPaint;
 
@@ -24,12 +26,13 @@ public class Float32AnimatedDrawable extends Drawable implements Animatable {
 	private final Float32ExpL displayValue = new Float32ExpL();
 	private final StringBuilder stringBuilder = new StringBuilder();
 
-	public Float32AnimatedDrawable(List<? extends IFloat32ExpL> polynomial, DrawableClock clock) {
-		this(polynomial, clock, new TextPaint());
+	public Float32AnimatedDrawable(List<? extends IFloat32ExpL> polynomial, StringFormatParams params, DrawableClock clock) {
+		this(polynomial, params, clock, new TextPaint());
 	}
 
-	public Float32AnimatedDrawable(List<? extends IFloat32ExpL> polynomial, DrawableClock clock, TextPaint lastPaint) {
+	public Float32AnimatedDrawable(List<? extends IFloat32ExpL> polynomial, StringFormatParams params, DrawableClock clock, TextPaint lastPaint) {
 		this.polynomial = Polynomials.toImmutable(polynomial);
+		this.params = params;
 		this.clock = clock;
 		this.lastPaint = lastPaint;
 		lastPaint.setAntiAlias(true);
@@ -105,7 +108,7 @@ public class Float32AnimatedDrawable extends Drawable implements Animatable {
 	public void draw(Canvas canvas) {
 		Polynomials.at(polynomial, clock.getTime(), displayValue);
 		stringBuilder.setLength(0);
-		displayValue.toString(stringBuilder);
+		displayValue.toString(stringBuilder, params);
 		Paint.FontMetricsInt fm = lastPaint.getFontMetricsInt();
 		canvas.drawText(stringBuilder, 0, stringBuilder.length(), 0, -fm.top, lastPaint);
 		if (started) {

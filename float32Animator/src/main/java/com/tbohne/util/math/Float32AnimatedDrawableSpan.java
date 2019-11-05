@@ -16,6 +16,7 @@ import android.text.style.ImageSpan;
 import android.view.View;
 
 import com.tbohne.util.math.Float32AnimatedTextSpan.DrawableClock;
+import com.tbohne.util.math.IFloat32ExpL.StringFormatParams;
 
 import java.util.List;
 
@@ -23,30 +24,31 @@ public class Float32AnimatedDrawableSpan extends ImageSpan {
 	private static final Handler handler = new Handler(Looper.getMainLooper());
 
 	public static SpannableString createFloat32AnimatedSpan(List<? extends IFloat32ExpL> polynomial,
-			View view, DrawableClock clock) {
-		//TODO Pass toString params as object
+			StringFormatParams params,
+			View view,
+			DrawableClock clock) {
 		//TODO: Appendable instead of StringBuilder.
 		StringBuilder stringBuilder = new StringBuilder();
 		Float32ExpL displayValue = new Float32ExpL();
 		Polynomials.at(polynomial, clock.getTime(), displayValue);
-		displayValue.toString(stringBuilder);
+		displayValue.toString(stringBuilder, params);
 		SpannableString string = new SpannableString(stringBuilder);
-		string.setSpan(new Float32AnimatedDrawableSpan(polynomial, view, clock), 0, stringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		string.setSpan(new Float32AnimatedDrawableSpan(polynomial, params, view, clock), 0, stringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		return string;
 	}
 
 	public static SpannableStringBuilder appendFloat32AnimatedSpan(SpannableStringBuilder builder,
 			List<? extends IFloat32ExpL> polynomial,
+			StringFormatParams params,
 			View view, DrawableClock clock) {
-		//TODO Pass toString params as object
 		//TODO: Appendable instead of StringBuilder.
 		StringBuilder stringBuilder = new StringBuilder();
 		Float32ExpL displayValue = new Float32ExpL();
 		Polynomials.at(polynomial, clock.getTime(), displayValue);
-		displayValue.toString(stringBuilder);
+		displayValue.toString(stringBuilder, params);
 		int offset = builder.length();
 		builder.append(stringBuilder);
-		builder.setSpan(new Float32AnimatedDrawableSpan(polynomial, view, clock), offset, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		builder.setSpan(new Float32AnimatedDrawableSpan(polynomial, params, view, clock), offset, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		return builder;
 	}
 
@@ -70,12 +72,12 @@ public class Float32AnimatedDrawableSpan extends ImageSpan {
 		}
 	};
 
-	public Float32AnimatedDrawableSpan(List<? extends IFloat32ExpL> polynomial, View view, DrawableClock clock) {
-		this(polynomial, view, clock, new TextPaint());
+	public Float32AnimatedDrawableSpan(List<? extends IFloat32ExpL> polynomial, StringFormatParams params, View view, DrawableClock clock) {
+		this(polynomial, params, view, clock, new TextPaint());
 	}
 
-	public Float32AnimatedDrawableSpan(List<? extends IFloat32ExpL> polynomial, View view, DrawableClock clock, TextPaint textPaint) {
-		super(new Float32AnimatedDrawable(polynomial, clock, textPaint));
+	public Float32AnimatedDrawableSpan(List<? extends IFloat32ExpL> polynomial, StringFormatParams params, View view, DrawableClock clock, TextPaint textPaint) {
+		super(new Float32AnimatedDrawable(polynomial, params, clock, textPaint));
 		this.drawable = (Float32AnimatedDrawable) getDrawable();
 		drawable.setCallback(callback);
 		this.view = view;
