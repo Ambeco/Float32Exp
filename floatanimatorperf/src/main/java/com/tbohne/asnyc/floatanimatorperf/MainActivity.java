@@ -12,9 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tbohne.util.math.Float32AnimatedDrawableSpan;
 import com.tbohne.util.math.Float32AnimatedTextSpan;
 import com.tbohne.util.math.Float32ExpL;
+import com.tbohne.util.math.Float32TextEditAnimator;
 import com.tbohne.util.math.IFloat32ExpL;
 import com.tbohne.util.math.ImmutableFloat32ExpL;
 
@@ -78,10 +78,12 @@ public class MainActivity extends AppCompatActivity {
 		// each data item is just a string in this case
 		public final List<Float32ExpL> polynomial;
 		public final TextView textView;
+		public final Float32TextEditAnimator float32TextEditAnimator;
 
 		public ViewHolder(TextView v) {
 			super(v);
 			polynomial = new ArrayList<>(NUM_ROWS);
+			float32TextEditAnimator = new Float32TextEditAnimator(v);
 			for(int i=0; i<NUM_ROWS; i++)
 				polynomial.add(new Float32ExpL(ImmutableFloat32ExpL.ZERO));
 			textView = v;
@@ -107,17 +109,20 @@ public class MainActivity extends AppCompatActivity {
 			initPolynomial(index, viewHolder.polynomial, temp);
 			SpannableStringBuilder builder = new SpannableStringBuilder();
 			builder.append("BEGIN >");
-			if (false) {
-				Float32AnimatedTextSpan.appendFloat32AnimatedSpan(builder,
-						viewHolder.polynomial,
-						viewHolder.textView,
-						drawableClock);
-			} else {
-				Float32AnimatedDrawableSpan.appendFloat32AnimatedSpan(builder,
-						viewHolder.polynomial,
-						viewHolder.textView,
-						drawableClock);
-			}
+
+			//Float32AnimatedTextSpan:
+//				Float32AnimatedTextSpan.appendFloat32AnimatedSpan(builder,
+//						viewHolder.polynomial,
+//						viewHolder.textView,
+//						drawableClock);
+			//Float32AnimatedDrawableSpan:
+//				Float32AnimatedDrawableSpan.appendFloat32AnimatedSpan(builder,
+//						viewHolder.polynomial,
+//						viewHolder.textView,
+//						drawableClock);
+			//Float32TextEditAnimator:
+			viewHolder.float32TextEditAnimator.setPolynomial(viewHolder.polynomial);
+
 			builder.append("< END");
 			viewHolder.textView.setText(builder);
 		}

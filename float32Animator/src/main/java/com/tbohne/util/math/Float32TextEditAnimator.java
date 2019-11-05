@@ -54,6 +54,7 @@ public class Float32TextEditAnimator {
 		}
 	}
 
+	private static final long FIRST_TIME = System.currentTimeMillis();
 	private class Float32Animation extends Animation {
 		private Float32ExpL time = new Float32ExpL();
 		private Float32ExpL displayValue = new Float32ExpL();
@@ -67,7 +68,7 @@ public class Float32TextEditAnimator {
 
 		@Override
 		protected void applyTransformation(float interpolatedTime, Transformation t) {
-			time.set(System.currentTimeMillis());
+			time.set(System.currentTimeMillis() - FIRST_TIME);
 			Polynomials.at(polynomial, time, displayValue);
 			stringBuilder.setLength(0);
 			displayValue.toString(stringBuilder);
