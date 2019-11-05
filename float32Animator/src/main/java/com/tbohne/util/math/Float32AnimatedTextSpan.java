@@ -1,5 +1,6 @@
 package com.tbohne.util.math;
 
+import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -81,6 +82,8 @@ public class Float32AnimatedTextSpan extends ReplacementSpan {
 
 	private void initAnimator(View view) {
 		animator.setDuration(360000);
+		animator.setObjectValues(" ");
+		animator.setEvaluator((TypeEvaluator<CharSequence>) (fraction, startValue, endValue) -> startValue);
 		animator.addUpdateListener(animation -> view.postInvalidate((int)lastX, lastY, (int)lastX + lastWidth + 1, lastY + lastHeight));
 		animator.start();
 	}
