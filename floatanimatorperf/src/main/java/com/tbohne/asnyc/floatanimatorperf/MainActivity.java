@@ -111,17 +111,17 @@ public class MainActivity extends AppCompatActivity {
 			builder.append("BEGIN >");
 
 			//Float32AnimatedTextSpan:
-//				Float32AnimatedTextSpan.appendFloat32AnimatedSpan(builder,
-//						viewHolder.polynomial,
-//						viewHolder.textView,
-//						drawableClock);
+				Float32AnimatedTextSpan.appendFloat32AnimatedSpan(builder,
+						viewHolder.polynomial,
+						viewHolder.textView,
+						drawableClock);
 			//Float32AnimatedDrawableSpan:
 //				Float32AnimatedDrawableSpan.appendFloat32AnimatedSpan(builder,
 //						viewHolder.polynomial,
 //						viewHolder.textView,
 //						drawableClock);
 			//Float32TextEditAnimator:
-			viewHolder.float32TextEditAnimator.setPolynomial(viewHolder.polynomial);
+			//viewHolder.float32TextEditAnimator.setPolynomial(viewHolder.polynomial);
 
 			builder.append("< END");
 			viewHolder.textView.setText(builder);

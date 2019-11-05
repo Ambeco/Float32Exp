@@ -1,8 +1,6 @@
 package com.tbohne.util.math;
 
-import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
@@ -83,25 +81,7 @@ public class Float32AnimatedTextSpan extends ReplacementSpan {
 
 	private void initAnimator(View view) {
 		animator.setDuration(360000);
-		//TODO: Test Removal
-		animator.setObjectValues("Ecl pse", "Eclipse");
-		animator.setEvaluator(new TypeEvaluator<CharSequence>()
-		{
-			@Override
-			public CharSequence evaluate(float fraction, CharSequence startValue, CharSequence endValue)
-			{
-				return startValue;
-			}
-		});
-
-		animator.addUpdateListener(new AnimatorUpdateListener()
-		{
-			@Override
-			public void onAnimationUpdate(ValueAnimator animation)
-			{
-				view.postInvalidate((int)lastX, lastY, (int)lastX + lastWidth + 1, lastY + lastHeight);
-			}
-		});
+		animator.addUpdateListener(animation -> view.postInvalidate((int)lastX, lastY, (int)lastX + lastWidth + 1, lastY + lastHeight));
 		animator.start();
 	}
 	
