@@ -19,18 +19,19 @@ import java.util.List;
 import static com.tbohne.util.math.Float32ExpLHelpers.DEFAULT_STRING_PARAMS;
 
 public class Float32AnimatedTextSpan extends ReplacementSpan {
-	//This is called within the animation so needs to be _really_ fast and not allocate objects,
-	//which may cause a GC in the main thread causing stutter.
-	public interface DrawableClock {
+	//This is called within the animation so needs to be _really_ fast and should minimize
+	//allocations, which may cause a GC in the main thread causing stutter.
+	public interface PolynomialClock {
 		IFloat32ExpL getTime();
+		IFloat32ExpL getEstimatedTime(ImmutableFloat32ExpL firstTime, long estimatedMillis);
 	}
 
 	public static SpannableString createFloat32AnimatedSpan(List<? extends IFloat32ExpL> polynomial, View view,
-			DrawableClock clock) {
+			PolynomialClock clock) {
 		return createFloat32AnimatedSpan(polynomial, DEFAULT_STRING_PARAMS, view, clock);
 	}
 	public static SpannableString createFloat32AnimatedSpan(List<? extends IFloat32ExpL> polynomial, StringFormatParams params, View view,
-			DrawableClock clock) {
+			PolynomialClock clock) {
 		//TODO: Appendable instead of StringBuilder.
 		StringBuilder stringBuilder = new StringBuilder();
 		Float32ExpL displayValue = new Float32ExpL();
@@ -44,14 +45,14 @@ public class Float32AnimatedTextSpan extends ReplacementSpan {
 	public static SpannableStringBuilder appendFloat32AnimatedSpan(SpannableStringBuilder builder,
 			List<? extends IFloat32ExpL> polynomial,
 			View view,
-			DrawableClock clock) {
+			PolynomialClock clock) {
 		return appendFloat32AnimatedSpan(builder, polynomial, DEFAULT_STRING_PARAMS, view, clock);
 	}
 	public static SpannableStringBuilder appendFloat32AnimatedSpan(SpannableStringBuilder builder,
 			List<? extends IFloat32ExpL> polynomial,
 			StringFormatParams params,
 			View view,
-			DrawableClock clock) {
+			PolynomialClock clock) {
 		//TODO: Appendable instead of StringBuilder.
 		StringBuilder stringBuilder = new StringBuilder();
 		Float32ExpL displayValue = new Float32ExpL();
@@ -78,9 +79,10 @@ public class Float32AnimatedTextSpan extends ReplacementSpan {
 
 	private final List<ImmutableFloat32ExpL> polynomial;
 	private final StringFormatParams params;
-	private final DrawableClock clock;
+	private final PolynomialClock clock;
 	private final StringBuilder stringBuilder = new StringBuilder();
-	private final ValueAnimator animator = new ValueAnimator();
+	private final ValueAnimator animator;
+	private ImmutableFloat32ExpL firstTime;
 	
 	private @Nullable Paint lastPaint;
 	private float lastX = 0;
@@ -89,19 +91,23 @@ public class Float32AnimatedTextSpan extends ReplacementSpan {
 	private int lastHeight = 0;
 	private final Float32ExpL lastDisplay = new Float32ExpL();
 	
-	protected Float32AnimatedTextSpan(List<? extends IFloat32ExpL> polynomial, StringFormatParams params, View view, DrawableClock clock) {
+	protected Float32AnimatedTextSpan(List<? extends IFloat32ExpL> polynomial, StringFormatParams params, View view, PolynomialClock clock) {
 		this.polynomial = Polynomials.toImmutable(polynomial);
 		this.params = params;
 		this.clock = clock;
-		initAnimator(view);
+		firstTime = clock.getTime().toImmutable();
+		animator = initAnimator(view);
 	}
 
-	private void initAnimator(View view) {
-		animator.setDuration(360000);
-		animator.setObjectValues(" ");
-		animator.setEvaluator((TypeEvaluator<CharSequence>) (fraction, startValue, endValue) -> startValue);
+	private ValueAnimator initAnimator(View view) {
+		long totalMillis = 86_400_000L;
+		ValueAnimator animator = new ValueAnimator();
+		animator.setDuration(totalMillis);
+		animator.setObjectValues(0L, totalMillis);
+		animator.setEvaluator((TypeEvaluator<Long>) (fraction, startValue, endValue) -> (long)(fraction*totalMillis));
 		animator.addUpdateListener(animation -> view.postInvalidate((int)lastX, lastY, (int)lastX + lastWidth + 1, lastY + lastHeight));
 		animator.start();
+		return animator;
 	}
 	
 	@Override
@@ -134,7 +140,8 @@ public class Float32AnimatedTextSpan extends ReplacementSpan {
 			int y,
 			int bottom,
 			@NonNull Paint paint) {
-		Polynomials.at(polynomial, clock.getTime(), lastDisplay);
+		IFloat32ExpL time = clock.getEstimatedTime(firstTime, (Long) animator.getAnimatedValue());
+		Polynomials.at(polynomial, time, lastDisplay);
 		stringBuilder.setLength(0);
 		lastX = x;
 		lastY = y;

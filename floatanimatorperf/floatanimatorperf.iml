@@ -140,5 +140,7 @@
     <orderEntry type="module" module-name="float32expl" />
     <orderEntry type="module" module-name="float32Animator" />
     <orderEntry type="module" module-name="float32expl" />
+    <orderEntry type="module" module-name="float32Animator" />
+    <orderEntry type="module" module-name="float32expl" />
   </component>
 </module>
