@@ -28,13 +28,14 @@ public class Float32AnimatedDrawable extends Drawable implements Animatable {
 	private final StringFormatParams params;
 	private final PolynomialClock clock;
 	private final TextPaint lastPaint;
+	private final Paint.FontMetricsInt fontMetrics = new Paint.FontMetricsInt();
 	private final ValueAnimator animator;
-	private ImmutableFloat32ExpL firstTime;
+	private long firstTime;
 
 	private List<ImmutableFloat32ExpL> polynomial;
 
+	private final Float32ExpL displayTime = new Float32ExpL();
 	private final Float32ExpL displayValue = new Float32ExpL();
-	private final StringBuilder stringBuilder = new StringBuilder();
 	private final View view;
 	private final Drawable.Callback callback = new Drawable.Callback(){
 		@Override
@@ -64,7 +65,7 @@ public class Float32AnimatedDrawable extends Drawable implements Animatable {
 		this.clock = clock;
 		this.lastPaint = lastPaint;
 		this.view = view;
-		firstTime = clock.getTime().toImmutable();
+		firstTime = clock.getTime();
 		this.animator = initAnimator();
 		setCallback(callback);
 		lastPaint.setAntiAlias(true);
@@ -75,7 +76,7 @@ public class Float32AnimatedDrawable extends Drawable implements Animatable {
 	}
 
 	private ValueAnimator initAnimator() {
-		long totalMillis = 86_400_000L;
+		long totalMillis = 3_600_000L;
 		ValueAnimator animator = new ValueAnimator();
 		animator.setDuration(totalMillis);
 		animator.setObjectValues(0L, totalMillis);
@@ -113,6 +114,7 @@ public class Float32AnimatedDrawable extends Drawable implements Animatable {
 	}
 
 	private void recalculateBounds() {
+		lastPaint.getFontMetricsInt(fontMetrics);
 		int width = getIntrinsicWidth();
 		int height = getIntrinsicHeight();
 		if (getBounds().width() != width || getBounds().height() != height)
@@ -121,8 +123,7 @@ public class Float32AnimatedDrawable extends Drawable implements Animatable {
 
 	@Override
 	public int getIntrinsicHeight() {
-		Paint.FontMetricsInt fm = lastPaint.getFontMetricsInt();
-		return fm.bottom - fm.top;
+		return fontMetrics.bottom - fontMetrics.top;
 	}
 
 	@Override
@@ -138,7 +139,7 @@ public class Float32AnimatedDrawable extends Drawable implements Animatable {
 	@Override
 	public void start() {
 		animator.start();
-		firstTime = clock.getTime().toImmutable();
+		firstTime = clock.getTime();
 	}
 
 	@Override
@@ -154,12 +155,11 @@ public class Float32AnimatedDrawable extends Drawable implements Animatable {
 
 	@Override
 	public void draw(Canvas canvas) {
-		IFloat32ExpL time = clock.getEstimatedTime(firstTime, (Long) animator.getAnimatedValue());
-		Polynomials.at(polynomial, time, displayValue);
-		stringBuilder.setLength(0);
-		displayValue.toString(stringBuilder, params);
-		Paint.FontMetricsInt fm = lastPaint.getFontMetricsInt();
-		canvas.drawText(stringBuilder, 0, stringBuilder.length(), 0, -fm.top, lastPaint);
+		displayTime.set(clock.getEstimatedTime(firstTime, (Long) animator.getAnimatedValue()));
+		Polynomials.at(polynomial, displayTime, displayValue);
+		char[] buffer = Float32ExpLHelpers.CHAR_BUFFERS.get();
+		int l = displayValue.appendString(buffer, 0, params);
+		canvas.drawText(buffer, 0, l, 0, -fontMetrics.top, lastPaint);
 	}
 
 	@Override

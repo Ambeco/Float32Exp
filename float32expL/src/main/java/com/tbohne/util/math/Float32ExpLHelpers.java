@@ -4,6 +4,7 @@ import com.tbohne.util.Assert;
 import com.tbohne.util.math.IFloat32ExpL.ExponentToStringInterface;
 import com.tbohne.util.math.IFloat32ExpL.StringFormatParams;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -26,11 +27,47 @@ public class Float32ExpLHelpers {
 
     public static class DefaultExponentToString implements ExponentToStringInterface {
         @Override
-        public void addExponent(StringBuilder stringBuilder, int exponent) {
-            if (exponent != 0) {
-                stringBuilder.append('E').append(exponent);
+        public int writeExponent(int exponent, char[] destination, int index) {
+            if (exponent == 0)
+                return index;
+            destination[index] = 'E';
+            return integerToCharArray(exponent, destination, index + 1);
+        }
+    }
+    private static final char[] MIN_STR = {'-','2','1','4','7','4','8','3','6','4','8'};
+    private static final int[] INT_POWS_10 = {1000000000, 100000000, 10000000, 1000000, 100000, 10000, 1000, 100, 10, 1};
+    public static int integerToCharArray(int exponent, char[] destination, int index) {
+        if (exponent == 0) {
+            destination[index] = '0';
+            return index + 1;
+        }
+        if (exponent == Integer.MIN_VALUE) {
+            System.arraycopy(MIN_STR, 0, destination, index, 10);
+            return index + 11;
+        }
+        if (exponent < 0) {
+            destination[index++] = '-';
+            exponent = -exponent;
+        }
+        int powTenIdx = 0;
+        while (powTenIdx < INT_POWS_10.length) {
+            int pow10 = INT_POWS_10[powTenIdx];
+            int digit = exponent / pow10;
+            ++powTenIdx;
+            if (digit > 0) {
+                exponent %= pow10;
+                destination[index++] = (char)(digit + '0');
+                break;
             }
         }
+        while (powTenIdx < INT_POWS_10.length) {
+            int pow10 = INT_POWS_10[powTenIdx];
+            int digit = exponent / pow10;
+            exponent %= pow10;
+            destination[index++] = (char)(digit + '0');
+            ++powTenIdx;
+        }
+        return index;
     }
 
     public static final DefaultExponentToString DEFAULT_EXPONENT_TO_STRING = new DefaultExponentToString();
@@ -45,7 +82,7 @@ public class Float32ExpLHelpers {
     public static final int ENG_STRING_EXPONENT_MULTIPLE = 3;
     public static final StringFormatParams ENG_STRING_PARAMS = new StringFormatParams(ENG_MIN_PRECISION, ENG_MAX_PRECISION, ENG_STRING_EXPONENT_MULTIPLE, DEFAULT_EXPONENT_TO_STRING);
 
-    private static final int[] pow10s = new int[]{
+    private static final int[] FLOAT_POW_TENS = new int[]{
             0x50000000, -27, //1e1
             0x64000000, -24, //1e2
             0x4E200000, -17, //1e4
@@ -77,6 +114,18 @@ public class Float32ExpLHelpers {
             0x7BAA6478, 891723252, //1e268435456
             0x777A5BEB, 1783446535, //1e536870912
     };
+
+    public static final ThreadLocalCharBuffer CHAR_BUFFERS = new ThreadLocalCharBuffer();
+    public static class ThreadLocalCharBuffer extends ThreadLocal<char[]>{
+        public char[] get() {
+            char[] ret = super.get();
+            if (ret == null) {
+                ret = new char[30];
+                set(ret);
+            }
+            return ret;
+        }
+    }
 
     public static long cast(char[] in, int offset, int len) {
         //TODO Parse HexString
@@ -167,14 +216,14 @@ public class Float32ExpLHelpers {
         initial_exp = negative ? -initial_exp : initial_exp;
         long significand = 0x40000000; //initialize to 1.0
         long exponent = -EXPONENT_BIAS;
-        if (initial_exp > (1<<(pow10s.length/2))) {
+        if (initial_exp > (1<<(FLOAT_POW_TENS.length/2))) {
             throw new ArithmeticException("Power 10 Exponent " + initial_exp + " out of range");
         }
         for(int i = 0; i < INT_MAX_BITS; i++) {
             int mask = 1<<i;
             if ((initial_exp & mask) == mask) {
-                long guess_sig = significand * pow10s[i * 2];
-                long guess_exp = exponent + pow10s[i * 2 + 1];
+                long guess_sig = significand * FLOAT_POW_TENS[i * 2];
+                long guess_exp = exponent + FLOAT_POW_TENS[i * 2 + 1];
                 //normalize. We lose slight accuracy here, but without it we overflow.  :(
                 long parts = getNormalizedParts(guess_sig, guess_exp);
                 significand = (int) (parts >> INT_MAX_BITS);
@@ -419,7 +468,7 @@ public class Float32ExpLHelpers {
             return value; //do nothing
         } else if (value == TEN_PATTERN) { //10^X
             long pow10exp = ((long) otherSignificand) << otherExponent;
-            if (pow10exp > (1<<(pow10s.length/2))) {
+            if (pow10exp > (1<<(FLOAT_POW_TENS.length/2))) {
                 throw new ArithmeticException("Power 10 Exponent " + pow10exp + " out of range");
             }
             return getPowerOf10Parts((int) pow10exp);
@@ -490,9 +539,7 @@ public class Float32ExpLHelpers {
         long significand = value >> INT_MAX_BITS;
         int exponent = (int)value;
         if (exponent > 0) {
-            StringBuilder sb = new StringBuilder();
-            toString(value, sb, DEFAULT_STRING_PARAMS).append(" out of range");
-            throw new IllegalArgumentException(sb.toString());
+            throw new IllegalArgumentException(toNewString(value, DEFAULT_STRING_PARAMS) + " out of range");
         } else if (significand == 0 && exponent == ZERO_EXPONENT) {
             significand = 1 << (INT_MAX_BITS - 2);
             exponent = -EXPONENT_BIAS;
@@ -523,9 +570,7 @@ public class Float32ExpLHelpers {
         long significand = value >> INT_MAX_BITS;
         long exponent = (int)value;
         if (significand <= 0) {
-            StringBuilder builder = new StringBuilder("nonpositive value ");
-            toString(value, builder, DEFAULT_STRING_PARAMS);
-            throw new IllegalArgumentException(builder.toString());
+            throw new IllegalArgumentException("nonpositive value " + toNewString(value, DEFAULT_STRING_PARAMS));
         }
         return getLongParts(exponent + EXPONENT_BIAS);
     }
@@ -534,9 +579,7 @@ public class Float32ExpLHelpers {
         long significand = value >> INT_MAX_BITS;
         long exponent = (int)value;
         if (significand <= 0) {
-            StringBuilder builder = new StringBuilder("nonpositive value ");
-            toString(value, builder, DEFAULT_STRING_PARAMS);
-            throw new IllegalArgumentException(builder.toString());
+            throw new IllegalArgumentException("nonpositive value " + toNewString(value, DEFAULT_STRING_PARAMS));
         } else if (value == ONE_PATTERN) { // lg(1) == 0.0
             return ZERO_PATTERN;
         } else if (significand == 0x40000000) {// lg(power-of-2) == exponent
@@ -742,12 +785,22 @@ public class Float32ExpLHelpers {
         return significand > otherSignificand;
     }
 
-    public static StringBuilder toString(long value, StringBuilder sb, StringFormatParams params) {
+    public static String toNewString(long value, StringFormatParams params) {
+        char[] buf = CHAR_BUFFERS.get();
+        int l = appendString(value, buf, 0, params);
+        return new String(buf, 0, l);
+    }
+
+    public static int appendString(long value,
+            char[] destination,
+            int index,
+            StringFormatParams params) {
         int exponent = (int) value;
         int workingSig = (int) (value >> INT_MAX_BITS);
         int workingExp = (int) value;
         if (workingSig < 0) {
-            sb.append('-');
+            destination[index] = '-';
+            ++index;
             if (workingSig == 0x80000000) {
                 workingSig = 0x40000000;
                 workingExp += 1;
@@ -763,7 +816,10 @@ public class Float32ExpLHelpers {
             //find next smallest power of 10
             base10Exp =  (long) ((((long) exponent) + EXPONENT_BIAS) * INV_LOG10);
             if (base10Exp > Integer.MAX_VALUE) {
-                return sb.append("INF");
+                destination[index] = 'I';
+                destination[index+1] = 'N';
+                destination[index+2] = 'F';
+                return index + 3;
             }
             long pow10Parts = getPowerOf10Parts((int) base10Exp);
             long pow10Sig = pow10Parts >> INT_MAX_BITS;
@@ -793,20 +849,17 @@ public class Float32ExpLHelpers {
             maxSig = longSig + 1; //longSig was crafted to have an unused bit on the right
             minSig = longSig - 1; //giving us room for interact with "an extra bit" of rounding
         }
-        return toStringImpl(sb,
-                params,
-                (int) base10Exp,
-                minSig,
-                maxSig,
-                oneSig);
+        return appendStringImpl(destination,
+                index, (int) base10Exp, minSig, maxSig, oneSig, params);
     }
 
-    private static StringBuilder toStringImpl(StringBuilder sb,
-            StringFormatParams params,
+    private static int appendStringImpl(char[] destination,
+            int index,
             int base10Exp,
             long minSig,
             long maxSig,
-            long oneSig) {
+            long oneSig,
+            StringFormatParams params) {
         //calculate display exponent and digit counts
         int digitsBeforeDecimal = base10Exp % params.exponentMultiple + 1;
         int displayExponent = base10Exp - digitsBeforeDecimal + 1;
@@ -816,7 +869,7 @@ public class Float32ExpLHelpers {
         while(digitsBeforeDecimal > 0) {
             char minDigit = (char) (minSig /  oneSig);
             char maxDigit = (char) (maxSig /  oneSig);
-            sb.append((char) ('0' + maxDigit));
+            destination[index++] = (char) ('0' + maxDigit);
             if (minDigit == maxDigit) {
                 minSig = minSig % oneSig * 10;
                 maxSig = maxSig % oneSig * 10;
@@ -826,15 +879,14 @@ public class Float32ExpLHelpers {
             --digitsBeforeDecimal;
         }
         if (minDigitsAfterDecimal > 0 ||
-                (maxDigitsAfterDecimal > 0 && maxSig != 0)) {
-            sb.append('.');
-        }
+                (maxDigitsAfterDecimal > 0 && maxSig != 0))
+            destination[index++] = '.';
         //show digits after decimal
         while(minDigitsAfterDecimal > 0 ||
                 (maxDigitsAfterDecimal > 0 && maxSig != 0)) {
             char minDigit = (char) (minSig /  oneSig);
             char maxDigit = (char) (maxSig /  oneSig);
-            sb.append((char) ('0' + maxDigit));
+            destination[index++] = (char) ('0' + maxDigit);
             if (minDigit == maxDigit) {
                 minSig = minSig % oneSig * 10;
                 maxSig = maxSig % oneSig * 10;
@@ -845,8 +897,23 @@ public class Float32ExpLHelpers {
             --maxDigitsAfterDecimal;
         }
         //show exponent
-        params.exponentToString.addExponent(sb, displayExponent);
-        return sb;
+        return params.exponentToString.writeExponent(displayExponent, destination, index);
+    }
+
+    public static void appendString(long parts, Appendable appendable, StringFormatParams params) {
+        char[] buf = CHAR_BUFFERS.get();
+        int l = appendString(parts, buf, 0, params);
+        if (appendable instanceof StringBuilder) {
+            ((StringBuilder)appendable).append(buf, 0, l);
+        } else {
+            try {
+                for (int i = 0; i < l; i++) {
+                    appendable.append(buf[i]);
+                }
+            } catch(IOException e) {
+                throw new IllegalStateException(e);
+            }
+        }
     }
 
     public static StringBuilder toBNotationString(long value, StringBuilder sb) {
@@ -893,9 +960,7 @@ public class Float32ExpLHelpers {
         if (significand == 0) {
             return 0;
         } else if (exponent > 0 || exponent <= -INT_MAX_BITS) {
-            StringBuilder sb = new StringBuilder();
-            toString(value, sb, DEFAULT_STRING_PARAMS).append(" out of range");
-            throw new IllegalArgumentException(sb.toString());
+            throw new IllegalArgumentException(toNewString(value, DEFAULT_STRING_PARAMS) + " out of range");
         }
         return significand >> -exponent;
     }
@@ -906,9 +971,7 @@ public class Float32ExpLHelpers {
         if (significand == 0) {
             return 0;
         } else if (exponent >= INT_MAX_BITS || exponent <= -INT_MAX_BITS) {
-            StringBuilder sb = new StringBuilder();
-            toString(value, sb, DEFAULT_STRING_PARAMS).append(" out of range");
-            throw new IllegalArgumentException(sb.toString());
+            throw new IllegalArgumentException(toNewString(value, DEFAULT_STRING_PARAMS) + " out of range");
         } else if (exponent < 0) {
             return significand >> -exponent;
         } else { //if exponent > 0

@@ -6,7 +6,15 @@ import java.math.BigInteger;
 
 public interface IFloat32ExpL extends Comparable<IFloat32ExpL>, Serializable {
     interface ExponentToStringInterface {
-        void addExponent(StringBuilder stringBuilder, int exponent);
+        /*
+         * Writes the exponent to the destination buffer.
+         * Examples of strings written for exponent 3 might be "e3", "G" or "km".
+         * @param exponent the exponent to write to the array
+         * @param destination where to write the exponent
+         * @return index in array last written to.
+         * @throws IndexOutOfBoundsException if this writes more than 18 chars.
+         */
+        int writeExponent(int exponent, char[] destination, int index);
     }
     class StringFormatParams {
         public int minDigits;
@@ -57,9 +65,10 @@ public interface IFloat32ExpL extends Comparable<IFloat32ExpL>, Serializable {
     double doubleValue();
 
     String toString();
-    StringBuilder toString(StringBuilder sb);
     String toEngineeringString();
-    StringBuilder toEngineeringString(StringBuilder sb);
-    StringBuilder toString(StringBuilder sb, StringFormatParams params);
-    StringBuilder toBNotationString(StringBuilder sb);
+    String toString(StringFormatParams params);
+    void appendString(Appendable appendable);
+    void appendEngineeringString(Appendable appendable);
+    void appendString(Appendable appendable, StringFormatParams params);
+    int appendString(char[] destination, int index, StringFormatParams params);
 }

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static com.tbohne.util.math.Float32ExpLHelpers.DEFAULT_STRING_PARAMS;
+import static com.tbohne.util.math.Float32ExpLHelpers.ENG_STRING_PARAMS;
 import static com.tbohne.util.math.Float32ExpLHelpers.INT_MAX_BITS;
 import static com.tbohne.util.math.Float32ExpLHelpers.cast;
 import static com.tbohne.util.math.Float32ExpLHelpers.getDoubleParts;
@@ -205,20 +206,13 @@ public class Float32ExpL extends Number implements Float32ExpLChainedExpression,
     public int signum() {return Float32ExpLHelpers.signum(parts);}
     public boolean isZero() {return Float32ExpLHelpers.isZero(parts);}
 
-    public String toString() {return Float32ExpLHelpers.toString(parts, new StringBuilder(), DEFAULT_STRING_PARAMS).toString();}
-    public StringBuilder toString(StringBuilder sb) {return Float32ExpLHelpers.toString(parts, sb, DEFAULT_STRING_PARAMS);}
-    public String toEngineeringString() {
-        return Float32ExpLHelpers.toString(parts,
-                new StringBuilder(),
-                Float32ExpLHelpers.ENG_STRING_PARAMS).toString();}
-    public StringBuilder toEngineeringString(StringBuilder sb) {
-        return Float32ExpLHelpers.toString(parts, sb, Float32ExpLHelpers.ENG_STRING_PARAMS);
-    }
-    public StringBuilder toString(StringBuilder sb, StringFormatParams params) {
-        return Float32ExpLHelpers.toString(parts, sb, params);
-    }
-    public StringBuilder toBNotationString(StringBuilder sb) {return Float32ExpLHelpers.toBNotationString(parts, sb);}
-    public StringBuilder toHexString(StringBuilder sb) {return Float32ExpLHelpers.toHexString(parts, sb);}
+    public String toString() {return Float32ExpLHelpers.toNewString(parts, DEFAULT_STRING_PARAMS);}
+    public String toEngineeringString()  {return Float32ExpLHelpers.toNewString(parts, ENG_STRING_PARAMS);}
+    public String toString(StringFormatParams params) {return Float32ExpLHelpers.toNewString(parts, params);}
+    public void appendString(Appendable appendable) {Float32ExpLHelpers.appendString(parts, appendable, DEFAULT_STRING_PARAMS);}
+    public void appendEngineeringString(Appendable appendable) {Float32ExpLHelpers.appendString(parts, appendable, ENG_STRING_PARAMS);}
+    public void appendString(Appendable appendable, StringFormatParams params) {Float32ExpLHelpers.appendString(parts, appendable, params);}
+    public int appendString(char[] destination, int index, StringFormatParams params) {return Float32ExpLHelpers.appendString(parts, destination, index, params);}
 
     public BigInteger toBigInteger() {return Float32ExpLHelpers.toBigInteger(parts);}
     public BigDecimal toBigDecimal() {return Float32ExpLHelpers.toBigDecimal(parts);}

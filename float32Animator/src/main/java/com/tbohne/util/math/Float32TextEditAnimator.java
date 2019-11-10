@@ -12,8 +12,6 @@ import com.tbohne.util.math.Float32AnimatedTextSpan.PolynomialClock;
 
 import java.util.List;
 
-//TODO: Figure out why this only animates about 2x/second
-//TODO: Figure out if animating a span is more performant
 public class Float32TextEditAnimator {
 	private final TextView textView;
 	private final PolynomialClock clock;
@@ -59,25 +57,26 @@ public class Float32TextEditAnimator {
 	}
 
 	private class Float32Animation extends Animation {
-		private final long TOTAL_MILLIS = 86_400_000L;
-		private Float32ExpL displayValue = new Float32ExpL();
-		private StringBuilder stringBuilder = new StringBuilder();
-		private ImmutableFloat32ExpL firstTime;
+		private static final long TOTAL_MILLIS = 3_600_000L;
+		private final long firstTime;
+		private final Float32ExpL displayValue = new Float32ExpL();
+		private final StringBuilder stringBuilder = new StringBuilder();
+		private Float32ExpL displayTime = new Float32ExpL();
 
 		Float32Animation() {
 			setRepeatCount(Animation.INFINITE);
 			setDuration(TOTAL_MILLIS);
 			setInterpolator(new NoOpInterpolator());
-			firstTime = clock.getTime().toImmutable();
+			firstTime = clock.getTime();
 		}
 
 		@Override
 		protected void applyTransformation(float interpolatedTime, Transformation t) {
 			long estimatedMillis = (long)(interpolatedTime*TOTAL_MILLIS);
-			IFloat32ExpL time = clock.getEstimatedTime(firstTime, estimatedMillis);
-			Polynomials.at(polynomial, time, displayValue);
+			displayTime.set(clock.getEstimatedTime(firstTime, estimatedMillis));
+			Polynomials.at(polynomial, displayTime, displayValue);
 			stringBuilder.setLength(0);
-			displayValue.toString(stringBuilder);
+			displayValue.appendString(stringBuilder);
 			textView.setText(stringBuilder);
 		}
 	}

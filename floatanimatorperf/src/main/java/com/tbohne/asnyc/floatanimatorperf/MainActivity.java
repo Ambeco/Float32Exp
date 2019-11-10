@@ -16,7 +16,6 @@ import com.tbohne.util.math.Float32AnimatedDrawableSpan;
 import com.tbohne.util.math.Float32AnimatedTextSpan;
 import com.tbohne.util.math.Float32ExpL;
 import com.tbohne.util.math.Float32TextEditAnimator;
-import com.tbohne.util.math.IFloat32ExpL;
 import com.tbohne.util.math.ImmutableFloat32ExpL;
 
 import java.util.ArrayList;
@@ -42,15 +41,14 @@ public class MainActivity extends AppCompatActivity {
 
 	public void launchToStringThread(View view) {
 		Runnable runnable = () -> {
-			int hash = 0;
-			Float32ExpL num = new Float32ExpL(9);
-			StringBuilder sb = new StringBuilder(30);
-			for(int i=0; i<10_000_000; i++) {
-				sb.setLength(0);
-				num.toString(sb);
-				hash += sb.hashCode();
+			Float32ExpL offset = new Float32ExpL(1);
+			int first = 0;
+			for(long i = 0; i < 1_000_000; ++i) {
+				offset.add(ImmutableFloat32ExpL.ONE);
+				first += offset.toString().length();
 			}
-			Log.v("Float", "hash result is " + hash);
+			int ret = first!=-1?0:1;
+			Log.v("Float", "hash result is " + ret);
 		};
 		new Thread(runnable).start();
 	}
@@ -68,16 +66,13 @@ public class MainActivity extends AppCompatActivity {
 	private static long initTime = System.currentTimeMillis();
 	public static Float32AnimatedTextSpan.PolynomialClock
 			drawableClock = new Float32AnimatedTextSpan.PolynomialClock() {
-		Float32ExpL time = new Float32ExpL();
 		@Override
-		public IFloat32ExpL getTime() {
-			time.set(System.currentTimeMillis()-initTime);
-			return time;
+		public long getTime() {
+			return System.currentTimeMillis()-initTime;
 		}
 		@Override
-		public IFloat32ExpL getEstimatedTime(ImmutableFloat32ExpL recentTime, long estimatedMillisSince) {
-			time.set(recentTime).add(estimatedMillisSince);
-			return time;
+		public long getEstimatedTime(long recentTime, long estimatedMillisSince) {
+			return recentTime + estimatedMillisSince;
 		}
 	};
 
@@ -117,23 +112,23 @@ public class MainActivity extends AppCompatActivity {
 			SpannableStringBuilder builder = new SpannableStringBuilder();
 			builder.append("BEGIN >");
 
-//			switch (index % 3) {
-//			case 0: //Float32AnimatedTextSpan:
-//				Float32AnimatedTextSpan.appendFloat32AnimatedSpan(builder,
-//						viewHolder.polynomial,
-//						viewHolder.textView,
-//						drawableClock);
-//				break;
-//			case 1: //Float32AnimatedDrawableSpan:
+			switch (index % 3) {
+			case 0: //Float32AnimatedTextSpan:
+				Float32AnimatedTextSpan.appendFloat32AnimatedSpan(builder,
+						viewHolder.polynomial,
+						viewHolder.textView,
+						drawableClock);
+				break;
+			case 1: //Float32AnimatedDrawableSpan:
 				Float32AnimatedDrawableSpan.appendFloat32AnimatedSpan(builder,
 						viewHolder.polynomial,
 						viewHolder.textView,
 						drawableClock);
-//				break;
-//			case 2: //Float32TextEditAnimator:
-//				viewHolder.float32TextEditAnimator.setPolynomial(viewHolder.polynomial);
-//				break;
-//			}
+				break;
+			case 2: //Float32TextEditAnimator:
+				viewHolder.float32TextEditAnimator.setPolynomial(viewHolder.polynomial);
+				break;
+			}
 			builder.append("< END");
 			viewHolder.textView.setText(builder);
 		}

@@ -123,12 +123,12 @@ public interface Float32ExpLChainedExpression extends IFloat32ExpL {
     boolean greaterThan(double val);
 
     String toString();
-    StringBuilder toString(StringBuilder sb);
     String toEngineeringString();
-    StringBuilder toEngineeringString(StringBuilder sb);
-    StringBuilder toString(StringBuilder sb, StringFormatParams params);
-    StringBuilder toBNotationString(StringBuilder sb);
-    StringBuilder toHexString(StringBuilder sb);
+    String toString(StringFormatParams params);
+    void appendString(Appendable appendable);
+    void appendEngineeringString(Appendable appendable);
+    void appendString(Appendable appendable, StringFormatParams params);
+    int appendString(char[] destination, int index, StringFormatParams params);
 
     BigInteger toBigInteger();
     BigDecimal toBigDecimal();
