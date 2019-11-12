@@ -12,8 +12,6 @@ import com.tbohne.util.math.Float32AnimatedTextSpan.PolynomialClock;
 
 import java.util.List;
 
-//TODO: Figure out why this only animates about 2x/second
-//TODO: Figure out if animating a span is more performant
 public class Float32TextEditAnimator {
 	private final TextView textView;
 	private final PolynomialClock clock;
