@@ -8,10 +8,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 
-import static com.tbohne.util.math.Float32ExpLHelpers.DEFAULT_EXPONENT_TO_STRING;
-import static com.tbohne.util.math.Float32ExpLHelpers.DEFAULT_MAX_PRECISION;
-import static com.tbohne.util.math.Float32ExpLHelpers.DEFAULT_MIN_PRECISION;
-import static com.tbohne.util.math.Float32ExpLHelpers.DEFAULT_STRING_EXPONENT_MULTIPLE;
+import static com.tbohne.util.math.Float32ExpLHelpers.DEFAULT_STRING_PARAMS;
 import static com.tbohne.util.math.Float64ExpLTestUtils.setAndAssertBits;
 
 @RunWith(BlockJUnit4ClassRunner.class)
@@ -183,8 +180,7 @@ public class Float64ExpLStringValuesTest {
 
     private String Float64ExpToString(long value) {
         StringBuilder sb = new StringBuilder();
-        mDecimal.set(value).toString(sb, DEFAULT_MIN_PRECISION, DEFAULT_MAX_PRECISION,
-                DEFAULT_STRING_EXPONENT_MULTIPLE, DEFAULT_EXPONENT_TO_STRING);
+        mDecimal.set(value).toString(sb, DEFAULT_STRING_PARAMS);
         return sb.toString();
     }
 
@@ -194,8 +190,7 @@ public class Float64ExpLStringValuesTest {
 
     private String Float64ExpToString(double value) {
         StringBuilder sb = new StringBuilder();
-        mDecimal.set(value).toString(sb, DEFAULT_MIN_PRECISION, DEFAULT_MAX_PRECISION,
-                DEFAULT_STRING_EXPONENT_MULTIPLE, DEFAULT_EXPONENT_TO_STRING);
+        mDecimal.set(value).toString(sb, DEFAULT_STRING_PARAMS);
         return sb.toString();
     }
 
