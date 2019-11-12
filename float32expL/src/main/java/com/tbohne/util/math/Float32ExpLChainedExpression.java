@@ -81,6 +81,7 @@ public interface Float32ExpLChainedExpression extends IFloat32ExpL {
     Float32ExpLChainedExpression round(IFloat32ExpL val);
     Float32ExpLChainedExpression round(long val);
     Float32ExpLChainedExpression round(double val);
+    Float32ExpLChainedExpression floor();
 
     Float32ExpLChainedExpression shiftLeft(int val);
     Float32ExpLChainedExpression shiftRight(int val);
