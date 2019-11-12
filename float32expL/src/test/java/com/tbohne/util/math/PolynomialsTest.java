@@ -90,4 +90,16 @@ public class PolynomialsTest {
         List<Float32ExpL> expected = createList(12, 14, 10);
         assertEquals(expected, dest);
     }
+
+    @Test
+    public void whenDestinationLongerThanValuesThenMultiplyIsCorrect() {
+        List<Float32ExpL> first = createList(2, 3, 4);
+        List<Float32ExpL> second = createList(5, 6);
+        List<Float32ExpL> out = createList();
+
+        Polynomials.multiply(first, second, out, new Float32ExpL());
+
+        List<Float32ExpL> expected = createList(10, 27, 38, 24);
+        assertEquals(expected, out);
+    }
 }
