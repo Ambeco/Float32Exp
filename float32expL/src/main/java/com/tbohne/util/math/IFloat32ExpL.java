@@ -24,11 +24,21 @@ public interface IFloat32ExpL extends Comparable<IFloat32ExpL>, Serializable {
     int significand();
     int exponent();
 
+    int signum();
+    boolean isZero();
+
+    @Override boolean equals(Object object);
+    boolean equalTo(IFloat32ExpL val);
+    boolean equalTo(long val);
+    boolean equalTo(double val);
+
+    @Override int hashCode();
+
     boolean approximately(IFloat32ExpL val, int bitsSimilarCount);
     boolean approximately(long val, int bitsSimilarCount);
     boolean approximately(double val, int bitsSimilarCount);
 
-    int compareTo(IFloat32ExpL val);
+    @Override int compareTo(IFloat32ExpL val);
     int compareTo(long val);
     int compareTo(double val);
 
@@ -56,10 +66,11 @@ public interface IFloat32ExpL extends Comparable<IFloat32ExpL>, Serializable {
     float floatValue();
     double doubleValue();
 
-    String toString();
+    @Override String toString();
     StringBuilder toString(StringBuilder sb);
     String toEngineeringString();
     StringBuilder toEngineeringString(StringBuilder sb);
     StringBuilder toString(StringBuilder sb, StringFormatParams params);
     StringBuilder toBNotationString(StringBuilder sb);
+    StringBuilder toHexString(StringBuilder sb);
 }

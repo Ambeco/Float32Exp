@@ -96,6 +96,6 @@ class MultiplicationPerfTests {
             first.multiply(offset);
             first.divide(offset);
         }
-        return count*2 + (!first.equals(-1)?0:1);
+        return count*2 + (!first.equalTo(-1)?0:1);
     }
 }

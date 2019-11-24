@@ -400,6 +400,8 @@ public class Float32ExpLHelpers {
         if (halfSignificand == 0) {
             throw new ArithmeticException("/ by zero");
         }
+        // A normalized value will never trigger long underflow
+        @SuppressWarnings("IntLongMath")
         long halfExponent = (int) other - 1;
         long half = assembleParts(halfSignificand, halfExponent);
         value = add(value, half);
@@ -473,7 +475,7 @@ public class Float32ExpLHelpers {
         if (otherExponent <= -INT_MAX_BITS) { //exponent definitely not integer
             throw new IllegalArgumentException("exponent for negative base must be an integer");
         } else if (otherExponent <= 0) { //exponent might not be integer
-            long diff = INT_MAX_BITS + otherExponent;
+            long diff = INT_MAX_BITS + (long) otherExponent;
             if ((otherSignificand << diff) != 0) { //exponent isn't integer
                 throw new IllegalArgumentException("exponent for negative base must be an integer");
             }
@@ -984,7 +986,7 @@ public class Float32ExpLHelpers {
         } else if (val <= -Double.MIN_NORMAL) { //regular negative number
             mantissa_value = -mantissa_value;
             int zeroes = Integer.numberOfLeadingZeros(~mantissa_value);
-            sig = mantissa_value << (zeroes - 1);
+            sig = ((long) mantissa_value) << (zeroes - 1);
             exp = exponent_bits - 1024 - 28 - zeroes;
         } else if (val > 0){ //subnormal positive
             int zeroes = Long.numberOfLeadingZeros(mantissa_bits);
@@ -1010,9 +1012,9 @@ public class Float32ExpLHelpers {
     //TODO: Remove custom Assert dependency
     private static void assertNormalized(long significand, long exponent) {
         if (significand > Integer.MAX_VALUE || significand < Integer.MIN_VALUE) {
-            Assert.fail("significand " + significand + " is out of range");
+            Assert.fail("significand %s is out of range", significand);
         } else  if (exponent > Integer.MAX_VALUE || exponent < Integer.MIN_VALUE) {
-            Assert.fail("exponent " + exponent + " is out of range");
+            Assert.fail("exponent %s is out of range", exponent);
         } else if (significand > 0) {
             Assert.assertEqualsHex("MSB not set", significand | 0x40000000, significand);
         } else if (significand < 0) {
@@ -1029,7 +1031,7 @@ public class Float32ExpLHelpers {
 
     public static void assertApproximately(String message, long expected, long actual, int bitsSimilarCount) {
         if(!approximately(actual, expected, bitsSimilarCount)) {
-            Assert.fail(Assert.formatCustomized("expected approximately: ", message, expected, actual));
+            Assert.failComparison("Expected approximately: ", message, expected, actual);
         }
     }
 
@@ -1039,7 +1041,7 @@ public class Float32ExpLHelpers {
 
     public static void assertApproximately(String message, double expected, long actual, int bitsSimilarCount) {
         if(!approximately(actual, getDoubleParts(expected), bitsSimilarCount)) {
-            Assert.fail(Assert.formatCustomized("expected approximately: ", message, expected, actual));
+            Assert.failComparison("Expected approximately: ", message, expected, actual);
         }
     }
 }

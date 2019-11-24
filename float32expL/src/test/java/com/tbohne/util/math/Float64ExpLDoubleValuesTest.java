@@ -28,7 +28,7 @@ public class Float64ExpLDoubleValuesTest {
 
     @Test
     public void whenConstructedFromPositiveRealDoubleThenInternalsAreCorrect() {
-        Float64ExpLTestUtils.setAndAssertBits(3.141592653589793238462643383279, 0x6487ED51, -29, mDecimal);
+        Float64ExpLTestUtils.setAndAssertBits(3.141592653589793, 0x6487ED51, -29, mDecimal);
     }
 
     @Test
@@ -42,7 +42,7 @@ public class Float64ExpLDoubleValuesTest {
 
     @Test
     public void whenConstructedFromNegativeRealDoubleThenInternalsAreCorrect() {
-        Float64ExpLTestUtils.setAndAssertBits(-3.141592653589793238462643383279, 0x9B7812AF, -29, mDecimal);
+        Float64ExpLTestUtils.setAndAssertBits(-3.141592653589793, 0x9B7812AF, -29, mDecimal);
     }
 
     @Test

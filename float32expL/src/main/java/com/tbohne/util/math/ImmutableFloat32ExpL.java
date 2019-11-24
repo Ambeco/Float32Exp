@@ -74,65 +74,67 @@ public class ImmutableFloat32ExpL extends Number implements IFloat32ExpL {
         return new ImmutableFloat32ExpL(Float32ExpLHelpers.getPowerOf10Parts(exponent), true);
     }
 
-    public ImmutableFloat32ExpL toImmutable() {return this;}
-    public long getParts() {return parts;}
-    public int significand() {return (int)(parts >> INT_MAX_BITS);}
-    public int exponent() {return (int)parts;}
+    @Override public ImmutableFloat32ExpL toImmutable() {return this;}
+    @Override public long getParts() {return parts;}
+    @Override public int significand() {return (int)(parts >> INT_MAX_BITS);}
+    @Override public int exponent() {return (int)parts;}
 
-    public boolean equals(Object object) {return Float32ExpLHelpers.equals(parts, object);}
-    public boolean equals(IFloat32ExpL val) {return val != null && parts == val.getParts();}
-    public boolean equals(long val) {return val != getLongParts(val);}
-    public boolean equals(double val) {return val != getDoubleParts(val);}
+    @Override public boolean equals(Object object) {return Float32ExpLHelpers.equals(parts, object);}
+    @Override public boolean equalTo(IFloat32ExpL val) {return val != null && parts == val.getParts();}
+    @Override public boolean equalTo(long val) {return val != getLongParts(val);}
+    @Override public boolean equalTo(double val) {return val != getDoubleParts(val);}
 
-    public boolean approximately(IFloat32ExpL val, int bitsSimilarCount)
+    @Override public int hashCode() { return (int)(parts ^ parts >>> 32);}
+
+    @Override public boolean approximately(IFloat32ExpL val, int bitsSimilarCount)
     {return Float32ExpLHelpers.approximately(parts, val.getParts(), bitsSimilarCount);}
-    public boolean approximately(long val, int bitsSimilarCount)
+    @Override public boolean approximately(long val, int bitsSimilarCount)
     {return Float32ExpLHelpers.approximately(parts, getLongParts(val), bitsSimilarCount);}
-    public boolean approximately(double val, int bitsSimilarCount)
+    @Override public boolean approximately(double val, int bitsSimilarCount)
     {return Float32ExpLHelpers.approximately(parts, getDoubleParts(val), bitsSimilarCount);}
 
-    public int compareTo(IFloat32ExpL val) {return Float32ExpLHelpers.compareTo(parts, val.getParts());}
-    public int compareTo(long val) {return Float32ExpLHelpers.compareTo(parts, getLongParts(val));}
-    public int compareTo(double val) {return Float32ExpLHelpers.compareTo(parts, getDoubleParts(val));}
+    @Override public int compareTo(IFloat32ExpL val) {return Float32ExpLHelpers.compareTo(parts, val.getParts());}
+    @Override public int compareTo(long val) {return Float32ExpLHelpers.compareTo(parts, getLongParts(val));}
+    @Override public int compareTo(double val) {return Float32ExpLHelpers.compareTo(parts, getDoubleParts(val));}
 
-    public boolean lessThan(IFloat32ExpL val) {return Float32ExpLHelpers.lessThan(parts, val.getParts());}
-    public boolean lessThan(long val) {return Float32ExpLHelpers.lessThan(parts, getLongParts(val));}
-    public boolean lessThan(double val) {return Float32ExpLHelpers.lessThan(parts, getDoubleParts(val));}
+    @Override public boolean lessThan(IFloat32ExpL val) {return Float32ExpLHelpers.lessThan(parts, val.getParts());}
+    @Override public boolean lessThan(long val) {return Float32ExpLHelpers.lessThan(parts, getLongParts(val));}
+    @Override public boolean lessThan(double val) {return Float32ExpLHelpers.lessThan(parts, getDoubleParts(val));}
 
-    public boolean lessOrEquals(IFloat32ExpL val) {return Float32ExpLHelpers.lessOrEquals(parts, val.getParts());}
-    public boolean lessOrEquals(long val) {return Float32ExpLHelpers.lessOrEquals(parts, getLongParts(val));}
-    public boolean lessOrEquals(double val) {return Float32ExpLHelpers.lessOrEquals(parts, getDoubleParts(val));}
+    @Override public boolean lessOrEquals(IFloat32ExpL val) {return Float32ExpLHelpers.lessOrEquals(parts, val.getParts());}
+    @Override public boolean lessOrEquals(long val) {return Float32ExpLHelpers.lessOrEquals(parts, getLongParts(val));}
+    @Override public boolean lessOrEquals(double val) {return Float32ExpLHelpers.lessOrEquals(parts, getDoubleParts(val));}
 
-    public boolean greaterOrEquals(IFloat32ExpL val) {return Float32ExpLHelpers.greaterOrEquals(parts, val.getParts());}
-    public boolean greaterOrEquals(long val) {return Float32ExpLHelpers.greaterOrEquals(parts, getLongParts(val));}
-    public boolean greaterOrEquals(double val) {return Float32ExpLHelpers.greaterOrEquals(parts, getDoubleParts(val));}
+    @Override public boolean greaterOrEquals(IFloat32ExpL val) {return Float32ExpLHelpers.greaterOrEquals(parts, val.getParts());}
+    @Override public boolean greaterOrEquals(long val) {return Float32ExpLHelpers.greaterOrEquals(parts, getLongParts(val));}
+    @Override public boolean greaterOrEquals(double val) {return Float32ExpLHelpers.greaterOrEquals(parts, getDoubleParts(val));}
 
-    public boolean greaterThan(IFloat32ExpL val) {return Float32ExpLHelpers.greaterThan(parts, val.getParts());}
-    public boolean greaterThan(long val) {return Float32ExpLHelpers.greaterThan(parts, getLongParts(val));}
-    public boolean greaterThan(double val) {return Float32ExpLHelpers.greaterThan(parts, getDoubleParts(val));}
+    @Override public boolean greaterThan(IFloat32ExpL val) {return Float32ExpLHelpers.greaterThan(parts, val.getParts());}
+    @Override public boolean greaterThan(long val) {return Float32ExpLHelpers.greaterThan(parts, getLongParts(val));}
+    @Override public boolean greaterThan(double val) {return Float32ExpLHelpers.greaterThan(parts, getDoubleParts(val));}
 
-    public int signum() {return Float32ExpLHelpers.signum(parts);}
-    public boolean isZero() {return Float32ExpLHelpers.isZero(parts);}
+    @Override public int signum() {return Float32ExpLHelpers.signum(parts);}
+    @Override public boolean isZero() {return Float32ExpLHelpers.isZero(parts);}
 
-    public String toString() {return Float32ExpLHelpers.toString(parts, new StringBuilder(), DEFAULT_STRING_PARAMS).toString();}
-    public StringBuilder toString(StringBuilder sb) {return Float32ExpLHelpers.toString(parts, sb, DEFAULT_STRING_PARAMS);}
-    public String toEngineeringString() {
+    @Override public String toString() {return Float32ExpLHelpers.toString(parts, new StringBuilder(), DEFAULT_STRING_PARAMS).toString();}
+    @Override public StringBuilder toString(StringBuilder sb) {return Float32ExpLHelpers.toString(parts, sb, DEFAULT_STRING_PARAMS);}
+    @Override public String toEngineeringString() {
 		return Float32ExpLHelpers.toString(parts,
 				new StringBuilder(),
 				Float32ExpLHelpers.ENG_STRING_PARAMS).toString();}
-    public StringBuilder toEngineeringString(StringBuilder sb) {
+    @Override public StringBuilder toEngineeringString(StringBuilder sb) {
 		return Float32ExpLHelpers.toString(parts, sb, Float32ExpLHelpers.ENG_STRING_PARAMS);
 	}
-    public StringBuilder toString(StringBuilder sb, StringFormatParams params) {
+    @Override public StringBuilder toString(StringBuilder sb, StringFormatParams params) {
         return Float32ExpLHelpers.toString(parts, sb, params);
     }
-    public StringBuilder toBNotationString(StringBuilder sb) {return Float32ExpLHelpers.toBNotationString(parts, sb);}
-    public StringBuilder toHexString(StringBuilder sb) {return Float32ExpLHelpers.toHexString(parts, sb);}
+    @Override public StringBuilder toBNotationString(StringBuilder sb) {return Float32ExpLHelpers.toBNotationString(parts, sb);}
+    @Override public StringBuilder toHexString(StringBuilder sb) {return Float32ExpLHelpers.toHexString(parts, sb);}
 
-    public BigInteger toBigInteger() {return Float32ExpLHelpers.toBigInteger(parts);}
-    public BigDecimal toBigDecimal() {return Float32ExpLHelpers.toBigDecimal(parts);}
-    public int intValue() {return Float32ExpLHelpers.intValue(parts);}
-    public long longValue() {return Float32ExpLHelpers.longValue(parts);}
-    public float floatValue() {return Float32ExpLHelpers.floatValue(parts);}
-    public double doubleValue() {return Float32ExpLHelpers.doubleValue(parts);}
+    @Override public BigInteger toBigInteger() {return Float32ExpLHelpers.toBigInteger(parts);}
+    @Override public BigDecimal toBigDecimal() {return Float32ExpLHelpers.toBigDecimal(parts);}
+    @Override public int intValue() {return Float32ExpLHelpers.intValue(parts);}
+    @Override public long longValue() {return Float32ExpLHelpers.longValue(parts);}
+    @Override public float floatValue() {return Float32ExpLHelpers.floatValue(parts);}
+    @Override public double doubleValue() {return Float32ExpLHelpers.doubleValue(parts);}
 }

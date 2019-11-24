@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: org.checkerframework:dataflow:3.0.0@jar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../.gradle/caches/modules-2/files-2.1/org.checkerframework/dataflow/3.0.0/cafe32aa6ebb8c65d1785cdbed7733ee3a0a018a/dataflow-3.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../../.gradle/caches/modules-2/files-2.1/org.checkerframework/dataflow/3.0.0/860692a2d5bd5ad109a0e16bdd1189fd2f972684/dataflow-3.0.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../../.gradle/caches/modules-2/files-2.1/org.checkerframework/dataflow/3.0.0/4674cd79e0cdc3f11985ba27f8ac92a2eca86fec/dataflow-3.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

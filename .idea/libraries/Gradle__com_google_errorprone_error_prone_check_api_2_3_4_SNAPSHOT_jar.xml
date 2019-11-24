@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.google.errorprone:error_prone_check_api:2.3.4-SNAPSHOT@jar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../.gradle/caches/modules-2/files-2.1/com.google.errorprone/error_prone_check_api/2.3.4-SNAPSHOT/399112f511c607422946c693f6a6485438d0bf2c/error_prone_check_api-2.3.4-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../../.gradle/caches/modules-2/files-2.1/com.google.errorprone/error_prone_check_api/2.3.4-SNAPSHOT/2a3fcb60e75507e5dffe84bed69d627e9fd9ba24/error_prone_check_api-2.3.4-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

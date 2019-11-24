@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 		new Thread(runnable).start();
 	}
 
-	private static void initPolynomial(int index, List<Float32ExpL> polynomial, Float32ExpL temp) {
+	private static void initPolynomial(int index, List<Float32ExpL> polynomial) {
 		for(int i=1; i<=index; i++) {
 			polynomial.get(i).set(ImmutableFloat32ExpL.ONE).divide(1000);
 		}
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
 		@Override
 		public void onBindViewHolder(@NonNull ViewHolder viewHolder, int index) {
-			initPolynomial(index, viewHolder.polynomial, temp);
+			initPolynomial(index, viewHolder.polynomial);
 			SpannableStringBuilder builder = new SpannableStringBuilder();
 			builder.append("BEGIN >");
 

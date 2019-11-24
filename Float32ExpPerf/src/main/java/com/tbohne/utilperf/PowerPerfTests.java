@@ -73,6 +73,6 @@ class PowerPerfTests {
         for(long i = 0; i < count; ++i) {
             first.add(base.set(BASE).pow(bitOffset));
         }
-        return count + (!first.equals(-1)?0:1);
+        return count + (!first.equalTo(-1)?0:1);
     }
 }

@@ -1,14 +1,35 @@
 package com.tbohne.util;
 
+import com.google.errorprone.annotations.CompileTimeConstant;
+import com.google.errorprone.annotations.FormatMethod;
+import com.google.errorprone.annotations.FormatString;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 public class Assert {
-    static public void fail(String format, Object...values) {
-        if (format == null) {
-            throw new AssertionError();
-        } else if (values.length == 0) {
-            throw new AssertionError(format);
-        } else {
-            throw new AssertionError(String.format(format, values));
+    @FormatMethod
+    static public void fail(@FormatString String format, @Nullable Object ...values) {
+        throw new AssertionError(String.format(format, values));
+    }
+
+    static public void failComparison(@CompileTimeConstant String expectation, String message, @Nullable Object expected,
+            @Nullable Object actual) {
+        String expectedString = String.valueOf(expected);
+        String actualString = String.valueOf(actual);
+        if (expectedString.equals(actualString)) {
+            expectedString = formatClassAndValue(expected, expectedString);
+            actualString = formatClassAndValue(expected, actualString);
         }
+        fail("%s %s <%s> but was <%s>",
+                message,
+                expectation,
+                expectedString,
+                actualString);
+    }
+
+    private static String formatClassAndValue(Object value, String valueString) {
+        String className = value == null ? "null" : value.getClass().getName();
+        return className + "<" + valueString + ">";
     }
 
     static public void assertGreater(long expected, long actual) {
@@ -17,12 +38,12 @@ public class Assert {
 
     static public void assertGreater(String message, long expected, long actual) {
         if (actual <= expected) {
-            failNotGreater(message, Long.valueOf(expected), Long.valueOf(actual));
+            failNotGreater(message, expected, actual);
         }
     }
 
     static private void failNotGreater(String message, Object expected, Object actual) {
-        fail(formatCustomized("expected greater: ", message, expected, actual));
+        failComparison("Expected greater: ", message, expected, actual);
     }
 
     static public void assertAtLeast(long expected, long actual) {
@@ -31,12 +52,12 @@ public class Assert {
 
     static public void assertAtLeast(String message, long expected, long actual) {
         if (actual < expected) {
-            failNotAtLeast(message, Long.valueOf(expected), Long.valueOf(actual));
+            failNotAtLeast(message, expected, actual);
         }
     }
 
     static private void failNotAtLeast(String message, Object expected, Object actual) {
-        fail(formatCustomized("expected at least: ", message, expected, actual));
+        failComparison("Expected at least: ", message, expected, actual);
     }
 
     static public void assertAtMost(long expected, long actual) {
@@ -45,12 +66,12 @@ public class Assert {
 
     static public void assertAtMost(String message, long expected, long actual) {
         if (actual > expected) {
-            failNotAtMost(message, Long.valueOf(expected), Long.valueOf(actual));
+            failNotAtMost(message, expected, actual);
         }
     }
 
     static private void failNotAtMost(String message, Object expected, Object actual) {
-        fail(formatCustomized("expected at most: ", message, expected, actual));
+        failComparison("Expected at most: ", message, expected, actual);
     }
 
     static public void assertLess(long expected, long actual) {
@@ -59,12 +80,12 @@ public class Assert {
 
     static public void assertLess(String message, long expected, long actual) {
         if (actual >= expected) {
-            failNotLess(message, Long.valueOf(expected), Long.valueOf(actual));
+            failNotLess(message, expected, actual);
         }
     }
 
     static private void failNotLess(String message, Object expected, Object actual) {
-        fail(formatCustomized("expected less: ", message, expected, actual));
+        failComparison("Expected less: ", message, expected, actual);
     }
 
     static public void assertMultiple(long expected, long actual) {
@@ -73,13 +94,14 @@ public class Assert {
 
     static public void assertMultiple(String message, long multipleOf, long actual) {
         if (actual % multipleOf != 0) {
-            fail(formatCustomized("expected multiple: ", message, multipleOf, actual));
+            failComparison("Expected multiple: ", message, multipleOf, actual);
         }
     }
 
     static public void assertEquals(String expected, String actual) {
         assertEquals(null, expected, actual);
     }
+
     static public void assertEquals(String message, String expected, String actual) {
         if (expected == null && actual == null) {
             return;
@@ -87,12 +109,12 @@ public class Assert {
         if (expected != null && expected.equals(actual)) {
             return;
         }
-        fail(formatCustomized("expected:: ", message, expected, actual));
+        failComparison("Expected: ", message, expected, actual);
     }
 
     static public void assertEqualsHex(String message, long expected, long actual) {
         if (expected != actual) {
-            fail(formatCustomized("Expected: ", message, "0x"+Long.toHexString(expected), "0x"+Long.toHexString(actual)));
+            failComparison("Expected: ", message, "0x"+Long.toHexString(expected), "0x"+Long.toHexString(actual));
         }
     }
 
@@ -116,30 +138,7 @@ public class Assert {
 
         if (actual < min || actual > max) {
             String range = min + " to " + max;
-            fail(formatCustomized("expected: ", message, range, actual));
+            failComparison("Expected: ", message, range, actual);
         }
-    }
-
-    public static String formatCustomized(String expectation, String message, Object expected,
-               Object actual) {
-        String formatted = "";
-        if (message != null && !message.equals("")) {
-            formatted = message + " ";
-        }
-        String expectedString = String.valueOf(expected);
-        String actualString = String.valueOf(actual);
-        if (expectedString.equals(actualString)) {
-            return formatted + expectation
-                    + formatClassAndValue(expected, expectedString)
-                    + " but was: " + formatClassAndValue(actual, actualString);
-        } else {
-            return formatted + expectation + "<" + expectedString + "> but was:<"
-                    + actualString + ">";
-        }
-    }
-
-    private static String formatClassAndValue(Object value, String valueString) {
-        String className = value == null ? "null" : value.getClass().getName();
-        return className + "<" + valueString + ">";
     }
 }

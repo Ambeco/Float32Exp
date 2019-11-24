@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: org.checkerframework:javacutil:3.0.0@jar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../.gradle/caches/modules-2/files-2.1/org.checkerframework/javacutil/3.0.0/7d9a30c5e9552be08ca575b98cb187d26342e588/javacutil-3.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../../.gradle/caches/modules-2/files-2.1/org.checkerframework/javacutil/3.0.0/e28035a952688f1a050b40b1429342393b6e27b9/javacutil-3.0.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../../.gradle/caches/modules-2/files-2.1/org.checkerframework/javacutil/3.0.0/40606c67b86647766e5416f38cb0fc790751be53/javacutil-3.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

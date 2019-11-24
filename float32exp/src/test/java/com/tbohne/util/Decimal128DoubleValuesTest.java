@@ -36,7 +36,7 @@ public class Decimal128DoubleValuesTest {
 
     @Test
     public void whenConstructedFromPositiveRealDoubleThenInternalsAreCorrect() {
-        setAndAssertBits(3.141592653589793238462643383279, 0x6487ED51, -29, mDecimal);
+        setAndAssertBits(3.141592653589793, 0x6487ED51, -29, mDecimal);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class Decimal128DoubleValuesTest {
 
     @Test
     public void whenConstructedFromNegativeRealDoubleThenInternalsAreCorrect() {
-        setAndAssertBits(-3.141592653589793238462643383279, 0x9B7812AF, -29, mDecimal);
+        setAndAssertBits(-3.141592653589793, 0x9B7812AF, -29, mDecimal);
     }
 
     @Test

@@ -1,10 +1,18 @@
 package com.tbohne.util.math;
 
+import java.util.ArrayList;
 import java.util.List;
 
 //TODO UNIT TEST
 public class Polynomials {
     private Polynomials() {
+    }
+
+    public static List<ImmutableFloat32ExpL> toImmutable(List<? extends IFloat32ExpL> polynomial) {
+        List<ImmutableFloat32ExpL> immutable = new ArrayList<>(polynomial.size());
+        for (int i=0; i< polynomial.size(); i++)
+            immutable.add(polynomial.get(i).toImmutable());
+        return immutable;
     }
 
     public static void at(List<? extends IFloat32ExpL> polynomial,
@@ -24,7 +32,7 @@ public class Polynomials {
         for (int i = 1; i < polynomial.size(); i++) {
             tempXPow.multiply(x);
             IFloat32ExpL coefficient = polynomial.get(i);
-            if (!coefficient.equals(ImmutableFloat32ExpL.ZERO)) {
+            if (!coefficient.equalTo(ImmutableFloat32ExpL.ZERO)) {
                 out.add(tempT.set(tempXPow).multiply(coefficient));
             }
         }
@@ -82,7 +90,7 @@ public class Polynomials {
             at(polynomial, greaterThan, out, temp1, temp2);
             if (out.greaterThan(ImmutableFloat32ExpL.ZERO)) {
                 return false;
-            } else if (out.equals(ImmutableFloat32ExpL.ZERO)) {
+            } else if (out.equalTo(ImmutableFloat32ExpL.ZERO)) {
                 return true;
             }
             //Use Newton's method
@@ -106,7 +114,7 @@ public class Polynomials {
 
     public static int findBiggestExponent(List<? extends IFloat32ExpL> polynomial) {
         for (int i = polynomial.size() - 1; i >= 0; i--) {
-            if (polynomial.get(i).equals(ImmutableFloat32ExpL.ZERO)) {
+            if (polynomial.get(i).equalTo(ImmutableFloat32ExpL.ZERO)) {
                 return i;
             }
         }
@@ -185,7 +193,7 @@ public class Polynomials {
         clear(out);
         for (int i = 0; i < left.size(); i++) {
             for (int j = 0; j < right.size(); j++) {
-                temp.set(left.get(i)).multiply(right.get(i));
+                temp.set(left.get(i)).multiply(right.get(j));
                 out.get(i + j).add(temp);
             }
         }

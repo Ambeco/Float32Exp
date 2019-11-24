@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: com.google.errorprone:javac:9+181-r4173-1@jar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../.gradle/caches/modules-2/files-2.1/com.google.errorprone/javac/9+181-r4173-1/bdf4c0aa7d540ee1f7bf14d47447aea4bbf450c5/javac-9+181-r4173-1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../../.gradle/caches/modules-2/files-2.1/com.google.errorprone/javac/9+181-r4173-1/c2c8b799cb76b17469f782fe65540a6f1ccbb232/javac-9+181-r4173-1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../../.gradle/caches/modules-2/files-2.1/com.google.errorprone/javac/9+181-r4173-1/8180e0b5be81aa91a2edb26cfe079c65dc2fc813/javac-9+181-r4173-1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

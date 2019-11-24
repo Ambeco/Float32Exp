@@ -31,7 +31,7 @@ public class Float32AnimatedDrawableSpan extends ImageSpan {
 		//TODO: Appendable instead of StringBuilder.
 		StringBuilder stringBuilder = new StringBuilder();
 		Float32ExpL displayValue = new Float32ExpL();
-		Polynomials.at(polynomial, clock.getTime(), displayValue);
+		Polynomials.at(polynomial, clock.getTime(), displayValue, new Float32ExpL(), new Float32ExpL());
 		displayValue.toString(stringBuilder, params);
 		SpannableString string = new SpannableString(stringBuilder);
 		string.setSpan(new Float32AnimatedDrawableSpan(polynomial, params, view, clock), 0, stringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -52,7 +52,7 @@ public class Float32AnimatedDrawableSpan extends ImageSpan {
 		//TODO: Appendable instead of StringBuilder.
 		StringBuilder stringBuilder = new StringBuilder();
 		Float32ExpL displayValue = new Float32ExpL();
-		Polynomials.at(polynomial, clock.getTime(), displayValue);
+		Polynomials.at(polynomial, clock.getTime(), displayValue, new Float32ExpL(), new Float32ExpL());
 		displayValue.toString(stringBuilder, params);
 		int offset = builder.length();
 		builder.append(stringBuilder);

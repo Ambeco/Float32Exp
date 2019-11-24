@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: org.plumelib:plume-util:1.0.6@jar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../.gradle/caches/modules-2/files-2.1/org.plumelib/plume-util/1.0.6/d3a3e30a7f4beb69ecd4977ce8d636f463084d7f/plume-util-1.0.6.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../../.gradle/caches/modules-2/files-2.1/org.plumelib/plume-util/1.0.6/d12cfaf1eeb65aba57367d90b826bbaacd327252/plume-util-1.0.6-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../../.gradle/caches/modules-2/files-2.1/org.plumelib/plume-util/1.0.6/f0e374ffb58d0b309bd1a9093a341e10df54d492/plume-util-1.0.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

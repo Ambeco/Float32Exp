@@ -31,6 +31,29 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="Float32Exp-float32exp" exported="" />
     <orderEntry type="module" module-name="float32expl" exported="" />
+    <orderEntry type="library" exported="" name="Gradle: error_prone_core-2.3.4-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: error_prone_check_api-2.3.4-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: error_prone_annotation-2.3.4-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: error_prone_type_annotations-2.3.4-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: pcollections-2.1.2" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: auto-common-0.10" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: guava-27.0.1-jre" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jFormatString-3.0.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jsr305-3.0.2" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: dataflow-3.0.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: javac-9+181-r4173-1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: caffeine-2.7.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: error_prone_annotations-2.3.4-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: protobuf-java-3.4.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: diffutils-1.3.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: software-and-algorithms-1.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: failureaccess-1.0.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: listenablefuture-9999.0-empty-to-avoid-conflict-with-guava" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: javacutil-3.0.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: checker-qual-3.0.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: j2objc-annotations-1.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: animal-sniffer-annotations-1.17" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: plume-util-1.0.6" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="Gradle: junit-4.12" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="Gradle: hamcrest-core-1.3" level="project" />
   </component>

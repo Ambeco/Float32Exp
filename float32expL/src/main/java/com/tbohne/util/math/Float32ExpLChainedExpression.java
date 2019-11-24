@@ -1,8 +1,5 @@
 package com.tbohne.util.math;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 /**
  * A mutable fixed-precision signed decimal.
  * It works like double, but with a 32 binary significant digits, and a 32 bit base-2 exponent.
@@ -51,6 +48,9 @@ public interface Float32ExpLChainedExpression extends IFloat32ExpL {
     Float32ExpLChainedExpression muldiv(long mul, IFloat32ExpL div);
     Float32ExpLChainedExpression muldiv(double mul, IFloat32ExpL div);
     Float32ExpLChainedExpression muldiv(long mul, long div);
+    Float32ExpLChainedExpression muldiv(long mul, double div);
+    Float32ExpLChainedExpression muldiv(double mul, long div);
+    Float32ExpLChainedExpression muldiv(double mul, double div);
 
     Float32ExpLChainedExpression divideToIntegralValue(IFloat32ExpL val);
     Float32ExpLChainedExpression divideToIntegralValue(long val);
@@ -75,13 +75,15 @@ public interface Float32ExpLChainedExpression extends IFloat32ExpL {
     Float32ExpLChainedExpression abs();
     Float32ExpLChainedExpression negate();
     Float32ExpLChainedExpression plus(); //does nothing
-    int signum();
-    boolean isZero();
 
+    Float32ExpLChainedExpression round();
     Float32ExpLChainedExpression round(IFloat32ExpL val);
     Float32ExpLChainedExpression round(long val);
     Float32ExpLChainedExpression round(double val);
     Float32ExpLChainedExpression floor();
+    Float32ExpLChainedExpression floor(IFloat32ExpL val);
+    Float32ExpLChainedExpression floor(long val);
+    Float32ExpLChainedExpression floor(double val);
 
     Float32ExpLChainedExpression shiftLeft(int val);
     Float32ExpLChainedExpression shiftRight(int val);
@@ -93,49 +95,4 @@ public interface Float32ExpLChainedExpression extends IFloat32ExpL {
     Float32ExpLChainedExpression max(IFloat32ExpL val);
     Float32ExpLChainedExpression max(long val);
     Float32ExpLChainedExpression max(double val);
-
-    boolean equals(Object object);
-    boolean equals(IFloat32ExpL val);
-    boolean equals(long val);
-    boolean equals(double val);
-
-    boolean approximately(IFloat32ExpL val, int bitsSimilarCount);
-    boolean approximately(long val, int bitsSimilarCount);
-    boolean approximately(double val, int bitsSimilarCount);
-
-    int compareTo(IFloat32ExpL val);
-    int compareTo(long val);
-    int compareTo(double val);
-
-    boolean lessThan(IFloat32ExpL val);
-    boolean lessThan(long val);
-    boolean lessThan(double val);
-
-    boolean lessOrEquals(IFloat32ExpL val);
-    boolean lessOrEquals(long val);
-    boolean lessOrEquals(double val);
-
-    boolean greaterOrEquals(IFloat32ExpL val);
-    boolean greaterOrEquals(long val);
-    boolean greaterOrEquals(double val);
-
-    boolean greaterThan(IFloat32ExpL val);
-    boolean greaterThan(long val);
-    boolean greaterThan(double val);
-
-    String toString();
-    StringBuilder toString(StringBuilder sb);
-    String toEngineeringString();
-    StringBuilder toEngineeringString(StringBuilder sb);
-    StringBuilder toString(StringBuilder sb, StringFormatParams params);
-    StringBuilder toBNotationString(StringBuilder sb);
-    StringBuilder toHexString(StringBuilder sb);
-
-    BigInteger toBigInteger();
-    BigDecimal toBigDecimal();
-    ImmutableFloat32ExpL toImmutable();
-    int intValue();
-    long longValue();
-    float floatValue();
-    double doubleValue();
 }

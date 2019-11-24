@@ -58,9 +58,11 @@ public class Float32TextEditAnimator {
 
 	private class Float32Animation extends Animation {
 		private final long TOTAL_MILLIS = 86_400_000L;
-		private Float32ExpL displayValue = new Float32ExpL();
-		private StringBuilder stringBuilder = new StringBuilder();
-		private ImmutableFloat32ExpL firstTime;
+		private final Float32ExpL displayValue = new Float32ExpL();
+		private final StringBuilder stringBuilder = new StringBuilder();
+		private final ImmutableFloat32ExpL firstTime;
+		private final Float32ExpL temp1 = new Float32ExpL();
+		private final Float32ExpL temp2 = new Float32ExpL();
 
 		Float32Animation() {
 			setRepeatCount(Animation.INFINITE);
@@ -73,7 +75,7 @@ public class Float32TextEditAnimator {
 		protected void applyTransformation(float interpolatedTime, Transformation t) {
 			long estimatedMillis = (long)(interpolatedTime*TOTAL_MILLIS);
 			IFloat32ExpL time = clock.getEstimatedTime(firstTime, estimatedMillis);
-			Polynomials.at(polynomial, time, displayValue);
+			Polynomials.at(polynomial, time, displayValue, temp1, temp2);
 			stringBuilder.setLength(0);
 			displayValue.toString(stringBuilder);
 			textView.setText(stringBuilder);

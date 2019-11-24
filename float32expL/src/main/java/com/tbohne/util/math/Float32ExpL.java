@@ -68,10 +68,10 @@ public class Float32ExpL extends Number implements Float32ExpLChainedExpression,
         return new Float32ExpL(Float32ExpLHelpers.getPowerOf10Parts(exponent), true);
     }
 
-    public ImmutableFloat32ExpL toImmutable() {return new ImmutableFloat32ExpL(parts, true);}
-    public long getParts() {return parts;}
-    public int significand() {return (int)(parts >> INT_MAX_BITS);}
-    public int exponent() {return (int)parts;}
+    @Override public ImmutableFloat32ExpL toImmutable() {return new ImmutableFloat32ExpL(parts, true);}
+    @Override public long getParts() {return parts;}
+    @Override public int significand() {return (int)(parts >> INT_MAX_BITS);}
+    @Override public int exponent() {return (int)parts;}
 
     public Float32ExpLChainedExpression set(int val) {parts = getLongParts(val); return this;}
     public Float32ExpLChainedExpression set(long val) {parts = getLongParts(val); return this;}
@@ -83,147 +83,149 @@ public class Float32ExpL extends Number implements Float32ExpLChainedExpression,
     public Float32ExpLChainedExpression set(BigInteger val) {parts = cast(val); return this;}
     public Float32ExpLChainedExpression set(IFloat32ExpL val) {parts = val.getParts(); return this;}
 
-    public Float32ExpLChainedExpression add(IFloat32ExpL val) {parts = Float32ExpLHelpers.add(parts, val.getParts()); return this;}
-    public Float32ExpLChainedExpression add(long val) {parts = Float32ExpLHelpers.add(parts, getLongParts(val)); return this;}
-    public Float32ExpLChainedExpression add(double val) {parts = Float32ExpLHelpers.add(parts, getDoubleParts(val)); return this;}
+    @Override public Float32ExpLChainedExpression add(IFloat32ExpL val) {parts = Float32ExpLHelpers.add(parts, val.getParts()); return this;}
+    @Override public Float32ExpLChainedExpression add(long val) {parts = Float32ExpLHelpers.add(parts, getLongParts(val)); return this;}
+    @Override public Float32ExpLChainedExpression add(double val) {parts = Float32ExpLHelpers.add(parts, getDoubleParts(val)); return this;}
 
-    public Float32ExpLChainedExpression subtract(IFloat32ExpL val) {parts = Float32ExpLHelpers.subtract(parts, val.getParts()); return this;}
-    public Float32ExpLChainedExpression subtract(long val) {parts = Float32ExpLHelpers.subtract(parts, getLongParts(val)); return this;}
-    public Float32ExpLChainedExpression subtract(double val) {parts = Float32ExpLHelpers.subtract(parts, getDoubleParts(val)); return this;}
+    @Override public Float32ExpLChainedExpression subtract(IFloat32ExpL val) {parts = Float32ExpLHelpers.subtract(parts, val.getParts()); return this;}
+    @Override public Float32ExpLChainedExpression subtract(long val) {parts = Float32ExpLHelpers.subtract(parts, getLongParts(val)); return this;}
+    @Override public Float32ExpLChainedExpression subtract(double val) {parts = Float32ExpLHelpers.subtract(parts, getDoubleParts(val)); return this;}
 
-    public Float32ExpLChainedExpression multiply(IFloat32ExpL val) {parts = Float32ExpLHelpers.multiply(parts, val.getParts()); return this;}
-    public Float32ExpLChainedExpression multiply(long val) {parts = Float32ExpLHelpers.multiply(parts, getLongParts(val)); return this;}
-    public Float32ExpLChainedExpression multiply(double val) {parts = Float32ExpLHelpers.multiply(parts, getDoubleParts(val)); return this;}
+    @Override public Float32ExpLChainedExpression multiply(IFloat32ExpL val) {parts = Float32ExpLHelpers.multiply(parts, val.getParts()); return this;}
+    @Override public Float32ExpLChainedExpression multiply(long val) {parts = Float32ExpLHelpers.multiply(parts, getLongParts(val)); return this;}
+    @Override public Float32ExpLChainedExpression multiply(double val) {parts = Float32ExpLHelpers.multiply(parts, getDoubleParts(val)); return this;}
 
-    public Float32ExpLChainedExpression divide(IFloat32ExpL val) {parts = Float32ExpLHelpers.divide(parts, val.getParts()); return this;}
-    public Float32ExpLChainedExpression divide(long val) {parts = Float32ExpLHelpers.divide(parts, getLongParts(val)); return this;}
-    public Float32ExpLChainedExpression divide(double val) {parts = Float32ExpLHelpers.divide(parts, getDoubleParts(val)); return this;}
+    @Override public Float32ExpLChainedExpression divide(IFloat32ExpL val) {parts = Float32ExpLHelpers.divide(parts, val.getParts()); return this;}
+    @Override public Float32ExpLChainedExpression divide(long val) {parts = Float32ExpLHelpers.divide(parts, getLongParts(val)); return this;}
+    @Override public Float32ExpLChainedExpression divide(double val) {parts = Float32ExpLHelpers.divide(parts, getDoubleParts(val)); return this;}
 
-    public Float32ExpLChainedExpression muldiv(IFloat32ExpL mul, IFloat32ExpL div)
+    @Override public Float32ExpLChainedExpression muldiv(IFloat32ExpL mul, IFloat32ExpL div)
     {parts =  Float32ExpLHelpers.muldiv(parts, mul.getParts(), div.getParts()); return this;}
-    public Float32ExpLChainedExpression muldiv(IFloat32ExpL mul, long div)
+    @Override public Float32ExpLChainedExpression muldiv(IFloat32ExpL mul, long div)
     {parts =  Float32ExpLHelpers.muldiv(parts, mul.getParts(), getLongParts(div)); return this;}
-    public Float32ExpLChainedExpression muldiv(IFloat32ExpL mul, double div)
+    @Override public Float32ExpLChainedExpression muldiv(IFloat32ExpL mul, double div)
     {parts =  Float32ExpLHelpers.muldiv(parts, mul.getParts(), getDoubleParts(div)); return this;}
-    public Float32ExpLChainedExpression muldiv(long mul, IFloat32ExpL div)
+    @Override public Float32ExpLChainedExpression muldiv(long mul, IFloat32ExpL div)
     {parts =  Float32ExpLHelpers.muldiv(parts, getLongParts(mul), div.getParts()); return this;}
-    public Float32ExpLChainedExpression muldiv(long mul, long div)
+    @Override public Float32ExpLChainedExpression muldiv(long mul, long div)
     {parts =  Float32ExpLHelpers.muldiv(parts, getLongParts(mul), getLongParts(div)); return this;}
-    public Float32ExpLChainedExpression muldiv(long mul, double div)
+    @Override public Float32ExpLChainedExpression muldiv(long mul, double div)
     {parts =  Float32ExpLHelpers.muldiv(parts, getLongParts(mul), getDoubleParts(div)); return this;}
-    public Float32ExpLChainedExpression muldiv(double mul, IFloat32ExpL div)
+    @Override public Float32ExpLChainedExpression muldiv(double mul, IFloat32ExpL div)
     {parts =  Float32ExpLHelpers.muldiv(parts, getDoubleParts(mul), div.getParts()); return this;}
-    public Float32ExpLChainedExpression muldiv(double mul, long div)
+    @Override public Float32ExpLChainedExpression muldiv(double mul, long div)
     {parts =  Float32ExpLHelpers.muldiv(parts, getDoubleParts(mul), getLongParts(div)); return this;}
-    public Float32ExpLChainedExpression muldiv(double mul, double div)
+    @Override public Float32ExpLChainedExpression muldiv(double mul, double div)
     {parts =  Float32ExpLHelpers.muldiv(parts, getDoubleParts(mul), getDoubleParts(div)); return this;}
 
-    public Float32ExpLChainedExpression divideToIntegralValue(IFloat32ExpL val)
+    @Override public Float32ExpLChainedExpression divideToIntegralValue(IFloat32ExpL val)
     {parts = Float32ExpLHelpers.divideToIntegralValue(parts, val.getParts()); return this;}
-    public Float32ExpLChainedExpression divideToIntegralValue(long val)
+    @Override public Float32ExpLChainedExpression divideToIntegralValue(long val)
     {parts = Float32ExpLHelpers.divideToIntegralValue(parts, getLongParts(val)); return this;}
-    public Float32ExpLChainedExpression divideToIntegralValue(double val)
+    @Override public Float32ExpLChainedExpression divideToIntegralValue(double val)
     {parts = Float32ExpLHelpers.divideToIntegralValue(parts, getDoubleParts(val)); return this;}
-    
-    public Float32ExpLChainedExpression remainder(IFloat32ExpL val) {parts = Float32ExpLHelpers.remainder(parts, val.getParts()); return this;}
-    public Float32ExpLChainedExpression remainder(long val) {parts = Float32ExpLHelpers.remainder(parts, getLongParts(val)); return this;}
-    public Float32ExpLChainedExpression remainder(double val) {parts = Float32ExpLHelpers.remainder(parts, getDoubleParts(val)); return this;}
 
-    public void setRemainder(long remainder) {parts = remainder;}
-    public Float32ExpLChainedExpression divideAndRemainder(IFloat32ExpL val, Float32ExpL outRemainder)
+    @Override public Float32ExpLChainedExpression remainder(IFloat32ExpL val) {parts = Float32ExpLHelpers.remainder(parts, val.getParts()); return this;}
+    @Override public Float32ExpLChainedExpression remainder(long val) {parts = Float32ExpLHelpers.remainder(parts, getLongParts(val)); return this;}
+    @Override public Float32ExpLChainedExpression remainder(double val) {parts = Float32ExpLHelpers.remainder(parts, getDoubleParts(val)); return this;}
+
+    @Override public void setRemainder(long remainder) {parts = remainder;}
+    @Override public Float32ExpLChainedExpression divideAndRemainder(IFloat32ExpL val, Float32ExpL outRemainder)
     {parts = Float32ExpLHelpers.divideAndRemainder(parts, val.getParts(), outRemainder); return this;}
-    public Float32ExpLChainedExpression divideAndRemainder(long val, Float32ExpL outRemainder)
+    @Override public Float32ExpLChainedExpression divideAndRemainder(long val, Float32ExpL outRemainder)
     {parts = Float32ExpLHelpers.divideAndRemainder(parts, getLongParts(val), outRemainder); return this;}
-    public Float32ExpLChainedExpression divideAndRemainder(double val, Float32ExpL outRemainder)
+    @Override public Float32ExpLChainedExpression divideAndRemainder(double val, Float32ExpL outRemainder)
     {parts = Float32ExpLHelpers.divideAndRemainder(parts, getDoubleParts(val), outRemainder); return this;}
 
-    public Float32ExpLChainedExpression floor() {parts = Float32ExpLHelpers.floor(parts); return this;}
-    public Float32ExpLChainedExpression floor(IFloat32ExpL val) {parts = Float32ExpLHelpers.floor(parts, val.getParts()); return this;}
-    public Float32ExpLChainedExpression floor(long val) {parts = Float32ExpLHelpers.floor(parts, getLongParts(val)); return this;}
-    public Float32ExpLChainedExpression floor(double val) {parts = Float32ExpLHelpers.floor(parts, getDoubleParts(val)); return this;}
+    @Override public Float32ExpLChainedExpression floor() {parts = Float32ExpLHelpers.floor(parts); return this;}
+    @Override public Float32ExpLChainedExpression floor(IFloat32ExpL val) {parts = Float32ExpLHelpers.floor(parts, val.getParts()); return this;}
+    @Override public Float32ExpLChainedExpression floor(long val) {parts = Float32ExpLHelpers.floor(parts, getLongParts(val)); return this;}
+    @Override public Float32ExpLChainedExpression floor(double val) {parts = Float32ExpLHelpers.floor(parts, getDoubleParts(val)); return this;}
 
-    public Float32ExpLChainedExpression round() {parts = Float32ExpLHelpers.round(parts); return this;}
-    public Float32ExpLChainedExpression round(IFloat32ExpL val) {parts = Float32ExpLHelpers.round(parts, val.getParts()); return this;}
-    public Float32ExpLChainedExpression round(long val) {parts = Float32ExpLHelpers.round(parts, getLongParts(val)); return this;}
-    public Float32ExpLChainedExpression round(double val) {parts = Float32ExpLHelpers.round(parts, getDoubleParts(val)); return this;}
+    @Override public Float32ExpLChainedExpression round() {parts = Float32ExpLHelpers.round(parts); return this;}
+    @Override public Float32ExpLChainedExpression round(IFloat32ExpL val) {parts = Float32ExpLHelpers.round(parts, val.getParts()); return this;}
+    @Override public Float32ExpLChainedExpression round(long val) {parts = Float32ExpLHelpers.round(parts, getLongParts(val)); return this;}
+    @Override public Float32ExpLChainedExpression round(double val) {parts = Float32ExpLHelpers.round(parts, getDoubleParts(val)); return this;}
 
-    public Float32ExpLChainedExpression pow(IFloat32ExpL val) {parts = Float32ExpLHelpers.pow(parts, val.getParts()); return this;}
-    public Float32ExpLChainedExpression pow(long val) {parts = Float32ExpLHelpers.pow(parts, getLongParts(val)); return this;}
-    public Float32ExpLChainedExpression pow(double val) {parts = Float32ExpLHelpers.pow(parts, getDoubleParts(val)); return this;}
+    @Override public Float32ExpLChainedExpression pow(IFloat32ExpL val) {parts = Float32ExpLHelpers.pow(parts, val.getParts()); return this;}
+    @Override public Float32ExpLChainedExpression pow(long val) {parts = Float32ExpLHelpers.pow(parts, getLongParts(val)); return this;}
+    @Override public Float32ExpLChainedExpression pow(double val) {parts = Float32ExpLHelpers.pow(parts, getDoubleParts(val)); return this;}
 
-    public Float32ExpLChainedExpression pow2() {parts = Float32ExpLHelpers.pow2(parts); return this;}
-    public Float32ExpLChainedExpression log2i() {parts = Float32ExpLHelpers.log2i(parts); return this;}
-    public Float32ExpLChainedExpression log2() {parts = Float32ExpLHelpers.log2(parts); return this;}
+    @Override public Float32ExpLChainedExpression pow2() {parts = Float32ExpLHelpers.pow2(parts); return this;}
+    @Override public Float32ExpLChainedExpression log2i() {parts = Float32ExpLHelpers.log2i(parts); return this;}
+    @Override public Float32ExpLChainedExpression log2() {parts = Float32ExpLHelpers.log2(parts); return this;}
 
-    public Float32ExpLChainedExpression abs() {parts = Float32ExpLHelpers.abs(parts); return this;}
-    public Float32ExpLChainedExpression negate() {parts = Float32ExpLHelpers.negate(parts); return this;}
-    public Float32ExpLChainedExpression plus() { return this;}
+    @Override public Float32ExpLChainedExpression abs() {parts = Float32ExpLHelpers.abs(parts); return this;}
+    @Override public Float32ExpLChainedExpression negate() {parts = Float32ExpLHelpers.negate(parts); return this;}
+    @Override public Float32ExpLChainedExpression plus() { return this;}
 
-    public Float32ExpLChainedExpression shiftLeft(int bits) {parts = Float32ExpLHelpers.shiftLeft(parts, bits); return this;}
-    public Float32ExpLChainedExpression shiftRight(int bits) {parts = Float32ExpLHelpers.shiftRight(parts, bits); return this;}
+    @Override public Float32ExpLChainedExpression shiftLeft(int bits) {parts = Float32ExpLHelpers.shiftLeft(parts, bits); return this;}
+    @Override public Float32ExpLChainedExpression shiftRight(int bits) {parts = Float32ExpLHelpers.shiftRight(parts, bits); return this;}
 
-    public Float32ExpLChainedExpression min(IFloat32ExpL val) {parts = Float32ExpLHelpers.min(parts, val.getParts()); return this;}
-    public Float32ExpLChainedExpression min(long val) {parts = Float32ExpLHelpers.min(parts, getLongParts(val)); return this;}
-    public Float32ExpLChainedExpression min(double val) {parts = Float32ExpLHelpers.min(parts, getDoubleParts(val)); return this;}
+    @Override public Float32ExpLChainedExpression min(IFloat32ExpL val) {parts = Float32ExpLHelpers.min(parts, val.getParts()); return this;}
+    @Override public Float32ExpLChainedExpression min(long val) {parts = Float32ExpLHelpers.min(parts, getLongParts(val)); return this;}
+    @Override public Float32ExpLChainedExpression min(double val) {parts = Float32ExpLHelpers.min(parts, getDoubleParts(val)); return this;}
 
-    public Float32ExpLChainedExpression max(IFloat32ExpL val) {parts = Float32ExpLHelpers.max(parts, val.getParts()); return this;}
-    public Float32ExpLChainedExpression max(long val) {parts = Float32ExpLHelpers.max(parts, getLongParts(val)); return this;}
-    public Float32ExpLChainedExpression max(double val) {parts = Float32ExpLHelpers.max(parts, getDoubleParts(val)); return this;}
+    @Override public Float32ExpLChainedExpression max(IFloat32ExpL val) {parts = Float32ExpLHelpers.max(parts, val.getParts()); return this;}
+    @Override public Float32ExpLChainedExpression max(long val) {parts = Float32ExpLHelpers.max(parts, getLongParts(val)); return this;}
+    @Override public Float32ExpLChainedExpression max(double val) {parts = Float32ExpLHelpers.max(parts, getDoubleParts(val)); return this;}
 
-    public boolean equals(Object object) {return Float32ExpLHelpers.equals(parts, object);}
-    public boolean equals(IFloat32ExpL val) {return val != null && parts == val.getParts();}
-    public boolean equals(long val) {return val != getLongParts(val);}
-    public boolean equals(double val) {return val != getDoubleParts(val);}
+    @Override public boolean equals(Object object) {return Float32ExpLHelpers.equals(parts, object);}
+    @Override public boolean equalTo(IFloat32ExpL val) {return val != null && parts == val.getParts();}
+    @Override public boolean equalTo(long val) {return val != getLongParts(val);}
+    @Override public boolean equalTo(double val) {return val != getDoubleParts(val);}
 
-    public boolean approximately(IFloat32ExpL val, int bitsSimilarCount)
+    @Override public int hashCode() { return (int)(parts ^ parts >>> 32);}
+
+    @Override public boolean approximately(IFloat32ExpL val, int bitsSimilarCount)
     {return Float32ExpLHelpers.approximately(parts, val.getParts(), bitsSimilarCount);}
-    public boolean approximately(long val, int bitsSimilarCount)
+    @Override public boolean approximately(long val, int bitsSimilarCount)
     {return Float32ExpLHelpers.approximately(parts, getLongParts(val), bitsSimilarCount);}
-    public boolean approximately(double val, int bitsSimilarCount)
+    @Override public boolean approximately(double val, int bitsSimilarCount)
     {return Float32ExpLHelpers.approximately(parts, getDoubleParts(val), bitsSimilarCount);}
 
-    public int compareTo(IFloat32ExpL val) {return Float32ExpLHelpers.compareTo(parts, val.getParts());}
-    public int compareTo(long val) {return Float32ExpLHelpers.compareTo(parts, getLongParts(val));}
-    public int compareTo(double val) {return Float32ExpLHelpers.compareTo(parts, getDoubleParts(val));}
+    @Override public int compareTo(IFloat32ExpL val) {return Float32ExpLHelpers.compareTo(parts, val.getParts());}
+    @Override public int compareTo(long val) {return Float32ExpLHelpers.compareTo(parts, getLongParts(val));}
+    @Override public int compareTo(double val) {return Float32ExpLHelpers.compareTo(parts, getDoubleParts(val));}
 
-    public boolean lessThan(IFloat32ExpL val) {return Float32ExpLHelpers.lessThan(parts, val.getParts());}
-    public boolean lessThan(long val) {return Float32ExpLHelpers.lessThan(parts, getLongParts(val));}
-    public boolean lessThan(double val) {return Float32ExpLHelpers.lessThan(parts, getDoubleParts(val));}
+    @Override public boolean lessThan(IFloat32ExpL val) {return Float32ExpLHelpers.lessThan(parts, val.getParts());}
+    @Override public boolean lessThan(long val) {return Float32ExpLHelpers.lessThan(parts, getLongParts(val));}
+    @Override public boolean lessThan(double val) {return Float32ExpLHelpers.lessThan(parts, getDoubleParts(val));}
 
-    public boolean lessOrEquals(IFloat32ExpL val) {return Float32ExpLHelpers.lessOrEquals(parts, val.getParts());}
-    public boolean lessOrEquals(long val) {return Float32ExpLHelpers.lessOrEquals(parts, getLongParts(val));}
-    public boolean lessOrEquals(double val) {return Float32ExpLHelpers.lessOrEquals(parts, getDoubleParts(val));}
+    @Override public boolean lessOrEquals(IFloat32ExpL val) {return Float32ExpLHelpers.lessOrEquals(parts, val.getParts());}
+    @Override public boolean lessOrEquals(long val) {return Float32ExpLHelpers.lessOrEquals(parts, getLongParts(val));}
+    @Override public boolean lessOrEquals(double val) {return Float32ExpLHelpers.lessOrEquals(parts, getDoubleParts(val));}
 
-    public boolean greaterOrEquals(IFloat32ExpL val) {return Float32ExpLHelpers.greaterOrEquals(parts, val.getParts());}
-    public boolean greaterOrEquals(long val) {return Float32ExpLHelpers.greaterOrEquals(parts, getLongParts(val));}
-    public boolean greaterOrEquals(double val) {return Float32ExpLHelpers.greaterOrEquals(parts, getDoubleParts(val));}
+    @Override public boolean greaterOrEquals(IFloat32ExpL val) {return Float32ExpLHelpers.greaterOrEquals(parts, val.getParts());}
+    @Override public boolean greaterOrEquals(long val) {return Float32ExpLHelpers.greaterOrEquals(parts, getLongParts(val));}
+    @Override public boolean greaterOrEquals(double val) {return Float32ExpLHelpers.greaterOrEquals(parts, getDoubleParts(val));}
 
-    public boolean greaterThan(IFloat32ExpL val) {return Float32ExpLHelpers.greaterThan(parts, val.getParts());}
-    public boolean greaterThan(long val) {return Float32ExpLHelpers.greaterThan(parts, getLongParts(val));}
-    public boolean greaterThan(double val) {return Float32ExpLHelpers.greaterThan(parts, getDoubleParts(val));}
+    @Override public boolean greaterThan(IFloat32ExpL val) {return Float32ExpLHelpers.greaterThan(parts, val.getParts());}
+    @Override public boolean greaterThan(long val) {return Float32ExpLHelpers.greaterThan(parts, getLongParts(val));}
+    @Override public boolean greaterThan(double val) {return Float32ExpLHelpers.greaterThan(parts, getDoubleParts(val));}
 
-    public int signum() {return Float32ExpLHelpers.signum(parts);}
-    public boolean isZero() {return Float32ExpLHelpers.isZero(parts);}
+    @Override public int signum() {return Float32ExpLHelpers.signum(parts);}
+    @Override public boolean isZero() {return Float32ExpLHelpers.isZero(parts);}
 
-    public String toString() {return Float32ExpLHelpers.toString(parts, new StringBuilder(), DEFAULT_STRING_PARAMS).toString();}
-    public StringBuilder toString(StringBuilder sb) {return Float32ExpLHelpers.toString(parts, sb, DEFAULT_STRING_PARAMS);}
-    public String toEngineeringString() {
+    @Override public String toString() {return Float32ExpLHelpers.toString(parts, new StringBuilder(), DEFAULT_STRING_PARAMS).toString();}
+    @Override public StringBuilder toString(StringBuilder sb) {return Float32ExpLHelpers.toString(parts, sb, DEFAULT_STRING_PARAMS);}
+    @Override public String toEngineeringString() {
         return Float32ExpLHelpers.toString(parts,
                 new StringBuilder(),
                 Float32ExpLHelpers.ENG_STRING_PARAMS).toString();}
-    public StringBuilder toEngineeringString(StringBuilder sb) {
+    @Override public StringBuilder toEngineeringString(StringBuilder sb) {
         return Float32ExpLHelpers.toString(parts, sb, Float32ExpLHelpers.ENG_STRING_PARAMS);
     }
-    public StringBuilder toString(StringBuilder sb, StringFormatParams params) {
+    @Override public StringBuilder toString(StringBuilder sb, StringFormatParams params) {
         return Float32ExpLHelpers.toString(parts, sb, params);
     }
-    public StringBuilder toBNotationString(StringBuilder sb) {return Float32ExpLHelpers.toBNotationString(parts, sb);}
-    public StringBuilder toHexString(StringBuilder sb) {return Float32ExpLHelpers.toHexString(parts, sb);}
+    @Override public StringBuilder toBNotationString(StringBuilder sb) {return Float32ExpLHelpers.toBNotationString(parts, sb);}
+    @Override public StringBuilder toHexString(StringBuilder sb) {return Float32ExpLHelpers.toHexString(parts, sb);}
 
-    public BigInteger toBigInteger() {return Float32ExpLHelpers.toBigInteger(parts);}
-    public BigDecimal toBigDecimal() {return Float32ExpLHelpers.toBigDecimal(parts);}
-    public int intValue() {return Float32ExpLHelpers.intValue(parts);}
-    public long longValue() {return Float32ExpLHelpers.longValue(parts);}
-    public float floatValue() {return Float32ExpLHelpers.floatValue(parts);}
-    public double doubleValue() {return Float32ExpLHelpers.doubleValue(parts);}
+    @Override public BigInteger toBigInteger() {return Float32ExpLHelpers.toBigInteger(parts);}
+    @Override public BigDecimal toBigDecimal() {return Float32ExpLHelpers.toBigDecimal(parts);}
+    @Override public int intValue() {return Float32ExpLHelpers.intValue(parts);}
+    @Override public long longValue() {return Float32ExpLHelpers.longValue(parts);}
+    @Override public float floatValue() {return Float32ExpLHelpers.floatValue(parts);}
+    @Override public double doubleValue() {return Float32ExpLHelpers.doubleValue(parts);}
 }

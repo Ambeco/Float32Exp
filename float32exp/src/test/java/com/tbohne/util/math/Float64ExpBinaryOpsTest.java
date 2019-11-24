@@ -21,9 +21,9 @@ public class Float64ExpBinaryOpsTest {
     //TODO:Delete. Just measuring how doubles work.
     @Test
     public void fmodWorksLikeIThink() {
-        Float64ExpTestUtils.assertApproximately( -2.0, (int)((-7.0) / 3.0), 30);
+        Float64ExpTestUtils.assertApproximately( -2.0, (int)(-7.0 / 3.0), 30);
         Float64ExpTestUtils.assertApproximately( -2.0, (int)(7.0 / -3.0), 30);
-        Float64ExpTestUtils.assertApproximately( -1.0, (int)((-7.0) % 3.0), 30);
+        Float64ExpTestUtils.assertApproximately( -1.0, (int)(-7.0 % 3.0), 30);
         Float64ExpTestUtils.assertApproximately( 1.0, (int)(7.0 % -3.0), 30);
     }
 }

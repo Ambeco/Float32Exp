@@ -96,6 +96,6 @@ class AdditionPerfTests {
             first.add(offset);
             first.subtract(offset);
         }
-        return count*2 + (!first.equals(-1)?0:1);
+        return count*2 + (!first.equalTo(-1)?0:1);
     }
 }

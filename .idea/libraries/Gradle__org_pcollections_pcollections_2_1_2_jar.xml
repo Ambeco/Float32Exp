@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: org.pcollections:pcollections:2.1.2@jar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../.gradle/caches/modules-2/files-2.1/org.pcollections/pcollections/2.1.2/15925fd6c32a29fe3f40a048d238c5ca58cb8362/pcollections-2.1.2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../../.gradle/caches/modules-2/files-2.1/org.pcollections/pcollections/2.1.2/95e561dd2b8f631b42d6714e772a0d0599505e2a/pcollections-2.1.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../../.gradle/caches/modules-2/files-2.1/org.pcollections/pcollections/2.1.2/58d97dc66c40a0062a0894a0eb787e60d1975731/pcollections-2.1.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

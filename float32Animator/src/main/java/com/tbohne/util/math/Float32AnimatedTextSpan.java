@@ -35,7 +35,7 @@ public class Float32AnimatedTextSpan extends ReplacementSpan {
 		//TODO: Appendable instead of StringBuilder.
 		StringBuilder stringBuilder = new StringBuilder();
 		Float32ExpL displayValue = new Float32ExpL();
-		Polynomials.at(polynomial, clock.getTime(), displayValue);
+		Polynomials.at(polynomial, clock.getTime(), displayValue, new Float32ExpL(), new Float32ExpL());
 		displayValue.toString(stringBuilder, params);
 		SpannableString string = new SpannableString(stringBuilder);
 		string.setSpan(new Float32AnimatedTextSpan(polynomial, params, view, clock), 0, stringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -56,7 +56,7 @@ public class Float32AnimatedTextSpan extends ReplacementSpan {
 		//TODO: Appendable instead of StringBuilder.
 		StringBuilder stringBuilder = new StringBuilder();
 		Float32ExpL displayValue = new Float32ExpL();
-		Polynomials.at(polynomial, clock.getTime(), displayValue);
+		Polynomials.at(polynomial, clock.getTime(), displayValue, new Float32ExpL(), new Float32ExpL());
 		displayValue.toString(stringBuilder, params);
 		int offset = builder.length();
 		builder.append(stringBuilder);
@@ -90,6 +90,8 @@ public class Float32AnimatedTextSpan extends ReplacementSpan {
 	private int lastWidth = 0;
 	private int lastHeight = 0;
 	private final Float32ExpL lastDisplay = new Float32ExpL();
+	private final Float32ExpL temp1 = new Float32ExpL();
+	private final Float32ExpL temp2 = new Float32ExpL();
 	
 	protected Float32AnimatedTextSpan(List<? extends IFloat32ExpL> polynomial, StringFormatParams params, View view, PolynomialClock clock) {
 		this.polynomial = Polynomials.toImmutable(polynomial);
@@ -141,7 +143,7 @@ public class Float32AnimatedTextSpan extends ReplacementSpan {
 			int bottom,
 			@NonNull Paint paint) {
 		IFloat32ExpL time = clock.getEstimatedTime(firstTime, (Long) animator.getAnimatedValue());
-		Polynomials.at(polynomial, time, lastDisplay);
+		Polynomials.at(polynomial, time, lastDisplay, temp1, temp2);
 		stringBuilder.setLength(0);
 		lastX = x;
 		lastY = y;

@@ -1,6 +1,9 @@
 package com.tbohne.utilperf;
 
-import com.tbohne.util.math.*;
+import com.tbohne.util.math.Float32Exp;
+import com.tbohne.util.math.Float32ExpL;
+import com.tbohne.util.math.ImmutableFloat32Exp;
+import com.tbohne.util.math.ImmutableFloat32ExpL;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -134,6 +137,6 @@ class LCGRNGTests {
             Seed.multiply(IA).add(IC).remainder(IM);
             res.add(Max).multiply(Seed).divide(IM);
         }
-        return count + (!res.equals(-1)?0:1);
+        return count + (!res.equalTo(-1)?0:1);
     }
 }

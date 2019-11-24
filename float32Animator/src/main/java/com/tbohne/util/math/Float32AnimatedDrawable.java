@@ -36,6 +36,8 @@ public class Float32AnimatedDrawable extends Drawable implements Animatable {
 	private final Float32ExpL displayValue = new Float32ExpL();
 	private final StringBuilder stringBuilder = new StringBuilder();
 	private final View view;
+	private final Float32ExpL temp1 = new Float32ExpL();
+	private final Float32ExpL temp2 = new Float32ExpL();
 	private final Drawable.Callback callback = new Drawable.Callback(){
 		@Override
 		public void invalidateDrawable(@NonNull Drawable who) {
@@ -155,7 +157,7 @@ public class Float32AnimatedDrawable extends Drawable implements Animatable {
 	@Override
 	public void draw(Canvas canvas) {
 		IFloat32ExpL time = clock.getEstimatedTime(firstTime, (Long) animator.getAnimatedValue());
-		Polynomials.at(polynomial, time, displayValue);
+		Polynomials.at(polynomial, time, displayValue, temp1, temp2);
 		stringBuilder.setLength(0);
 		displayValue.toString(stringBuilder, params);
 		Paint.FontMetricsInt fm = lastPaint.getFontMetricsInt();
